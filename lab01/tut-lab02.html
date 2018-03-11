@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0059)https://www.cse.unsw.edu.au/~cs2511/tut-labs/tut-lab02.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <title></title>
+  <meta name="GENERATOR" content="OpenOffice.org 2.4  (Linux)">
+  <meta name="CREATED" content="20080311;16155595">
+  <meta name="CHANGED" content="20090309;13353600">
+  <style type="text/css">
+	<!--
+		@page { size: 8.27in 11.69in; margin: 0.79in }
+		H1 { margin-bottom: 0.08in }
+		H1.western { font-family: "Arial", sans-serif; font-size: 16pt }
+		H1.cjk { font-family: "MS Mincho"; font-size: 16pt }
+		H1.ctl { font-family: "Tahoma"; font-size: 16pt }
+		P { margin-bottom: 0.08in }
+	-->
+	</style></head><body dir="ltr" lang="en-US">
+<h1 class="western">Tut-Lab Week 2</h1>
+<p style="margin-bottom: 0in;"><b><big>Aims</big>: </b>
+</p>
+<ul>
+  <li>
+    <p>Develop familiarity with
+object-oriented programming concepts</p>
+  </li>
+  <li>
+    <p>Learn about the representation of
+objects and inheritance in Java <span style="font-weight: bold;"></span></p>
+  </li>
+  <li>
+    <p>Gain familiarity with Java development using Eclipse</p>
+  </li>
+  <li>
+    <p>Practise documenting code using Javadoc</p>
+  </li>
+</ul>
+<p style="margin-bottom: 0in;"><b><big>Preparation:</big> </b>
+</p>
+<ul>
+  <li>
+    <p style="margin-bottom: 0in;">Review the API documentation for
+basic library classes: <b>String, Calendar, LocalDate<br>
+</b></p>
+  </li>
+  <li>
+    <p>Install Eclipse on your own machine</p>
+  </li>
+</ul>
+<h2>Setting Up Eclipse on Lab Machines<br>
+</h2>
+<ul>
+  <li>
+    <p>From a terminal, execute <b>eclipse</b>: this should start up
+a version of eclipse in a new window – make sure it is Eclipse 4.7.2 Oxygen</p>
+  </li>
+  <ul style="font-weight: bold;">
+    <li>
+      <p>Do this at the start of the tut-lab as this will take a long
+time if everyone starts up eclipse at once!</p>
+    </li>
+  </ul>
+  <li>
+    <p>Follow the prompts, and set up a workspace directory for
+eclipse in your home (or sub-) directory</p>
+  </li>
+  <ul>
+    <li>
+      <p>Follow any recommended instructions concerning the Scala IDE plugin</p>
+    </li>
+  </ul>
+  <li>
+  <p>If you see a welcome screen, close it to reveal a Java perpective</p>
+  </li>
+    <ul>
+    <li>
+    <p>If (instead) you see a Java EE perspective, open a Java perspective
+(click the Open Perspective button just to the left of the Java EE button
+and choose Java from the list), then close the Java EE perspective (right
+click on it and select Close)</p>
+  </li>
+  </ul>
+  <li>
+    <p>Make sure Java SE 8 is the default execution environment: check this via
+Window &gt; Preferences &gt; Java &gt; Installed JREs</p>
+</li>
+<ul>
+    <li>
+      <p>The JRE should be called java-8-openjdk-i386; if it is not there, add the JRE
+which should be located at /usr/lib/jvm/java-8-openjdk-i386</p>
+    </li>
+  </ul>
+  <li>
+    <p>You can open a new Java project (via New &gt; Java Project or using
+the New button drop-down): choose the default JRE for the execution environment</p>
+  </li>
+  <li>
+    <p>Eclipse should be set up to automatically (re-)compile your projects when editing
+(check via the Project menu that Build Automatically is ticked): saves time!<br>
+    </p>
+  </li>
+  <li>
+    <p style="">Run programs in Eclipse via Run &gt; Run As ...
+Java Application or hit the Play button after setting up a Run
+Configuration<br>
+    </p>
+  </li>
+  <li>
+    <p>Look at the Problems tab for any bugs, Javadoc to see
+your own documentation, and Console to see the output</p>
+  </li>
+</ul>
+<h2>Object-Oriented Programming<br>
+</h2>
+<ul>
+  <li>
+    <p style="">Create an <span style="font-weight: bold;">Employee</span>
+class which has private fields for an employee's name and salary</p>
+  </li>
+  <li>
+    <p>Create a <span style="font-weight: bold;">Manager</span> class
+that is a subtype of <span style="font-weight: bold;">Employee</span>,
+which also has a private field for a manager's hire date<br>
+    </p>
+  </li>
+  <li>
+    <p>Define constructors for the classes, and public getter and setter
+methods for the fields: document them using Javadoc<br>
+    </p>
+  </li>
+  <li>
+    <p style="">Define the standard methods toString, equals and clone for <span style="font-weight: bold;">Employee</span> and <span style="font-weight: bold;">Manager</span></p>
+  </li>
+  <ul>
+    <li>
+      <p>The methods for <span style="font-weight: bold;">Manager</span>
+should call those for <span style="font-weight: bold;">Employee </span>using
+the<span style="font-weight: bold;">
+super </span>construct</p>
+    </li>
+    <li>
+      <p>What output do you expect when getClass().getName()
+is called in the toString method of <span style="font-weight: bold;">Employee</span>
+with a <span style="font-weight: bold;">Manager</span> object?</p>
+    </li>
+  </ul>
+</ul>
+<ul>
+  <li>
+    <p style="">Create a class for testing the <span style="font-weight: bold;">Employee</span> and <span style="font-weight: bold;">Manager</span> classes and define some tests for your methods</p>
+  </li>
+  <ul>
+    <li>
+      <p>What do you expect when you test whether an <span style="font-weight: bold;">Employee</span> is equal to
+a clone of the <span style="font-weight: bold;">Employee</span>?</p>
+    </li>
+    <li>
+      <p>What do you expect when you test whether a <span style="font-weight: bold;">Manager</span> is equal to an 
+<span style="font-weight: bold;">Employee</span> with the same name and salary (and vice versa)?</p>
+    </li>
+    <li>
+      <p>What do you expect when you test whether the name of an <span style="font-weight: bold;">Employee</span>
+is equal (or ==) to the name of a clone of the <span style="font-weight: bold;">Employee</span>?</p>
+    </li>
+    <li>
+      <p>If you change the hire date of a clone of a <span style="font-weight: bold;">Manager</span>, is
+the hire date of the original <span style="font-weight: bold;">Manager</span> also changed?</p>
+    </li><li>
+      <p>If a <span style="font-weight: bold;">Manager</span> object is declared as an <span style="font-weight: bold;">Employee</span>, e.g. <span style="font-family: monospace;"><big>Employee e = new Manager(...)</big></span>, which methods of <span style="font-weight: bold;">Manager</span> can be called on this object?</p>
+    </li>
+    
+  </ul>
+</ul>
+
+</body></html>
