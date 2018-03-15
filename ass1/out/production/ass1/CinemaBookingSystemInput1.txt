@@ -37,3 +37,5 @@ Print 1 14:30        # Print the bookings for the 2:30pm session in cinema 1
                      # Rows are printed in the order they are declared in the input, one line for each row
                      # Print the row name, ':' and the seat ranges booked (in seat order), separated by commas
                      # Rows with no bookings are not printed out at all
+
+

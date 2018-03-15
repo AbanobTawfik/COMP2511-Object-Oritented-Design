@@ -9,10 +9,11 @@ public class Rows {
     public Rows(char rowname, int numberOfSeatsInRow) {
         this.rowname = rowname;
         this.numberOfSeatsInRow = numberOfSeatsInRow;
-        this.numberOfAvailableSeatsInRow = numberOfSeatsInRow;
-        //create an array of empty unbooked seats
         chairs = new ArrayList<Seats>();
-        addSeatsToRow(this.numberOfSeatsInRow);
+        for(int i = 0;i<numberOfSeatsInRow;i++)
+            this.addSeatsToRow(1);
+        //create an array of empty unbooked seats
+
     }
 
     public char getRowname() {
@@ -58,8 +59,7 @@ public class Rows {
         int ret = -1;
         for(int k = 0;k < numberOfSeatsInRow; k++ ){
             if(chairs.get(k).checkReserveStatus() == false) {
-                ret = k;
-                break;
+                return k;
             }
         }
         return ret;

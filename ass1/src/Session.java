@@ -1,15 +1,25 @@
 import java.util.*;
+
 public class Session {
+    //info for the session
     private String movie;
     private Date movietime;
-    private ArrayList<Rows> rows;
     private int cinemaNumber;
+    private ArrayList<bookings> allBookings;
 
-    public Session(String movie, Date movietime, ArrayList<Rows> rows, int cinemaNumber) {
+    public Session(String movie, Date movietime, int cinemaNumber) {
         this.movie = movie;
         this.movietime = movietime;
-        this.rows = rows;
         this.cinemaNumber = cinemaNumber;
+        this.allBookings = new ArrayList<bookings>();
+    }
+
+    public ArrayList<bookings> getAllBookings() {
+        return allBookings;
+    }
+
+    public void setAllBookings(ArrayList<bookings> allBookings) {
+        this.allBookings = allBookings;
     }
 
     public String getMovie() {
@@ -28,13 +38,6 @@ public class Session {
         this.movietime = movietime;
     }
 
-    public ArrayList<Rows> getRows() {
-        return rows;
-    }
-
-    public void setRows(ArrayList<Rows> rows) {
-        this.rows = rows;
-    }
 
     public int getCinemaNumber() {
         return cinemaNumber;
@@ -44,41 +47,66 @@ public class Session {
         this.cinemaNumber = cinemaNumber;
     }
 
-    //add new row to the session
-    public void addRow(Rows r){
-        rows.add(r);
+
+    public void addBookingToSession(bookings b) {
+        allBookings.add(b);
     }
 
-    //returns the first available row for the number of tickets else
-    // -1 indicating unsuccesful
-    public int availableRow(int numberOfTickets){
+    public boolean bookingIdInCinema(int bookingId) {
+        for (int i = 0; i < allBookings.size(); i++) {
+            if (allBookings.get(i).getId() == bookingId) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        for(int i = 0; i < rows.size(); i++){
-            if(rows.get(i).getNumberOfAvailableSeatsInRow() >= numberOfTickets)
+    public int getBookingIdIndex(int id) {
+        int index = -1;
+        for (int i = 0; i < allBookings.size(); i++) {
+            if (allBookings.get(i).getId() == id) {
                 return i;
+            }
         }
-
-        return -1;
+        return index;
     }
 
-    //we want to go to our row
-    //find the first available seat index
-    //resereve numberOfTickets amount of seats
-    //update number of available seats in the row
-
-    public void bookSeats(int numberOfTickets,int rownumber){
-        int startIndex = rows.get(rownumber).firstFreeSeatInRow();
-        for(int i = startIndex; i < startIndex + numberOfTickets; i++) {
-            rows.get(rownumber).getChairs().get(i).reserveSeat();
+    public void printAllBookings() {
+        if (allBookings.size() == 0) {
+            System.out.println("No bookings for this session");
+            return;
         }
-        rows.get(rownumber).setNumberOfAvailableSeatsInRow(rows.get(rownumber).getNumberOfAvailableSeatsInRow() - numberOfTickets);
+        char currentrowname = '\0';
+        //how i want to print out
+        //check row character, if the next booking has a different row character print deets no comma
+        //
+        for (int i = 0; i < allBookings.size(); i++) {
+            //if the current booking hasn't got the same rowname as the previous rowname we want to print the new rowname, and a : character
+            //eg next line print B: 3-4,
+            if (allBookings.get(i).getRowname() != currentrowname) {
+                System.out.print(allBookings.get(i).getRowname() + ": ");
+                if(allBookings.get(i).getNumberOfTickets() == 1){
+                    System.out.print(allBookings.get(i).getStartseat() + ", ");
+                }else {
+                    System.out.print(allBookings.get(i).getStartseat() + "-" + (allBookings.get(i).getStartseat() + allBookings.get(i).getNumberOfTickets() + ", "));
+                }
+                currentrowname = allBookings.get(i).getRowname();
+            }else if(allBookings.get(i+1).getRowname() != currentrowname && i<allBookings.size()-1){
+                if(allBookings.get(i).getNumberOfTickets() == 1){
+                    System.out.print(allBookings.get(i).getStartseat() + ", ");
+                }else {
+                    System.out.print(allBookings.get(i).getStartseat() + "-" + (allBookings.get(i).getStartseat() + allBookings.get(i).getNumberOfTickets()));
+                }
+                System.out.print("\n");
+            }else{
+                if(allBookings.get(i).getNumberOfTickets() == 1){
+                    System.out.print(allBookings.get(i).getStartseat() + ", ");
+                }else {
+                    System.out.print(allBookings.get(i).getStartseat() + "-" + (allBookings.get(i).getStartseat() + allBookings.get(i).getNumberOfTickets() + ", "));
+                }
+            }
+        }
     }
 
-    public void freeSeats(int numberOfTickets, int rownumber, int startSeat){
-        for(int i = startSeat; i<startSeat + numberOfTickets; i++)
-            rows.get(rownumber).getChairs().get(i).removeReservedSeat();
-        rows.get(rownumber).setNumberOfAvailableSeatsInRow(rows.get(rownumber).getNumberOfAvailableSeatsInRow() + numberOfTickets);
-
-    }
 }
 

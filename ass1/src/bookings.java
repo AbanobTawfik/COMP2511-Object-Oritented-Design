@@ -1,24 +1,32 @@
 import java.util.*;
 
 public class bookings {
+    //info for the booking
     private int numberOfTickets;
     private Date bookingTime;
     private int id;
     private int cinemaNumber;
-    private int rownumber;          // <--- essential to keep track of our booked seats
+    //info for the booked movie
+    private int rownumber;               // <--- essential to keep track of our booked seats
     private int startseat;
-    private ArrayList<Session> session;
+    private char rowname;
 
 
-
-    public bookings(int numberOfTickets, Date bookingTime, int id, int cinemaNumber, ArrayList<Session> session) {
+    public bookings(int numberOfTickets, Date bookingTime, int id, int cinemaNumber) {
         this.numberOfTickets = numberOfTickets;
         this.bookingTime = bookingTime;
         this.id = id;
         this.cinemaNumber = cinemaNumber;
-        this.session = session;
         this.rownumber = -1;
         this.startseat = -1;
+    }
+
+    public char getRowname() {
+        return rowname;
+    }
+
+    public void setRowname(char rowname) {
+        this.rowname = rowname;
     }
 
     public int getRownumber() {
@@ -37,13 +45,6 @@ public class bookings {
         this.startseat = startseat;
     }
 
-    public ArrayList<Session> getSession() {
-        return session;
-    }
-
-    public void setSession(ArrayList<Session> session) {
-        this.session = session;
-    }
 
     public int getNumberOfTickets() {
         return numberOfTickets;
@@ -83,28 +84,30 @@ public class bookings {
     //return true if booking is made
     //else we just want to return false and no booking made
     //also check if the session even exists itself
-    public boolean createBooking(int numberOfTicketsCreate, Date bookingTimeCreate, int idCreate, int cinemaNumberCreate){
+    public boolean createBooking(int numberOfTicketsCreate, Date bookingTimeCreate, int idCreate, int cinemaNumberCreate, ArrayList<Cinema> cinemas) {
         //scan through every session to see if the cinema number requested exists
         //if the cinemanumber is there break can continue
-        int cinema = checkCinemaAvailable(cinemaNumberCreate);
+        int cinema = checkCinemaAvailable(cinemas.get(cinemaNumberCreate).getCinemaNumber(), cinemas);
 
         //if the cinema number doesnt exist return false
-        if(cinema == -1)
+        if (cinema == -1)
             return false;
-        int getRowFree = session.get(cinema).availableRow(numberOfTicketsCreate);
-        if(getRowFree == -1)
+        int getRowFree = cinemas.get(cinema).availableRow(numberOfTicketsCreate);
+        if (getRowFree == -1)
             return false;
+        startseat = cinemas.get(cinema).getRows().get(getRowFree).firstFreeSeatInRow();
         //since this booking has met our conditions we want to make this booking successful
         //we want to first make all the seats in the row that are taken reserved
-        session.get(cinema).bookSeats(numberOfTicketsCreate,getRowFree);
+        cinemas.get(cinema).bookSeats(numberOfTicketsCreate, getRowFree);
 
         //updating our booking now
         bookingTime = bookingTimeCreate;
         rownumber = getRowFree;
-        startseat = session.get(cinema).getRows().get(getRowFree).firstFreeSeatInRow();
+
         cinemaNumber = cinema;
         numberOfTickets = numberOfTicketsCreate;
-
+        rowname = cinemas.get(cinema).getRows().get(rownumber).getRowname();
+        id = idCreate;
         return true;
     }
 
@@ -116,54 +119,55 @@ public class bookings {
     //want to also make sure we can access bookings
     //also check if booking exists in first place xD
 
-    public boolean changeBooking(int id, int cinemaNumbernew, Date bookingTimenew, int numberOfTicketsnew){
+    public boolean changeBooking(int cinemaNumbernew, Date bookingTimenew, int numberOfTicketsnew, ArrayList<Cinema> cinemas) {
         //now we want to check if the pre-existing booking existed
         //if there was no pre-exisiting booking then these fields would remain unchanged from initialised state
 
-        if(rownumber == -1 || startseat == -1)
+        if (rownumber == -1 || startseat == -1)
             return false;
         //first checks if valid booking for change
-        int cinema = checkCinemaAvailable(cinemaNumbernew);
-        if(cinema == -1)
+        int cinema = checkCinemaAvailable(cinemas.get(cinemaNumbernew).getCinemaNumber(), cinemas);
+        if (cinema == -1)
             return false;
         //now checking if there are avilable rows for number of tickets requested
-        int getRowFree = session.get(cinema).availableRow(numberOfTicketsnew);
 
-        if(getRowFree == -1)
+        int getRowFree = cinemas.get(cinema).availableRow(numberOfTicketsnew);
+        if (getRowFree == -1)
             return false;
 
         //now free up our old booking which can be conviently done with the row + start seat of old booking
-        session.get(cinema).freeSeats(numberOfTickets, getRowFree, startseat);
+        cinemas.get(cinema).freeSeats(numberOfTickets, getRowFree, startseat);
         //now that old bookings have been reverted and fixed up assign new booking
-        session.get(cinema).bookSeats(numberOfTicketsnew,getRowFree);
+        cinemas.get(cinema).bookSeats(numberOfTicketsnew, getRowFree);
 
         rownumber = getRowFree;
         numberOfTickets = numberOfTicketsnew;
-        startseat = session.get(cinema).getRows().get(getRowFree).firstFreeSeatInRow();
+        startseat = cinemas.get(cinema).getRows().get(getRowFree).firstFreeSeatInRow();
         cinemaNumber = cinema;
         bookingTime = bookingTimenew;
+        rowname = cinemas.get(cinema).getRows().get(rownumber).getRowname();
         return true;
     }
 
-    public boolean cancelBooking(){
+    public boolean cancelBooking(ArrayList<Cinema> cinemas) {
         //if there is no booking to cancel return false
-        if(rownumber == -1 || startseat == -1)
+        if (rownumber == -1 || startseat == -1)
             return false;
         //now want to just free our booking
-        session.get(cinemaNumber).freeSeats(numberOfTickets,rownumber,startseat);
+        cinemas.get(cinemaNumber).freeSeats(numberOfTickets, rownumber, startseat);
         return true;
     }
 
 
-    public int checkCinemaAvailable(int cinemaNumber){
+    public int checkCinemaAvailable(int cinemaNumber,ArrayList<Cinema> cinemas) {
         int cinema = -1;
-        for(int i = 0; i < session.size();i++){
-            if(cinemaNumber == session.get(i).getCinemaNumber() && bookingTime == session.get(i).getMovietime()) {
-                cinema = i;
-                break;
+        for (int i = 0; i < cinemas.size(); i++) {
+            if (cinemaNumber == cinemas.get(i).getCinemaNumber()) {
+                return i;
             }
         }
         return cinema;
     }
+
 
 }
