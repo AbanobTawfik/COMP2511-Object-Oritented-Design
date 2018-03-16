@@ -184,7 +184,7 @@ public class operate {
 
     public void outcomeBooking(String inputs[], ArrayList<Cinema> cinema) {
         int bookingId = Integer.parseInt(inputs[1]);
-        int cinemaN = Integer.parseInt(inputs[1]);
+        int cinemaN = Integer.parseInt(inputs[2]);
         int cinemaNumber = getCinemaIndex(cinema, cinemaN);
         DateFormat formatting = new SimpleDateFormat("HH:mm");
         Date movieTime = null;

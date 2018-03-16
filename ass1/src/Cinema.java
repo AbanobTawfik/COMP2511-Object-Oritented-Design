@@ -72,6 +72,7 @@ public class Cinema {
         int startIndex = rows.get(rownumber).firstFreeSeatInRow();
         for(int i = startIndex; i < startIndex + numberOfTickets; i++) {
             rows.get(rownumber).getChairs().get(i).reserveSeat();
+            rows.get(rownumber).setNumberOfAvailableSeatsInRow(rows.get(rownumber).getNumberOfAvailableSeatsInRow() - 1);
         }
     }
 
