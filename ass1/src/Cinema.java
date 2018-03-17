@@ -26,25 +26,12 @@ public class Cinema {
         this.cinemaNumber = cinemaNumber;
     }
 
-
-
     public void addRowToCinema(char rowname, int numberOfSeats){
         Rows newRow = new Rows(rowname,numberOfSeats);
         //add new row to our cinema
         rows.add(newRow);
         addRowToAllSessions(newRow);
     }
-
-    public void addSessionToCurrentCinema(Session s){
-        session.add(s);
-    }
-
-
-    //add new row to the session
-    public void addRow(Rows r){
-        rows.add(r);
-    }
-
 
 
     public int getSessionTimeIndex(Date time){

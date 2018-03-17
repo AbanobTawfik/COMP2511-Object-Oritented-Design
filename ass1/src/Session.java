@@ -62,14 +62,6 @@ public class Session {
         allBookings.add(b);
     }
 
-    public boolean bookingIdInCinema(int bookingId) {
-        for (int i = 0; i < allBookings.size(); i++) {
-            if (allBookings.get(i).getId() == bookingId) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     public int getBookingIdIndex(int id) {
         int index = -1;
