@@ -9,7 +9,6 @@ public class operate {
      * Cinema it will read the next input as cinema number to alter
      * it will read the input after that as the row to add
      * it will read the input after that as the number of seats in that row
-     * <p>
      * when the # char is detected it will cease to use that input rather as comments
      * then it will continue till the next keyword is found
      * list of keywords
@@ -17,7 +16,9 @@ public class operate {
      */
 
     /**
-     * @param FileInput
+     * This function runs the testFile and prints output to stdout.
+     * All testing is done here.
+     * @param FileInput the file which is going to be read in.
      */
     public void runTests(String FileInput)
 
@@ -45,7 +46,7 @@ public class operate {
                     line = sc.nextLine();                                      //get next line for input
                     continue;
                 }
-                printoutcome(inputcommands, inputs, cinema);                 //run the outcome function which prints outcome based on the input
+                printOutcome(inputs, cinema);                 //run the outcome function which prints outcome based on the input
                 line = sc.nextLine();                                      //get next line for input
             }
 
@@ -56,6 +57,12 @@ public class operate {
         }
     }
 
+    /**
+     * This function attempts to find the index in the ArrayList of cinemas, which contains the cinema number
+     * @param cinema takes in array list of all cinemas
+     * @param cinemaNumber the cinemaNumber we are trying to locate
+     * @return -1 if it does not exist, or index of the cinema
+     */
     public int getCinemaIndex(ArrayList<Cinema> cinema, int cinemaNumber) {
         int index = -1;
         for (int i = 0; i < cinema.size(); i++) {
@@ -68,6 +75,12 @@ public class operate {
         return index;
     }
 
+    /**
+     *
+     * @param cinema takes in array list of all cinemas
+     * @param id the booking id we are searching for
+     * @return -1 if the id doesn't exist or the index in the cinema arraylist which contains that booking
+     */
     public int getBookingIdCinema(ArrayList<Cinema> cinema, int id) {
         int index = -1;
         for (int i = 0; i < cinema.size(); i++) {
@@ -83,7 +96,12 @@ public class operate {
         return index;
     }
 
-    public void printoutcome(int inputcommands, String inputs[], ArrayList<Cinema> cinema) {
+    /**
+     * Proccesses The request, will print outcome of the request
+     * @param inputs the requests from user (split from the '#' comments)
+     * @param cinema takes in array list of all cinemas
+     */
+    public void printOutcome(String inputs[], ArrayList<Cinema> cinema) {
         if (inputs[0].equals("Cancel"))
             outcomeCancel(inputs, cinema);
 
@@ -105,6 +123,12 @@ public class operate {
             return;
     }
 
+    /**
+     * if the request was a "Cancel" request, this will attempt to cancel the booking from the session. <br>
+     * it will remove the booking from the assosciated session and free up seats
+     * @param inputs request from the input file
+     * @param cinema takes in array list of all cinemas
+     */
     public void outcomeCancel(String inputs[], ArrayList<Cinema> cinema) {
         int bookingId = Integer.parseInt(inputs[1]);                                //get the cinema which contains the booking ID requested to cancel
         int cinemaWithBookingIdIndex = getBookingIdCinema(cinema, bookingId);
@@ -130,6 +154,11 @@ public class operate {
 
     }
 
+    /**
+     * if the request was a "Print" request, this will attempt to print all booking from the session
+     * @param inputs request from the input file
+     * @param cinema takes in array list of all cinemas
+     */
     public void outcomePrint(String inputs[], ArrayList<Cinema> cinema) {
         //printing we print all bookings for the cinema number + time of session
         int cinemaN = Integer.parseInt(inputs[1]);
@@ -146,14 +175,17 @@ public class operate {
         cinema.get(cinemaNumber).getSession().get(sessionindex).printAllBookings();
 
     }
-    //Cinema input adds row to an existing cinema
-    //if cinema doesn't exist create Cinema with cinema number
-    //then add the row to it
 
+    /**
+     * if the request was a "Cancel" request, it will either add rows to the existing cinema. <br>
+     * Or it will create the cinema with the cinema number and add the row to that cinema.
+     * @param inputs request from the input file
+     * @param cinema takes in array list of all cinemas
+     */
     public void outcomeCinema(String inputs[], ArrayList<Cinema> cinema) {
         int cinemaN = Integer.parseInt(inputs[1]);
         int cinemaNumber = getCinemaIndex(cinema, cinemaN);
-        char rowName[] = inputs[2].toCharArray();
+        String rowName = inputs[2].toString();
         int numberOfSeats = Integer.parseInt(inputs[3]);
         //want to create cinema out of this
         //if the cinema doesnt exist create the cinema else
@@ -161,14 +193,20 @@ public class operate {
         if (cinemaNumber == -1) {
 
             Cinema createCinema = new Cinema(cinemaN);
-            createCinema.addRowToCinema(rowName[0], numberOfSeats);
+            createCinema.addRowToCinema(rowName, numberOfSeats);
             cinema.add(createCinema);
 
         } else {
-            cinema.get(cinemaNumber).addRowToCinema(rowName[0], numberOfSeats);
+            cinema.get(cinemaNumber).addRowToCinema(rowName, numberOfSeats);
         }
     }
 
+    /**
+     * if the request was a "Session" request, it will add a session to that cinema number. <br>
+     * the session is a movie with a time.
+     * @param inputs request from the input file
+     * @param cinema takes in array list of all cinemas
+     */
     public void outcomeSession(String inputs[], ArrayList<Cinema> cinema) {
         int cinemaN = Integer.parseInt(inputs[1]);
         int cinemaNumber = getCinemaIndex(cinema, cinemaN);
@@ -185,6 +223,12 @@ public class operate {
         cinema.get(cinemaNumber).addSession(cinemaNumber, movieTime, movieShowing);
     }
 
+    /**
+     * if the request was a "Request" request, it will attempt to make a booking with specified inputs. <br>
+     * It will either print the successful booking or booking rejected.
+     * @param inputs request from the input file
+     * @param cinema takes in array list of all cinemas
+     */
     public void outcomeBooking(String inputs[], ArrayList<Cinema> cinema) {
         int bookingId = Integer.parseInt(inputs[1]);
         int cinemaN = Integer.parseInt(inputs[2]);
@@ -207,12 +251,18 @@ public class operate {
         cinema.get(cinemaNumber).getSession().get(sessionindex).addBookingToSession(b);
         int rowindex = cinema.get(cinemaNumber).getSession().get(sessionindex).getBookingIdIndex(bookingId);
         int bookingIndex = cinema.get(cinemaNumber).getSession().get(sessionindex).getBookingIdIndex(bookingId);
-        char rowchar = cinema.get(cinemaNumber).getSession().get(sessionindex).getAllBookings().get(bookingIndex).getRowname();
-        int seatStart = cinema.get(cinemaNumber).getSession().get(sessionindex).getAllBookings().get(rowindex).getStartseat();
+        String rowchar = cinema.get(cinemaNumber).getSession().get(sessionindex).getAllBookings().get(bookingIndex).getRowName();
+        int seatStart = cinema.get(cinemaNumber).getSession().get(sessionindex).getAllBookings().get(rowindex).getStartSeat();
         int seatEnd = seatStart + numberOfTickets;
         System.out.println("Booking " + bookingId + " " + rowchar + (seatStart + 1) + "-" + rowchar + seatEnd);
     }
 
+    /**
+     * if the request was a "Change" request, it will attempt to change the booking with the booking id requested. <br>
+     * if the change is not possible the old booking will remain the same.
+     * @param inputs request from the input file
+     * @param cinema takes in array list of all cinemas
+     */
     public void outcomeChange(String inputs[], ArrayList<Cinema> cinema) {
         int bookingId = Integer.parseInt(inputs[1]);
         int cinemaN = Integer.parseInt(inputs[2]);
@@ -238,8 +288,8 @@ public class operate {
         }
         //add the booking to our new session
         cinema.get(cinemaNumber).getSession().get(sessionindex).addBookingToSession(b);
-        char rowchar = b.getRowname();
-        int seatStart = b.getStartseat();
+        String rowchar = b.getRowName();
+        int seatStart = b.getStartSeat();
         int seatEnd = seatStart + numberOfTickets;
         System.out.println("Change " + bookingId + " " + rowchar + (seatStart + 1) + "-" + rowchar + seatEnd);
     }

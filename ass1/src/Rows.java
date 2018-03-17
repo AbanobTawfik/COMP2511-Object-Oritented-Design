@@ -1,53 +1,63 @@
 import java.util.*;
 
 public class Rows {
-    private char rowname;
+    private String rowName;
     private ArrayList<Seats> chairs;
     private int numberOfSeatsInRow;
     private int numberOfAvailableSeatsInRow;
 
-    public Rows(char rowname, int numberOfSeatsInRow) {
-        this.rowname = rowname;
+    public Rows(String rowName, int numberOfSeatsInRow) {
+        this.rowName = rowName;
         this.numberOfSeatsInRow = numberOfSeatsInRow;
         chairs = new ArrayList<Seats>();
         for(int i = 0;i<numberOfSeatsInRow;i++)
             this.addSeatsToRow(1);
-        //create an array of empty unbooked seats
-
     }
 
-    public char getRowname() {
-        return rowname;
+    /**
+     *
+     * @return the name of the row (name of row)
+     */
+    public String getRowName() {
+        return rowName;
     }
 
-    public void setRowname(char rowname) {
-        this.rowname = rowname;
-    }
-
+    /**
+     *
+     * @return all seats in the row
+     */
     public ArrayList<Seats> getChairs() {
         return chairs;
     }
 
-    public void setChairs(ArrayList<Seats> chairs) {
-        this.chairs = chairs;
-    }
-
+    /**
+     *
+     * @return the number of seats in the row
+     */
     public int getNumberOfSeatsInRow() {
         return numberOfSeatsInRow;
     }
 
-    public void setNumberOfSeatsInRow(int numberOfSeatsInRow) {
-        this.numberOfSeatsInRow = numberOfSeatsInRow;
-    }
-
+    /**
+     *
+     * @return the number of unreserved seats in the row
+     */
     public int getNumberOfAvailableSeatsInRow() {
         return numberOfAvailableSeatsInRow;
     }
 
+    /**
+     * function name says it all
+     * @param numberOfAvailableSeatsInRow number of seats
+     */
     public void setNumberOfAvailableSeatsInRow(int numberOfAvailableSeatsInRow) {
         this.numberOfAvailableSeatsInRow = numberOfAvailableSeatsInRow;
     }
 
+    /**
+     * adds seats to a row
+     * @param numberofseats number of seats to be added
+     */
     public void addSeatsToRow(int numberofseats){
         for(int k = 0; k < numberofseats; k++)
             chairs.add(new Seats(k, false));
@@ -55,6 +65,10 @@ public class Rows {
         numberOfAvailableSeatsInRow += numberofseats;
     }
 
+    /**
+     * This function is designed to find the index of the first free seat in the row
+     * @return ths index of the first free seat in the row
+     */
     public int firstFreeSeatInRow(){
         int ret = -1;
         for(int k = 0;k < numberOfSeatsInRow; k++ ){

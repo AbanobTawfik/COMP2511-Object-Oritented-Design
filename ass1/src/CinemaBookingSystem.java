@@ -4,10 +4,9 @@ public class CinemaBookingSystem {
 
     /**
      *
-     * @param args
-     * @throws IOException
+     * @param args command line arguement
      */
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]){
         operate run = new operate();
         run.runTests(args[0]);
 
