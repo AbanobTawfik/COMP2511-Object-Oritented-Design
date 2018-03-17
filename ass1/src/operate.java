@@ -3,7 +3,7 @@ import java.text.*;
 import java.util.*;
 
 public class operate {
-    /**
+    /*
      * for reading input from the file i want to take out the important keywords and their format
      * when scanner detects keywords as
      * Cinema it will read the next input as cinema number to alter
@@ -16,7 +16,9 @@ public class operate {
      * Cinema, Session, Request, Change, Cancel, Print
      */
 
-
+    /**
+     * @param FileInput
+     */
     public void runTests(String FileInput)
 
     {
@@ -29,7 +31,7 @@ public class operate {
 
                 String[] data = line.split("#");                      //split our keywords and input info from comment
                 char checker[] = data[0].toCharArray();                    //if a line is a comment skip
-                if(checker.length == 0 || checker.equals(null)){
+                if (checker.length == 0 || checker.equals(null)) {
                     line = sc.nextLine();                                      //get next line for input
                     continue;
                 }
@@ -39,7 +41,7 @@ public class operate {
                 }
                 String[] inputs = data[0].split(" ");
                 int inputcommands = inputs.length;
-                if(inputcommands == 0) {
+                if (inputcommands == 0) {
                     line = sc.nextLine();                                      //get next line for input
                     continue;
                 }
@@ -70,8 +72,10 @@ public class operate {
         int index = -1;
         for (int i = 0; i < cinema.size(); i++) {
             for (int j = 0; j < cinema.get(i).getSession().size(); j++) {
-                if (id == cinema.get(i).getSession().get(j).getBookingIdIndex(id)) {
-                    return i;
+                for (int k = 0; k < cinema.get(i).getSession().get(j).getAllBookings().size(); k++) {
+                    if (cinema.get(i).getSession().get(j).getAllBookings().get(k).getId() == id) {
+                        return i;
+                    }
                 }
             }
         }
@@ -104,12 +108,11 @@ public class operate {
     public void outcomeCancel(String inputs[], ArrayList<Cinema> cinema) {
         int bookingId = Integer.parseInt(inputs[1]);                                //get the cinema which contains the booking ID requested to cancel
         int cinemaWithBookingIdIndex = getBookingIdCinema(cinema, bookingId);
-        int sessionindex = cinema.get(cinemaWithBookingIdIndex).sessionIndexWithBooking(bookingId);
-
         if (cinemaWithBookingIdIndex == -1) {
             System.out.println("Cancel Rejected");                                  //if the booking id doesn't exist in any cinema then we print error message
             return;
         }
+        int sessionindex = cinema.get(cinemaWithBookingIdIndex).sessionIndexWithBooking(bookingId);
         //now we need to find the index of the booking in the cinema's list of bookings
         int bookingIndex = cinema.get(cinemaWithBookingIdIndex).getSession().get(sessionindex).getBookingIdIndex(bookingId);
         if (bookingIndex == -1) {
@@ -117,12 +120,12 @@ public class operate {
             return;
         }
         boolean cancelled;                                                          //now we have the bookingIndex and the CinemaIndex lets remove that booking
-        cancelled = cinema.get(cinemaWithBookingIdIndex).getSession().get(sessionindex).getAllBookings().get(bookingIndex).cancelBooking(cinema);
+        cancelled = cinema.get(cinemaWithBookingIdIndex).getSession().get(sessionindex).getAllBookings().get(bookingIndex).cancelBooking(cinema, sessionindex);
         if (cancelled == false) {
             System.out.println("Cancel Rejected");
             return;
         } else {
-            System.out.printf("Cancel " + bookingId);
+            System.out.println("Cancel " + bookingId);
         }
 
     }
@@ -195,8 +198,8 @@ public class operate {
         }
         int numberOfTickets = Integer.parseInt(inputs[4]);
         int sessionindex = cinema.get(cinemaNumber).getSessionTimeIndex(movieTime);
-        bookings b = new bookings(0,null,0,0);
-        boolean check = b.createBooking(numberOfTickets, movieTime, bookingId, cinemaNumber, cinema);
+        bookings b = new bookings(0, null, 0, 0);
+        boolean check = b.createBooking(numberOfTickets, movieTime, bookingId, cinemaNumber, cinema, sessionindex, cinemaN);
         if (check == false) {
             System.out.println("Booking Rejected");
             return;
@@ -207,33 +210,37 @@ public class operate {
         char rowchar = cinema.get(cinemaNumber).getSession().get(sessionindex).getAllBookings().get(bookingIndex).getRowname();
         int seatStart = cinema.get(cinemaNumber).getSession().get(sessionindex).getAllBookings().get(rowindex).getStartseat();
         int seatEnd = seatStart + numberOfTickets;
-        System.out.println("Booking " + bookingId + " " + rowchar + (seatStart+1) + "-" +rowchar+seatEnd);
+        System.out.println("Booking " + bookingId + " " + rowchar + (seatStart + 1) + "-" + rowchar + seatEnd);
     }
 
     public void outcomeChange(String inputs[], ArrayList<Cinema> cinema) {
         int bookingId = Integer.parseInt(inputs[1]);
-        int cinemaN = Integer.parseInt(inputs[1]);
+        int cinemaN = Integer.parseInt(inputs[2]);
         int cinemaNumber = getCinemaIndex(cinema, cinemaN);
         DateFormat formatting = new SimpleDateFormat("HH:mm");
         Date movieTime = null;
         try {
-            movieTime = formatting.parse(inputs[2]);
+            movieTime = formatting.parse(inputs[3]);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        int numberOfTickets = Integer.parseInt(inputs[3]);
+        int numberOfTickets = Integer.parseInt(inputs[4]);
+
         int sessionindex = cinema.get(cinemaNumber).getSessionTimeIndex(movieTime);
-        int bookingIndexId = cinema.get(cinemaNumber).getSession().get(sessionindex).getBookingIdIndex(bookingId);
-        bookings b = cinema.get(cinemaNumber).getSession().get(sessionindex).getAllBookings().get(bookingIndexId);
-        boolean check = b.changeBooking(cinemaNumber,movieTime,numberOfTickets,cinema);
-        if(check == false){
-            System.out.println("Cancel rejected");
+
+        int oldSessionIndex = cinema.get(cinemaNumber).sessionIndexWithBooking(bookingId);
+        int bookingIndexId = cinema.get(cinemaNumber).getSession().get(oldSessionIndex).getBookingIdIndex(bookingId);
+        bookings b = cinema.get(cinemaNumber).getSession().get(oldSessionIndex).getAllBookings().get(bookingIndexId);
+        boolean check = b.changeBooking(cinemaNumber, movieTime, numberOfTickets, cinema, sessionindex, cinemaN);
+        if (check == false) {
+            System.out.println("Change rejected");
             return;
         }
-        int rowindex = cinema.get(cinemaNumber).getSession().get(sessionindex).getBookingIdIndex(bookingId);
-        char rowchar = cinema.get(cinemaNumber).getSession().get(sessionindex).getAllBookings().get(rowindex).getRowname();
-        int seatStart = cinema.get(cinemaNumber).getSession().get(sessionindex).getAllBookings().get(rowindex).getStartseat();
+        //add the booking to our new session
+        cinema.get(cinemaNumber).getSession().get(sessionindex).addBookingToSession(b);
+        char rowchar = b.getRowname();
+        int seatStart = b.getStartseat();
         int seatEnd = seatStart + numberOfTickets;
-        System.out.println("Cancel " + bookingId + " " + rowchar + seatStart + "-" +seatEnd);
+        System.out.println("Change " + bookingId + " " + rowchar + (seatStart + 1) + "-" + rowchar + seatEnd);
     }
 }

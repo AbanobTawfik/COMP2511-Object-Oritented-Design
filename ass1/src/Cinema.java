@@ -32,6 +32,7 @@ public class Cinema {
         Rows newRow = new Rows(rowname,numberOfSeats);
         //add new row to our cinema
         rows.add(newRow);
+        addRowToAllSessions(newRow);
     }
 
     public void addSessionToCurrentCinema(Session s){
@@ -44,44 +45,6 @@ public class Cinema {
         rows.add(r);
     }
 
-    public ArrayList<Rows> getRows() {
-        return rows;
-    }
-
-    public void setRows(ArrayList<Rows> rows) {
-        this.rows = rows;
-    }
-
-    //returns the first available row for the number of tickets else
-    // -1 indicating unsuccesful
-    public int availableRow(int numberOfTickets){
-
-        for(int i = 0; i < rows.size(); i++){
-            if(rows.get(i).getNumberOfAvailableSeatsInRow() >= numberOfTickets)
-                return i;
-        }
-
-        return -1;
-    }
-    //we want to go to our row
-    //find the first available seat index
-    //resereve numberOfTickets amount of seats
-    //update number of available seats in the row
-
-    public void bookSeats(int numberOfTickets,int rownumber){
-        int startIndex = rows.get(rownumber).firstFreeSeatInRow();
-        for(int i = startIndex; i < startIndex + numberOfTickets; i++) {
-            rows.get(rownumber).getChairs().get(i).reserveSeat();
-            rows.get(rownumber).setNumberOfAvailableSeatsInRow(rows.get(rownumber).getNumberOfAvailableSeatsInRow() - 1);
-        }
-    }
-
-    public void freeSeats(int numberOfTickets, int rownumber, int startSeat){
-        for(int i = startSeat; i<startSeat + numberOfTickets; i++)
-            rows.get(rownumber).getChairs().get(i).removeReservedSeat();
-        rows.get(rownumber).setNumberOfAvailableSeatsInRow(rows.get(rownumber).getNumberOfAvailableSeatsInRow() + numberOfTickets);
-
-    }
 
 
     public int getSessionTimeIndex(Date time){
@@ -109,7 +72,24 @@ public class Cinema {
 
     public void addSession(int cinemaNumberShowing, Date timeShowing, String movieShowing) {
         Session newSession = new Session(movieShowing, timeShowing, cinemaNumberShowing);
+        //want to make deep copies of the rows for session so all unique
+        int numberOfRows = rows.size();
+        ArrayList<Rows> deepCopyRows = new ArrayList<Rows>();
+        for(int i = 0; i<numberOfRows; i++)
+            deepCopyRows.add(new Rows(rows.get(i).getRowname(),rows.get(i).getNumberOfSeatsInRow()));
+
+
+        for(int i = 0;i<rows.size();i++)
+            newSession.addRowToSession(deepCopyRows.get(i));
+
         session.add(newSession);
     }
+
+    public void addRowToAllSessions(Rows r){
+        Rows deepCopyRow = new Rows(r.getRowname(),r.getNumberOfSeatsInRow());
+        for(int i = 0;i<session.size();i++)
+            session.get(i).addRowToSession(deepCopyRow);
+    }
+
 
 }
