@@ -298,7 +298,17 @@ public class operate {
             e.printStackTrace();
         }
         //want to get the name of the movie for our session
+        //initialise moviename as null
         String movieShowing = inputs[3];
+        //find the amount of inputs incase name has space
+        int inputSize = inputs.length;
+        //if no movie is in session input return
+        if (inputSize <= 3)
+            return;
+        //otherwise add the name of the movie with spaces to our string
+        for (int i = 4; i < inputSize; i++)
+            //add each word of movie to our movie string
+            movieShowing = movieShowing + " " + inputs[i];
         //want to now add the session to the cinema
         cinema.get(cinemaNumber).addSession(cinemaNumber, movieTime, movieShowing);
     }
