@@ -62,7 +62,26 @@ public class Session {
     public void addBookingToSession(bookings b) {
         //adds a booking to the current session
         allBookings.add(b);
+
     }
+
+    /**
+     * This method will sort all bookings by rowName to allow print bookings to display
+     * each booking row by row rather than having a situation of a booking in row a, booking in row b
+     * then another booking in row a, will make printing properly imposisble. This will be called everytime
+     * a new booking is added/changed/removed
+     */
+    public void sortAllBookingsByRowName(){
+        //sort the bookings by row name each time to allow for easier print
+        Collections.sort(allBookings, new Comparator<bookings>() {
+            @Override
+            public int compare(bookings o1, bookings o2) {
+                //comparing rownames
+                return o1.getRowName().compareTo(o2.getRowName());
+            }
+        });
+    }
+
 
     /**
      * This function returns the index in the ArrayList of all bookings which corresponds to the booking id attempting to be located.
@@ -89,6 +108,13 @@ public class Session {
      * This function displays all the bookings in the current sessions <br>
      * This function displays all the rows which contain a booking and the seat range of booked seats.
      */
+    /**
+     * rules for print
+     * 1. it will print bookings row by row.
+     * 2. if there are no more bookings on a row, no comma is placed and new line
+     * 3. if the booking is the last booking print new line no comma end it
+     * 4. once new row is accessed we want to print the row name and all the booked seats
+     */
     public void printAllBookings() {
         //if there are no bookings for the session we print no bookings for this session
         if (allBookings.size() == 0) {
@@ -102,6 +128,8 @@ public class Session {
         //check row character, if the next booking is the last booking print it out on new line with new row character no comma
         //check row character, if the booking is on the same row, print out booking with comma
         //going to go through each check
+
+
         for (int i = 0; i < allBookings.size(); i++) {
             //if the current booking hasn't got the same rowName as the previous rowName we want to print the new rowName
             // and a : character
@@ -110,10 +138,14 @@ public class Session {
                 System.out.print(allBookings.get(i).getRowName() + ": ");
                 //if its a single ticket dont need row range just print the seat and comma
                 if(allBookings.get(i).getNumberOfTickets() == 1){
-                    System.out.print((allBookings.get(i).getStartSeat()+1) + ", ");
+                    if(allBookings.get(i+1).getRowName() != allBookings.get(i).getRowName())
+                        System.out.println((allBookings.get(i).getStartSeat()+1));
+                    else
+                        System.out.print((allBookings.get(i).getStartSeat()+1) + ", ");
                 }
                 //if this is the last booking we dont want to print out comma at end of line
-                else if( i+1 >= allBookings.size()){
+                //OR if the next booking is on a different row want to print it and go to new line
+                else if( i+1 >= allBookings.size() || allBookings.get(i+1).getRowName() != allBookings.get(i).getRowName()){
                     //if the booking is a single ticket we want to just print the seat not range
                     if(allBookings.get(i).getNumberOfTickets() == 1)
                         System.out.println(allBookings.get(i).getStartSeat()+1);
@@ -121,6 +153,7 @@ public class Session {
                         //otherwise print out the range without comma
                         System.out.println((allBookings.get(i).getStartSeat()+1) + "-" + (allBookings.get(i).getStartSeat() + allBookings.get(i).getNumberOfTickets()));
                 }
+
                 //otherwise we want to just print out the range with the comma
                 else {
                     System.out.print((allBookings.get(i).getStartSeat()+1) + "-" + (allBookings.get(i).getStartSeat() + allBookings.get(i).getNumberOfTickets() + ","));
@@ -129,7 +162,7 @@ public class Session {
                 currentrowName = allBookings.get(i).getRowName();
             }
             //if the next row haa a different character we want to print our seat range and a new line
-            else if(allBookings.get(i+1).getRowName() != currentrowName && i<allBookings.size()){
+            else if(i<allBookings.size()-1 && allBookings.get(i+1).getRowName() != currentrowName  ){
                 //if there is only 1 seat in the booking print the seat at end of the row
                 if(allBookings.get(i).getNumberOfTickets() == 1){
                     System.out.print((allBookings.get(i).getStartSeat()+1));
@@ -160,6 +193,7 @@ public class Session {
                     System.out.print((allBookings.get(i).getStartSeat() +1) + "-" + (allBookings.get(i).getStartSeat() + allBookings.get(i).getNumberOfTickets() + ","));
                 }
             }
+
         }
     }
 

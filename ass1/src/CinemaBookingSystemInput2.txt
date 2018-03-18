@@ -1,0 +1,51 @@
+#this test file is mainly to check for
+#1. duplicate row names/session times/ movie names in all scanerios
+#2. check if a rejected change request will remove a booking
+#3. check if a cancel request will remove the booking
+Cinema 1 x 10 							#creates cinema 1, adds row X with 10 seats as it's first row
+Cinema 1 y 30 							#adds row y with 30 seats as it's second row
+Cinema 2 a 4  							#creates cinema 2, adds row a with 4 seats
+Cinema 2 b 3  							# adds row b with 3 seats
+
+#Now we add sessions to the cinemas
+Session 1 09:11 The war on Terrorism	#created session in cinema 1 at 09:11am for the war on terrorism
+Session 1 12:48 lightning mcqueen       #created session in cinmea 1 at 12:48pm for lightning mcqueen
+
+#checking for session collisions (should be none for different cinemas)
+Session 2 09:11 The war on Terrorism    #created a session in cinema 2 at 09:11am for the war on terrorism (popular movie aye?)
+Session 2 12:48 top 10 pranks of 2018   #created a session in cinema 2 at 12:48pm for top 10 pranks of 2018 
+
+#now we want to test how many rows are in the session after we add a row to our cinema
+Cinema 1 dankRow 3							    #added row aa with 3 seats to cinema 1, want to check if it adds to all sessions
+Cinema 2 dankRow 500							#added row aa with 500 seats to cinema 2, want to check if it adds to all sessions
+
+#all sessions in cinema 1 should have extra row aa
+#all sessions in cinema 2 should have extra row aa
+#there should be no conflicts in row names for different cinemas
+
+#now we want to make tricky bookings for this test file
+#print all bookings in session at the end 
+
+#this test should return "BOOKING REJECTED" due to incorrect session time
+Request 12 2 12:47 487                  #should attempt to book 487 seats in cinema 2 for 12:47 with booking id 12, should print out 
+#this test should return "Booking 12 dankRow1-dankRow487"
+Request 12 2 12:48 487
+
+#now we want to check if changing for invalid booking will remove the old booking
+Change 12 1 12:48 487                   #should print Change Rejected but to validate it did not remove old booking
+#we will now try to request the same old booking, if booking rejected means change works properly
+Request 12 2 12:48 487                  #print out Booking rejected
+
+#now lets test a rejected cancel and successful cancel/rebooking
+Cancel 11                               #should print Cancel rejected
+Cancel 12                               #should print out cancel 12
+Request 11 2 12:48 499                  #should output Booking 11 dankRow1-dankRow499
+
+#now we want to book out all of cinema 2 and print all sessions
+Request 12 2 12:48 2                    #should output Booking 12 a1-a2
+Request 13 2 12:48 3                    #should output Booking 13 b1-b3
+Request 14 2 12:48 1                    #should output Booking 14 a3
+Request 15 2 12:48 2                    #should output Booking rejected
+Request 15 2 12:48 1                    #should output Booking 15 a4
+Request 16 2 12:48 1                    #should output Booking 16 dankRow500
+Print 2 12:48                           #should print out all the Bookings for session at 12:48 in cinema 2

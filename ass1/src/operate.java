@@ -33,9 +33,14 @@ public class operate {
             sc = new Scanner(new File(FileInput));
             //reading file line by line
             String line = sc.nextLine();
-            while (sc.hasNextLine()) {
+            while (line != null) {
                 //split our keywords and input info from comment character '#'
                 String[] data = line.split("#");
+                //if the line is just a comment to avoid this issue
+                if(data.length == 0){
+                    line = sc.nextLine();
+                    continue;
+                }
                 char checker[] = data[0].toCharArray();
 
                 //if the line was a comment then we will have a new String with length 0
@@ -51,7 +56,7 @@ public class operate {
                 //split the request data into an array that has different indexing
                 //example -> ["Cinema 1 x 5"] -> ["Cinema", "1", "x", "5"]
                 //this will allow us to proccess our request properly
-                String[] inputs = data[0].split(" ");
+                String[] inputs = data[0].split(" |\t");
                 //get the number of inputs for the request so for our cinema example -> return 4
                 int inputcommands = inputs.length;
                 //if the size of the split array is 0 we want to skip else this request would cause null errors
@@ -63,7 +68,12 @@ public class operate {
                 //run the outcome function which prints outcome based on the input
                 printOutcome(inputs, cinema);
                 //get next line for input for iteration through whole file
-                line = sc.nextLine();
+                //if there is a next line retrieve that
+                if(sc.hasNextLine())
+                    line = sc.nextLine();
+                //otherwise break
+                else
+                    break;
             }
 
         } catch (FileNotFoundException e) {
@@ -192,6 +202,8 @@ public class operate {
             //otherwise we want to print successful cancellation information
             System.out.println("Cancel " + bookingId);
         }
+        //sort our bookings by rowname to allow easy printing
+        cinema.get(cinemaWithBookingIdIndex).getSession().get(sessionindex).sortAllBookingsByRowName();
 
     }
 
@@ -209,7 +221,6 @@ public class operate {
         int cinemaNumber = getCinemaIndex(cinema, cinemaN);
         //if the cinema is not in the arraylist of cinemas print error message and return
         if (cinemaNumber == -1) {
-            System.out.println("Cinema Doesn't Exist");
             return;
         }
 
@@ -376,7 +387,12 @@ public class operate {
         //get the last seat in row for our booking
         int seatEnd = seatStart + numberOfTickets;
         //print Booking bookingID ax-ax+y
-        System.out.println("Booking " + bookingId + " " + rowchar + (seatStart + 1) + "-" + rowchar + seatEnd);
+        if(numberOfTickets == 1)
+            System.out.println("Booking " + bookingId + " " + rowchar + (seatStart+1));
+        else
+            System.out.println("Booking " + bookingId + " " + rowchar + (seatStart + 1) + "-" + rowchar + seatEnd);
+        //sort all our bookings by row name allows easier printing
+        cinema.get(cinemaNumber).getSession().get(sessionindex).sortAllBookingsByRowName();
     }
 
     /**
@@ -391,6 +407,8 @@ public class operate {
         int bookingId = Integer.parseInt(inputs[1]);
         //get the cinemaNumber for our new booking request (change->new)
         int cinemaN = Integer.parseInt(inputs[2]);
+        //get the old cinemaNumber index
+        int oldCinemaNumber = getBookingIdCinema(cinema, bookingId);
         //get the index for the new cinema we are making our new booking for
         int cinemaNumber = getCinemaIndex(cinema, cinemaN);
         //to avoid issues with accessing negative array index we want to print an error message
@@ -419,11 +437,11 @@ public class operate {
             return;
         }
         //want to keep track of our old bookings session index so we can perform the change
-        int oldSessionIndex = cinema.get(cinemaNumber).sessionIndexWithBooking(bookingId);
+        int oldSessionIndex = cinema.get(oldCinemaNumber).sessionIndexWithBooking(bookingId);
         //want to get the bookingindex in that session for our old booking
-        int bookingIndexId = cinema.get(cinemaNumber).getSession().get(oldSessionIndex).getBookingIdIndex(bookingId);
+        int bookingIndexId = cinema.get(oldCinemaNumber).getSession().get(oldSessionIndex).getBookingIdIndex(bookingId);
         //now we want to get our old booking (create new booking object that holds our old booking)
-        bookings b = cinema.get(cinemaNumber).getSession().get(oldSessionIndex).getAllBookings().get(bookingIndexId);
+        bookings b = cinema.get(oldCinemaNumber).getSession().get(oldSessionIndex).getAllBookings().get(bookingIndexId);
         //attempt to change that booking (return true is if successful or false if unsuccessful
         boolean check = b.changeBooking(cinemaNumber, movieTime, numberOfTickets, cinema, sessionindex, cinemaN);
         //if change was unsuccessful we want to print our error message
@@ -440,5 +458,7 @@ public class operate {
         int seatEnd = seatStart + numberOfTickets;
         //print Change bId rx-rx+y
         System.out.println("Change " + bookingId + " " + rowchar + (seatStart + 1) + "-" + rowchar + seatEnd);
+        //sort all bookings by row name
+        cinema.get(cinemaNumber).getSession().get(sessionindex).sortAllBookingsByRowName();
     }
 }
