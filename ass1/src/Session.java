@@ -76,8 +76,13 @@ public class Session {
         Collections.sort(allBookings, new Comparator<bookings>() {
             @Override
             public int compare(bookings o1, bookings o2) {
-                //comparing rownames
-                return o1.getRowName().compareTo(o2.getRowName());
+                //comparing rownames first then comparing starting seat
+                int firstComparison = o1.getRowNumber() - o2.getRowNumber();
+                //if the bookings are on the same row now we want to sort by starting seat
+                if(firstComparison == 0)
+                    return (o1.getStartSeat() - o2.getStartSeat());
+                else
+                    return firstComparison;
             }
         });
     }

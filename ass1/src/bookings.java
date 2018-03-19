@@ -38,6 +38,14 @@ public class bookings {
     }
 
     /**
+     *
+     * @return the rowNumber for the row which the booking is in
+     */
+    public int getRowNumber(){
+        //return the index in the rowlist where the row is found
+        return rowNumber;
+    }
+    /**
      * @return the start seat in the row
      */
     public int getStartSeat() {
@@ -164,12 +172,17 @@ public class bookings {
         //if there are no available rows for that session return false
         if (getRowFree == -1)
             return false;
-        //get the first seat in the first free row to create booking and keep track of seat number of bookings
-        this.startSeat = cinemas.get(cinemaChange).getSession().get(sessionIndex).getSessionRows().get(getRowFree).firstFreeSeatInRow();
-
         //now free up our old booking which can be conviently done with the row + start seat of old booking
         //free up the old seats
         cinemas.get(cinemaOld).getSession().get(oldSessionIndex).freeSeats(numberOfTickets, rowNumber, startSeat);
+
+        //get the updated first seat and free row since we did just free up a booking
+        getRowFree = cinemas.get(cinemaChange).getSession().get(sessionIndex).availableRow(numberOfTicketsnew);
+        //just incase
+        if(getRowFree == -1)
+            return false;
+        //get the first seat in the first free row to create booking and keep track of seat number of bookings
+        this.startSeat = cinemas.get(cinemaChange).getSession().get(sessionIndex).getSessionRows().get(getRowFree).firstFreeSeatInRow();
 
         //now that old bookings have been reverted and fixed up assign new booking with new booking information
         cinemas.get(cinemaChange).getSession().get(sessionIndex).bookSeats(numberOfTicketsnew, getRowFree);

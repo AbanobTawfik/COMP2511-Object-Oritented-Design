@@ -1,7 +1,12 @@
+#this test file is mainly to check for
+#1. duplicate row names/session times/ movie names in all scanerios
+#2. check if a rejected change request will remove a booking
+#3. check if a cancel request will remove the booking
+#4. check if correct seating assignment
 Cinema 1 x 10 							#creates cinema 1, adds row X with 10 seats as it's first row
 Cinema 1 y 30 							#adds row y with 30 seats as it's second row
-Cinema 2 a 4  							#creates cinema 2, adds row a with 4 seats
-Cinema 2 b 3  							# adds row b with 3 seats
+Cinema 2 b 4  							#creates cinema 2, adds row a with 4 seats
+Cinema 2 a 3  							# adds row b with 3 seats
 
 #Now we add sessions to the cinemas
 Session 1 09:11 The war on Terrorism	#created session in cinema 1 at 09:11am for the war on terrorism

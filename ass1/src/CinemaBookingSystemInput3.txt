@@ -1,0 +1,14 @@
+#this testing will try to handle weird change requests
+Cinema 12 A 10                  #create cinema 12 with row A that has 10 seats
+Cinema 12 B 10                  #create cinema 12 with row B that has 10 seats
+Session 12 01:10 MovieWeird     #add a random movie at 01:10 to cinema 12
+
+Request 1 12 01:10 5
+Request 2 12 01:10 5
+
+Change 1 12 01:10 3
+Print 12 01:10
+
+Request 3 12 01:10 2
+
+Print 12 01:10
