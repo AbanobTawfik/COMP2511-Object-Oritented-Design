@@ -1,0 +1,125 @@
+#this will test all the invalid inputs, there should be nearly nothing printed out from this
+#lets try to test every single possible invalid case
+
+############################################################################################################
+#                               INVALID CINEMA                                                             #
+############################################################################################################
+#try to make cinema with invalid number, do not initialise this cinema btu don't exit program
+Cinema REE XEE 500
+#try to make cinema 1 but with invalid number of seats, do not initalise but dont exit no output
+Cinema 1 XEE fviehundred
+############################################################################################################
+
+#row 1 of cinema 1 should be Z with 50 seats since previous request failed
+Cinema 1 Z 50
+
+############################################################################################################
+#                               INVALID SESSOPMS                                                           #
+############################################################################################################
+#now all the invalid sessions
+#invalid cinema number for this session shouldn't work no output no session
+Session aa 17:38 fetty wap
+#invalid date format so no output
+Session 1 notatime not made
+#cinema doesnt exist
+Session 50 17:38 fetty wap
+############################################################################################################
+#the only session in the list should be this one at 12:20 since its the first valid request
+Session 1 12:20 finally a real session
+
+############################################################################################################
+#                               INVALID REQUESTS                                                           #
+############################################################################################################
+#lets try all the invalid booking possibilites
+#lets make a booking with an invalid booking id
+Request sam 1 12:20 4               #output Booking rejected (invalid booking id)
+#lets make a booking for a cinema that doesn't exist
+Request 1 2 12:20 4                 #output Booking rejected (no cinema)
+#lets make a booking for a time that is invalid
+Request 1 1 time 4                  #output Booking rejected (invalid time format)
+#lets make a booking for a session time that doesnt exist
+Request 1 1 12:19 4                 #ouput Booking rejected (no session for that time)
+#lets make a booking for a number of tickets that isn't an integer
+Request 1 1 12:20 five              #ouput Booking rejected (invalid seat amounts)
+#lets make a booking for no seats
+Request 1 1 12:20 0                 #output Booking rejected (no seats, noseats = 0)
+#lets make a booking for negative seats
+Request 1 1 12:20 -10               #output Booking rejected (invalid amount of seats)
+##############################################################################################################
+#the only booking which should work
+Request 1 1 12:20 10                #output Booking 1 Z1-Z10
+
+############################################################################################################
+#                               INVALID CHANGE                                                             #
+############################################################################################################
+#Lets try all the invalid change request
+#lets make a change for a booking which doesnt exist
+Change 2 1 12:20 4                  #output Change rejected
+#lets make a change for a booking in a cinema that doesnt exist
+Change 1 2 12:20 4                  #output Change rejected
+#lets make a change for a booking in the same cinema but a sessiont ime that is invalid
+Change 1 1 12:19 4                  #output Change rejected
+#lets make a change for a booking with more tickets than seats
+Change 1 1 12:20 4000               #output Change rejected
+#LETS MAKE CHANGES WITH JUST INVALID INPUTS
+#lets make a change for a booking with a string for booking id
+Change sam 1 12:20 4                #output Change rejected
+#lets make a change for a booking with a string ro cinema number
+Change 1 sam 12:20 4                #output Change rejected
+#lets make a change for a booking at a time that is invalidly formatted
+Change 1 1 sam 4                    #output Change rejected
+#lets make a change for a booking with a string for number of tickets
+Change 1 1 12:20 four               #output Change rejected
+#lets make a change for a booking with no seats in change
+Change 1 1 12:20 0                  #output Change rejected
+#lets make a change for a booking with invalid amount of seats
+Change 1 1 12:20 -20                #output Change rejected
+############################################################################################################
+#now we want to check if original booking was left alone
+Print 1 12:20                       #output should be "finally a session"
+                                    #Z: 1-10
+#lets make a tricky Change request to see if it frees 1-10 then assigns 1-30
+Change 1 1 12:20 30                 #output Change 1 Z1-z30
+Print 1 12:20                       #output should be "finally a session"
+                                    #Z: 1-30
+
+############################################################################################################
+#                               INVALID Cancel                                                             #
+############################################################################################################
+#now we want to test all possible invalid cancel requests
+#testing a cancel for a booking with invalid booking number
+Cancel sam                          #output Cancel rejected (invalid booking id)
+#testing a cancel for a booking which doesnt exist
+Cancel 30                           #output Cancel rejected (booking doesn't exist)
+#############################################################################################################
+#now we want to check if cancel works originally intended
+Cancel 1                            #output Cancelled 1
+Print 1 12:20                       #output should be "finally a session"
+#lets make a tricky Change request to see if it will be able to change a cancelled booking
+Change 1 1 12:20 30                 #output Change rejected
+Print 1 12:20                       #output should be "finally a session"
+#lets make a request with float for valid should be booking rejected each attempt
+Request 1.25 1 12:20 48             #output should be Booking rejected
+Request 1 1.25 12:20 48             #output should be Booking rejected
+Request 1 1 12:20 48.33             #output should be Booking rejected
+Request 1 1 12:20 48                #output should be Booking 1 Z1-Z48
+
+############################################################################################################
+#                               INVALID Print                                                              #
+############################################################################################################
+#now we want to taste all possible invalid print requests
+#testing a print for invalid cinema number string/float
+Print 1.23 12:20                       #output nothing
+Print sam 12:20                        #output nothing
+#testing for a print for invalid time format
+Print 1 sam                            #output nothing
+#testing for a print at session time which doesnt exist
+Print 1 12:19                          #output nothing
+#############################################################################################################
+#now we want to see if print behaves normally
+Print 1 12:20                       #output should be "finally a session"
+                                    #Z: 1-48
+
+                                  #################################
+                                  #FINALLY ALL TEST CASES FINISHED#
+                                  #################################

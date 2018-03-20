@@ -1,4 +1,5 @@
 import java.util.*;
+
 public class Cinema {
     private int cinemaNumber;
     private ArrayList<Rows> rows;
@@ -14,7 +15,6 @@ public class Cinema {
     }
 
     /**
-     *
      * @return ArrayList of all sessions in that cinema
      */
     public ArrayList<Session> getSession() {
@@ -23,7 +23,6 @@ public class Cinema {
     }
 
     /**
-     *
      * @return the cinemaNumber of that cinema
      */
     public int getCinemaNumber() {
@@ -33,14 +32,15 @@ public class Cinema {
 
     /**
      * creates a row based on specified input, and adds it to the cinema and all current sessions in the cinema.
-     * @param rowName identifier for row
+     *
+     * @param rowName       identifier for row
      * @param numberOfSeats number of seats to add to the row
      */
     //adds a row to the cinema blueprint which will be used for all sessions, it also adds
     //that row to all existing sessions, we want to make a new row to make deeper copies
-    public void addRowToCinema(String rowName, int numberOfSeats){
+    public void addRowToCinema(String rowName, int numberOfSeats) {
         //initialise a new row with name and number of seats
-        Rows newRow = new Rows(rowName,numberOfSeats);
+        Rows newRow = new Rows(rowName, numberOfSeats);
         //add new row to our cinema
         rows.add(newRow);
         //add this new row to all our sessions (will be deep copies)
@@ -50,17 +50,18 @@ public class Cinema {
     /**
      * Returns the index in the ArrayList of sessions, which corresponds to the time requested. <br>
      * Finds which session based on time.
+     *
      * @param time the time of the session we are searching for
      * @return the index in the arrayLift of sessions that corresponds to that time
      */
     //will get the index of the session in the session list based on the session time
-    public int getSessionTimeIndex(Date time){
+    public int getSessionTimeIndex(Date time) {
         //initialise return as false incase it is not there
         int index = -1;
         //scan through the session list
-        for(int i = 0; i < session.size();i++){
+        for (int i = 0; i < session.size(); i++) {
             //if the session at index i has the same time as the time requested, return that index
-            if(session.get(i).getMovieTime().equals(time))
+            if (session.get(i).getMovieTime().equals(time))
                 return i;
         }
         //otherwise return false unsuccesful
@@ -69,21 +70,22 @@ public class Cinema {
 
     /**
      * This function is designed to get the index in the ArrayList of Sessions which contains the booking id requested.
+     *
      * @param id the booking id we are searching for
      * @return the index in the Arraylist of Sessions which contains our booking Id we are trying to locate
      */
     //this will return the session index in the list of sessions that contains a booking ID
-    public int sessionIndexWithBooking(int id){
+    public int sessionIndexWithBooking(int id) {
         //initialise return as false
         int index = -1;
         //scan through my list of sessions
-        for(int i = 0;i < session.size(); i++ ){
+        for (int i = 0; i < session.size(); i++) {
             //scan through my list of bookings in each session
-            for(int j = 0; j<session.get(i).getAllBookings().size(); j++){
+            for (int j = 0; j < session.get(i).getAllBookings().size(); j++) {
                 //if the booking in the session at the current booking index has the same booking id we are
                 //trying to find
                 //return the index of the sesison (i)
-                if(session.get(i).getAllBookings().get(j).getId() == id){
+                if (session.get(i).getAllBookings().get(j).getId() == id) {
                     return i;
                 }
             }
@@ -96,9 +98,10 @@ public class Cinema {
      * Adds a new session to the current cinema. <br>
      * Making sure to make deep copies of the rows in the session else making a booking will effect
      * the rows in this cinema blueprint and all existing sessions.
+     *
      * @param cinemaNumberShowing cinema number for the session
-     * @param timeShowing the time of the session
-     * @param movieShowing the movie which will be displayed during that session
+     * @param timeShowing         the time of the session
+     * @param movieShowing        the movie which will be displayed during that session
      */
     //adding new session to session list
     public void addSession(int cinemaNumberShowing, Date timeShowing, String movieShowing) {
@@ -117,11 +120,11 @@ public class Cinema {
         //now add that many rows which the correct amount of seats and row name (can be found by indexing)
         //so this basically makes deep copies or brand new objects rather than sharing the memory
         //this is why i didnt just do sessions.setrows() == my rows or else it would share same memory adress
-        for(int i = 0; i<numberOfRows; i++)
-            deepCopyRows.add(new Rows(rows.get(i).getRowName(),rows.get(i).getNumberOfSeatsInRow()));
+        for (int i = 0; i < numberOfRows; i++)
+            deepCopyRows.add(new Rows(rows.get(i).getRowName(), rows.get(i).getNumberOfSeatsInRow()));
 
         //now we want to add each new row to our new session
-        for(int i = 0;i<rows.size();i++)
+        for (int i = 0; i < rows.size(); i++)
             //this is why i made the addrowtosession in my sessions class
             newSession.addRowToSession(deepCopyRows.get(i));
 
@@ -133,16 +136,17 @@ public class Cinema {
      * This function adds a row to all sessions in that Cinema. <br>
      * This is useful because when we add a row to the Cinema later on, we want to also add it to all
      * existing sessions.
+     *
      * @param r the row to add
      */
     //this function is designed so that when we add a row to a cinema, we add it to all sessions aswell
     //only makes logical sense that all sessions get the extra row too because a session is just an
     //instance of that cinema at all times
-    public void addRowToAllSessions(Rows r){
+    public void addRowToAllSessions(Rows r) {
         //create a new DEEP copy of row so that we can add to our session
-        Rows deepCopyRow = new Rows(r.getRowName(),r.getNumberOfSeatsInRow());
+        Rows deepCopyRow = new Rows(r.getRowName(), r.getNumberOfSeatsInRow());
         //scan through session list
-        for(int i = 0;i<session.size();i++)
+        for (int i = 0; i < session.size(); i++)
             //add this row to every session in the session list
             session.get(i).addRowToSession(deepCopyRow);
     }

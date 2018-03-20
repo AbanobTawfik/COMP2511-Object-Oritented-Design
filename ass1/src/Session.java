@@ -122,10 +122,8 @@ public class Session {
      */
     public void printAllBookings() {
         //if there are no bookings for the session we print no bookings for this session
-        if (allBookings.size() == 0) {
-            System.out.println("No bookings for this session");
+        if (allBookings.size() == 0)
             return;
-        }
         //have an initialised null comparator to initially compare our row name with the null character
         String currentrowName = "\0";
         //how i want to print out
@@ -183,7 +181,7 @@ public class Session {
                 if( i+1 >= allBookings.size()){
                     //if its a single seat print out just the seat itself no comma new line
                     if(allBookings.get(i).getNumberOfTickets() == 1){
-                        System.out.print((allBookings.get(i).getStartSeat()+1));
+                        System.out.println((allBookings.get(i).getStartSeat()+1));
                     }else {
                         //or print out the seat range no comma new line
                         System.out.println((allBookings.get(i).getStartSeat() + 1) + "-" + (allBookings.get(i).getStartSeat() + allBookings.get(i).getNumberOfTickets()));
@@ -192,7 +190,7 @@ public class Session {
                 //otherwise we just want to append the new rage of tickets to the current row
                 else if(allBookings.get(i).getNumberOfTickets() == 1){
                     //appending single ticket to current row comma for next booking
-                    System.out.print(allBookings.get(i).getStartSeat() + ",");
+                    System.out.print((allBookings.get(i).getStartSeat() + 1) + ",");
                 }else {
                     //appending range of ticket to current row comma for next booking
                     System.out.print((allBookings.get(i).getStartSeat() +1) + "-" + (allBookings.get(i).getStartSeat() + allBookings.get(i).getNumberOfTickets() + ","));

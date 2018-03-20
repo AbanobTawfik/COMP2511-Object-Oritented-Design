@@ -37,9 +37,12 @@ public class operate {
                 //split our keywords and input info from comment character '#'
                 String[] data = line.split("#");
                 //if the line is just a comment to avoid this issue
-                if(data.length == 0){
-                    line = sc.nextLine();
-                    continue;
+                if (data.length == 0) {
+                    if (sc.hasNextLine()) {
+                        line = sc.nextLine();
+                        continue;
+                    }
+                    break;
                 }
                 char checker[] = data[0].toCharArray();
 
@@ -49,8 +52,11 @@ public class operate {
                 //since the first index contains null "", we want to skip to the next else this will cause errors
                 if (checker.length == 0 || checker.equals(null)) {
                     //get next line for input
-                    line = sc.nextLine();
-                    continue;
+                    if (sc.hasNextLine()) {
+                        line = sc.nextLine();
+                        continue;
+                    }
+                    break;
                 }
 
                 //split the request data into an array that has different indexing
@@ -61,17 +67,20 @@ public class operate {
                 int inputcommands = inputs.length;
                 //if the size of the split array is 0 we want to skip else this request would cause null errors
                 if (inputcommands == 0) {
-                    line = sc.nextLine();
-                    continue;
+                    if (sc.hasNextLine()) {
+                        line = sc.nextLine();
+                        continue;
+                    }
+                    break;
                 }
                 //process the request
                 //run the outcome function which prints outcome based on the input
                 printOutcome(inputs, cinema);
                 //get next line for input for iteration through whole file
                 //if there is a next line retrieve that
-                if(sc.hasNextLine())
+                if (sc.hasNextLine())
                     line = sc.nextLine();
-                //otherwise break
+                    //otherwise break
                 else
                     break;
             }
@@ -171,13 +180,22 @@ public class operate {
      * @param cinema takes in array list of all cinemas
      */
     public void outcomeCancel(String inputs[], ArrayList<Cinema> cinema) {
+        //checking if valid input for request if invalid print error message and return
+        try {   //try to parse the input as an integer, if successful continue
+            Integer.parseInt(inputs[1]);
+        }   //catch the exception if it is not an integer, and print error message
+        catch (Exception e) {
+            System.out.println("Cancel rejected");
+            return;
+        }
+
         //proccess the booking ID from the input parseinteger from string
         int bookingId = Integer.parseInt(inputs[1]);
         //get the cinema which contains the booking ID requested to cancel
         int cinemaWithBookingIdIndex = getBookingIdCinema(cinema, bookingId);
         //if the cinema doesn't exist we want to print failed cancellation
         if (cinemaWithBookingIdIndex == -1) {
-            System.out.println("Cancel Rejected");
+            System.out.println("Cancel rejected");
             return;
         }
         //find the session which contains that booking
@@ -186,7 +204,7 @@ public class operate {
         int bookingIndex = cinema.get(cinemaWithBookingIdIndex).getSession().get(sessionindex).getBookingIdIndex(bookingId);
         //if the booking somehow doesnt exist ??? print error message and continue
         if (bookingIndex == -1) {
-            System.out.println("Cancel Rejected");
+            System.out.println("Cancel rejected");
             return;
         }
         //now we want to add a check for our cancellation
@@ -196,7 +214,7 @@ public class operate {
         cancelled = cinema.get(cinemaWithBookingIdIndex).getSession().get(sessionindex).getAllBookings().get(bookingIndex).cancelBooking(cinema, sessionindex);
         //if the cancellation failed we want to print out our error message
         if (cancelled == false) {
-            System.out.println("Cancel Rejected");
+            System.out.println("Cancel rejected");
             return;
         } else {
             //otherwise we want to print successful cancellation information
@@ -214,6 +232,21 @@ public class operate {
      * @param cinema takes in array list of all cinemas
      */
     public void outcomePrint(String inputs[], ArrayList<Cinema> cinema) {
+        //checking if valid request input and format
+        //create the format for our date in HOURS:MINUTES also for checking format
+        DateFormat formatting = new SimpleDateFormat("HH:mm");
+        try {
+            //if the cinemanumber asked to print is not an integer return
+            Integer.parseInt(inputs[1]);
+        } catch (Exception e) {
+            return;
+        }
+        try {
+            //if the date format doesnt follow HH:MM strictly return
+            formatting.parse(inputs[2]);
+        } catch (Exception e) {
+            return;
+        }
         //printing we print all bookings for the cinema number + time of session
         //get the cinemaNumber of the cinema we are trying to print booking for
         int cinemaN = Integer.parseInt(inputs[1]);
@@ -225,8 +258,6 @@ public class operate {
         }
 
         //parse the date from input
-        //create the format for our date in HOURS:MINUTES
-        DateFormat formatting = new SimpleDateFormat("HH:mm");
         //initialise our date as null
         Date movieTime = null;
         try {
@@ -235,9 +266,14 @@ public class operate {
         } catch (ParseException e) {
             //otherwise if invalid date format input we want to print error
             e.printStackTrace();
+            return;
         }
         //now we want to find the session which is showing during that time
         int sessionindex = cinema.get(cinemaNumber).getSessionTimeIndex(movieTime);
+        //checking if session exist
+        if (sessionindex == -1)
+            //if the session doesn't exist return
+            return;
         //now that we have found the session we want to print the movie showing in that session time
         System.out.println(cinema.get(cinemaNumber).getSession().get(sessionindex).getMovie());
         //now print all the bookings in that session see printAllBookings function
@@ -253,6 +289,20 @@ public class operate {
      * @param cinema takes in array list of all cinemas
      */
     public void outcomeCinema(String inputs[], ArrayList<Cinema> cinema) {
+        //checking if input has correct formula
+        try {
+            //if the first input is not an integer return
+            Integer.parseInt(inputs[1]);
+        } catch (Exception e) {
+            return;
+        }
+        try {
+            //if the number of seats is not an integer return
+            Integer.parseInt(inputs[3]);
+        } catch (Exception e) {
+            return;
+        }
+
         //get the cinemaNumber we want to create or add rows to
         int cinemaN = Integer.parseInt(inputs[1]);
         //find the index of thaat cinemaNumber we are adding rows to
@@ -261,7 +311,10 @@ public class operate {
         String rowName = inputs[2].toString();
         //get number of seats we are adding to that row
         int numberOfSeats = Integer.parseInt(inputs[3]);
-
+        if (numberOfSeats < 1) {
+            //if there isnt any amount of seats requested just return
+            return;
+        }
         //want to create cinema out of this
         //if the cinema doesnt exist create the cinema else
         //find the cinema and add the row to the cinema
@@ -287,18 +340,34 @@ public class operate {
      * @param cinema takes in array list of all cinemas
      */
     public void outcomeSession(String inputs[], ArrayList<Cinema> cinema) {
+        //setting up the formatting for date
+        DateFormat formatting = new SimpleDateFormat("HH:mm");
+        //request format check
+        try {
+            //check if the first part of the request is an integer
+            Integer.parseInt(inputs[1]);
+        } catch (Exception e) {
+            //just return if it isn't
+            return;
+        }
+        try {
+            //check if correct date format
+            formatting.parse(inputs[2]);
+        } catch (Exception e) {
+            //return if it isn't
+            return;
+        }
+
         //get cinemaNumber for our session from standard input
         int cinemaN = Integer.parseInt(inputs[1]);
         //find the index of that cinema in our arrayList
         int cinemaNumber = getCinemaIndex(cinema, cinemaN);
         //if the cinema doesn't exist print out error
         if (cinemaNumber == -1) {
-            System.out.println("Cinema doesn't exist error");
             return;
         }
+
         //gathering the date from the input
-        //setting up the formatting for date
-        DateFormat formatting = new SimpleDateFormat("HH:mm");
         //initialise our date as null
         Date movieTime = null;
         try {
@@ -307,6 +376,7 @@ public class operate {
         } catch (ParseException e) {
             //print error if incorrect format
             e.printStackTrace();
+            return;
         }
         //want to get the name of the movie for our session
         //initialise moviename as null
@@ -326,12 +396,47 @@ public class operate {
 
     /**
      * if the request was a "Request" request, it will attempt to make a booking with specified inputs. <br>
-     * It will either print the successful booking or booking rejected.
+     * It will either print the successful booking or Booking rejected.
      *
      * @param inputs request from the input file
      * @param cinema takes in array list of all cinemas
      */
     public void outcomeBooking(String inputs[], ArrayList<Cinema> cinema) {
+        //setting up the formatting for date
+        DateFormat formatting = new SimpleDateFormat("HH:mm");
+        //request format check
+        try {
+            //check if the first part of the request is an integer
+            Integer.parseInt(inputs[1]);
+        } catch (Exception e) {
+            //just print error message and return if it isn't
+            System.out.println("Booking rejected");
+            return;
+        }
+        try {
+            //check if the next part of the request is an integer
+            Integer.parseInt(inputs[2]);
+        } catch (Exception e) {
+            //just return if it isn't
+            System.out.println("Booking rejected");
+            return;
+        }
+        try {
+            //check if correct date format
+            formatting.parse(inputs[3]);
+        } catch (Exception e) {
+            //return if it isn't
+            System.out.println("Booking rejected");
+            return;
+        }
+        try {
+            //check if the tickets part of the request is an integer
+            Integer.parseInt(inputs[4]);
+        } catch (Exception e) {
+            //just return if it isn't
+            System.out.println("Booking rejected");
+            return;
+        }
         //get the booking id for our request
         int bookingId = Integer.parseInt(inputs[1]);
         //get the cinemaNumber for our booking id
@@ -340,11 +445,9 @@ public class operate {
         int cinemaNumber = getCinemaIndex(cinema, cinemaN);
         //to avoid accessing negative array index if cinema doesn't exist we want to print error message
         if (cinemaNumber == -1) {
-            System.out.println("Booking Rejected");
+            System.out.println("Booking rejected");
             return;
         }
-        //formatting our date into hours:minutes
-        DateFormat formatting = new SimpleDateFormat("HH:mm");
         //initialise our movietime as null
         Date movieTime = null;
         try {
@@ -353,14 +456,21 @@ public class operate {
         } catch (ParseException e) {
             //if there is error print stack trace
             e.printStackTrace();
+            return;
         }
         //get the number of tickets in our booking
         int numberOfTickets = Integer.parseInt(inputs[4]);
+        //dont request negative tickets
+        if (numberOfTickets < 1) {
+            //if there isnt any amount of tickets requested just return
+            System.out.println("Booking rejected");
+            return;
+        }
         //now we want to find the session which has the time fo that showing
         int sessionindex = cinema.get(cinemaNumber).getSessionTimeIndex(movieTime);
         //to avoid accessing negative array index's we want to print error message if session doesn't exist
         if (sessionindex == -1) {
-            System.out.println("Booking Rejected");
+            System.out.println("Booking rejected");
             return;
         }
         //create a new bookings blueprint to allow us to create our booking
@@ -369,7 +479,7 @@ public class operate {
         boolean check = b.createBooking(numberOfTickets, movieTime, bookingId, cinemaNumber, cinema, sessionindex, cinemaN);
         //if the booking couldn't be created we want to print our error message and go to the next request
         if (check == false) {
-            System.out.println("Booking Rejected");
+            System.out.println("Booking rejected");
             return;
         }
         //if our booking was successful we want to add that booking to the bookings list in the session
@@ -387,8 +497,8 @@ public class operate {
         //get the last seat in row for our booking
         int seatEnd = seatStart + numberOfTickets;
         //print Booking bookingID ax-ax+y
-        if(numberOfTickets == 1)
-            System.out.println("Booking " + bookingId + " " + rowchar + (seatStart+1));
+        if (numberOfTickets == 1)
+            System.out.println("Booking " + bookingId + " " + rowchar + (seatStart + 1));
         else
             System.out.println("Booking " + bookingId + " " + rowchar + (seatStart + 1) + "-" + rowchar + seatEnd);
         //sort all our bookings by row name allows easier printing
@@ -403,12 +513,51 @@ public class operate {
      * @param cinema takes in array list of all cinemas
      */
     public void outcomeChange(String inputs[], ArrayList<Cinema> cinema) {
+        //creating our formatting for our date in hours:minutes
+        DateFormat formatting = new SimpleDateFormat("HH:mm");
+        try {
+            //checking if the booking id is infact a number
+            Integer.parseInt(inputs[1]);
+        } catch (Exception e) {
+            //print error message and return if it isn't
+            System.out.println("Change rejected");
+            return;
+        }
+        try {
+            //checking if the cinema number is infact a number
+            Integer.parseInt(inputs[2]);
+        } catch (Exception e) {
+            //print error message and return if it isn't
+            System.out.println("Change rejected");
+            return;
+        }
+        try {
+            //checking if the date follows the HH:MM format
+            formatting.parse(inputs[3]);
+        } catch (Exception e) {
+            //print error message and return if it isn't
+            System.out.println("Change rejected");
+            return;
+        }
+        try {
+            //checking if the number of tickets for the new booking is infact a number
+            Integer.parseInt(inputs[4]);
+        } catch (Exception e) {
+            //print error message and return if it isn't
+            System.out.println("Change rejected");
+            return;
+        }
         //get the booking id for the change request
         int bookingId = Integer.parseInt(inputs[1]);
         //get the cinemaNumber for our new booking request (change->new)
         int cinemaN = Integer.parseInt(inputs[2]);
         //get the old cinemaNumber index
         int oldCinemaNumber = getBookingIdCinema(cinema, bookingId);
+        //want to check if old session even exists
+        if (oldCinemaNumber == -1) {
+            System.out.println("Change rejected");
+            return;
+        }
         //get the index for the new cinema we are making our new booking for
         int cinemaNumber = getCinemaIndex(cinema, cinemaN);
         //to avoid issues with accessing negative array index we want to print an error message
@@ -416,8 +565,6 @@ public class operate {
             System.out.println("Change rejected");
             return;
         }
-        //creating our formatting for our date in hours:minutes
-        DateFormat formatting = new SimpleDateFormat("HH:mm");
         //initialise our date as null
         Date movieTime = null;
         try {
@@ -429,6 +576,11 @@ public class operate {
         }
         //get the number of tickets for our new booking
         int numberOfTickets = Integer.parseInt(inputs[4]);
+        //dont try making a new booking with less than 1 ticket
+        if (numberOfTickets < 1) {
+            System.out.println("Change rejected");
+            return;
+        }
         //get the session index in our session list from cinema that has our new request's movietime
         int sessionindex = cinema.get(cinemaNumber).getSessionTimeIndex(movieTime);
         //to avoid issues with accessing negative array index we want to print an error message
@@ -438,6 +590,10 @@ public class operate {
         }
         //want to keep track of our old bookings session index so we can perform the change
         int oldSessionIndex = cinema.get(oldCinemaNumber).sessionIndexWithBooking(bookingId);
+        if (oldSessionIndex == -1) {
+            System.out.println("Change rejected");
+            return;
+        }
         //want to get the bookingindex in that session for our old booking
         int bookingIndexId = cinema.get(oldCinemaNumber).getSession().get(oldSessionIndex).getBookingIdIndex(bookingId);
         //now we want to get our old booking (create new booking object that holds our old booking)

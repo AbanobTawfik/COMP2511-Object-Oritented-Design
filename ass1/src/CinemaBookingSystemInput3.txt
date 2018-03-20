@@ -1,14 +1,41 @@
+
 #this testing will try to handle weird change requests
 Cinema 12 A 10                  #create cinema 12 with row A that has 10 seats
 Cinema 12 B 10                  #create cinema 12 with row B that has 10 seats
 Session 12 01:10 MovieWeird     #add a random movie at 01:10 to cinema 12
 
-Request 1 12 01:10 5
-Request 2 12 01:10 5
+Request 1 12 01:10 5            #book half the first row A A1-A5
+Request 2 12 01:10 5            #book the second half of the first row A A5-A10
 
-Change 1 12 01:10 3
-Print 12 01:10
+#now try to do invalid change and check it de-assigns the seats by the next requests
 
-Request 3 12 01:10 2
+Change 2 13 04:40 1000          #Change rejected
+                                #old booking should remain the same
 
-Print 12 01:10
+Change 2 12 01:10 3             #now we want to change the 2nd half of the first ROW
+                                #De-assign A5-A10
+                                #Assign A6-A8
+                                #print Change 2 A6-A8
+Print 12 01:10                  #show the bookings on the first Row
+
+Request 3 12 01:10 2            #request the final 2 seats of the row A9-A10
+                                #output should be Booking 3 A9-A10
+
+Cancel 3                        #cancel the booking we just made should print
+                                #cancel 3
+
+Request 3 12 01:10 1            #request 1 ticket for the row should return
+                                #booking 3 A9
+Request 4 12 01:10 2            #request 2 tickets, since row 1 only has 1 free seat
+                                #it should return Booking 4 B1-B2
+Request 5 12 01:10 1            #it should return Booking 5 A9
+
+Request 6 12 01:10 9            #it should return Booking rejected (8 seats not 9)
+
+Request 6 12 01:10 8            #it should return Booking 6 B3-B10
+Print 12 01:10                  #show state of the bookings for the ones we just did
+
+#this test was designed to test if a changing a booking would check if its a valid booking first before
+#de-assigning, and it would also check if it would assign the new booking after it has cancelled the old booking
+#or if it would assign seats then free old booking
+#behaviour should be de-assign -> assign not assign ->deassign
