@@ -1,0 +1,16 @@
+Booking 1 A1-A5
+Booking 2 A6-A10
+Change rejected
+Change 2 A6-A8
+MovieWeird
+A: 1-5,6-8
+Booking 3 A9-A10
+Cancel 3
+Booking 3 A9
+Booking 4 B1-B2
+Booking 5 A10
+Booking rejected
+Booking 6 B3-B10
+MovieWeird
+A: 1-5,6-8,9,10
+B: 1-2,3-10

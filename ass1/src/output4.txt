@@ -1,0 +1,35 @@
+Booking rejected
+Booking rejected
+Booking rejected
+Booking rejected
+Booking rejected
+Booking rejected
+Booking rejected
+Booking 1 Z1-Z10
+Change rejected
+Change rejected
+Change rejected
+Change rejected
+Change rejected
+Change rejected
+Change rejected
+Change rejected
+Change rejected
+Change rejected
+finally a real session
+Z: 1-10
+Change 1 Z1-Z30
+finally a real session
+Z: 1-30
+Cancel rejected
+Cancel rejected
+Cancel 1
+finally a real session
+Change rejected
+finally a real session
+Booking rejected
+Booking rejected
+Booking rejected
+Booking 1 Z1-Z48
+finally a real session
+Z: 1-48

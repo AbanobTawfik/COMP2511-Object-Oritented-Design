@@ -1,0 +1,17 @@
+Booking rejected
+Booking 12 dankRow1-dankRow487
+Change rejected
+Booking rejected
+Cancel rejected
+Cancel 12
+Booking 11 dankRow1-dankRow499
+Booking 12 b1-b2
+Booking 13 a1-a3
+Booking 14 b3
+Booking rejected
+Booking 15 b4
+Booking 16 dankRow500
+top 10 pranks of 2018
+b: 1-2,3,4
+a: 1-3
+dankRow: 1-499,500
