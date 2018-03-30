@@ -130,7 +130,8 @@ public class bookings {
     //also check if booking exists in first place xD
 
     /**
-     * This function will change an existing booking if possible.
+     * This function will change an existing booking if possible. <br>
+     * It will clear the seats and check if a new booking is available, if not cancel and reassign the old seats
      * It will first check if the new booking is possible so it doesnt just delete a booking for no reason. <br>
      * The function will then free the seats to the old session, clearing the booking. <br>
      * It will then create the new booking requested. <br>
@@ -167,20 +168,18 @@ public class bookings {
         if (cinemaChange == -1)
             return false;
 
-        //now checking if there are avilable rows for number of tickets requested
-        int getRowFree = cinemas.get(cinemaChange).getSession().get(sessionIndex).availableRow(numberOfTicketsnew);
-        //if there are no available rows for that session return false
-        if (getRowFree == -1)
-            return false;
         //now free up our old booking which can be conviently done with the row + start seat of old booking
         //free up the old seats
         cinemas.get(cinemaOld).getSession().get(oldSessionIndex).freeSeats(numberOfTickets, rowNumber, startSeat);
 
-        //get the updated first seat and free row since we did just free up a booking
-        getRowFree = cinemas.get(cinemaChange).getSession().get(sessionIndex).availableRow(numberOfTicketsnew);
+        //get the updated first seat and free row since we did just free up a booking to check
+        int getRowFree = cinemas.get(cinemaChange).getSession().get(sessionIndex).availableRow(numberOfTicketsnew);
         //just incase
-        if(getRowFree == -1)
+        if(getRowFree == -1) {
+            //if there are no free rows w ewant to rebook the seats we just cancelled
+            cinemas.get(cinemaOld).getSession().get(oldSessionIndex).bookSeats(numberOfTickets,rowNumber);
             return false;
+        }
         //get the first seat in the first free row to create booking and keep track of seat number of bookings
         this.startSeat = cinemas.get(cinemaChange).getSession().get(sessionIndex).getSessionRows().get(getRowFree).firstFreeSeatInRow();
 
