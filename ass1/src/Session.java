@@ -56,8 +56,9 @@ public class Session {
 
 
     /**
+     * This function is expected to add a booking to the bookings list for the session if it is a valid booking
      * This function adds a booking to the ArrayList of all bookings in the current session
-     * @param b the booking which is to be added to the session
+     * @param b the booking which is to be added to the session, expected to be a non null booking
      */
     public void addBookingToSession(bookings b) {
         //adds a booking to the current session
@@ -70,6 +71,7 @@ public class Session {
      * each booking row by row rather than having a situation of a booking in row a, booking in row b
      * then another booking in row a, will make printing properly imposisble. This will be called everytime
      * a new booking is added/changed/removed
+     * This method is expected to sort all the bookings everytime it is called by row number, then start seat number.
      */
     public void sortAllBookingsByRowName(){
         //sort the bookings by row name each time to allow for easier print
@@ -90,8 +92,8 @@ public class Session {
 
     /**
      * This function returns the index in the ArrayList of all bookings which corresponds to the booking id attempting to be located.
-     *
-     * @param id id which is attempting to be located
+     * This function is expected to return the booking index in the booking list which has the booking id we are searching for
+     * @param id id which is attempting to be located, expected to be a valid integer
      * @return the index in the Arraylist of bookings which has that id, or -1 if unsuccessful (doesn't exist)
      */
     public int getBookingIdIndex(int id) {
@@ -111,9 +113,7 @@ public class Session {
 
     /**
      * This function displays all the bookings in the current sessions <br>
-     * This function displays all the rows which contain a booking and the seat range of booked seats.
-     */
-    /**
+     * This function displays all the rows which contain a booking and the seat range of booked seats. <br>
      * rules for print
      * 1. it will print bookings row by row.
      * 2. if there are no more bookings on a row, no comma is placed and new line
@@ -204,7 +204,8 @@ public class Session {
 
     /**
      * This function returns the first available row which can handle the capacity of tickets requested
-     * @param numberOfTickets number of tickets which are being booked
+     * This method is expected to return the first available row that can hold that many tickets requested, or -1 if no such row exists.
+     * @param numberOfTickets number of tickets which are being booked, expected to be a valid numebr > 1
      * @return the index of the first row in the ArrayList of rows which can hold that many tickets
      */
     //returns the first available row for the number of tickets else
@@ -225,8 +226,9 @@ public class Session {
     /**
      * This function books seats in the session by reserving the amount of seats requested in the first available row.
      * <br> This function finds the first open seat and begins to book that many adjacent seats (reserves them).
-     * @param numberOfTickets the number of seats being booked
-     * @param rownumber the row in which we are booking the seats for
+     * This method guarantees to reserve number of tickets amount of seats in the row index of rownumber.
+     * @param numberOfTickets the number of seats being booked, expected to be valid int > 1
+     * @param rownumber the row in which we are booking the seats for, expected to be a valid int > 0
      */
     //we want to go to our row
     //find the first available seat index
@@ -246,9 +248,10 @@ public class Session {
     /**
      * This function is the opposite of book seats. This function will unreserve the seats from the start seat till it has unreserved
      * numberOfTickets of seats in the row requested (used in conjunction with cancel/change requests)
-     * @param numberOfTickets number of seats we are unreserving
-     * @param rownumber the row in which we are unreserving seats
-     * @param startSeat the first seat which we begin freeing
+     * This method guarantees to unreserve seats from start seat -> start seat + number of tickets in the row with the corresponding row number.
+     * @param numberOfTickets number of seats we are unreserving, expected to be a valid integer > 0
+     * @param rownumber the row in which we are unreserving seats, expected to be a valid integer > 0
+     * @param startSeat the first seat which we begin freeing, expected to be a valid integer > 0
      */
     //this function is the opposite of book seats but requires startSeat because we are
     //de-assigning seats based on a booking
@@ -264,7 +267,8 @@ public class Session {
 
     /**
      * This function will add a row to the session (used when we are adding row to cinema and then adding row to all sessions)
-     * @param r the row we are adding
+     * This method guarantees to add the row to the sessions rowlist
+     * @param r the row we are adding, expected to be non null row
      */
     public void addRowToSession(Rows r){
         //adds a row to the arraylist of row (useful when we add rows to our cinema object)

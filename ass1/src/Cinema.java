@@ -32,14 +32,16 @@ public class Cinema {
 
     /**
      * creates a row based on specified input, and adds it to the cinema and all current sessions in the cinema.
-     *
-     * @param rowName       identifier for row
-     * @param numberOfSeats number of seats to add to the row
+     * this function is expected to add the row to the rowlist for the cinema
+     * @param rowName       identifier for row expected to be non null string
+     * @param numberOfSeats number of seats to add to the row expcected to be valid integer > 0
      */
     //adds a row to the cinema blueprint which will be used for all sessions, it also adds
     //that row to all existing sessions, we want to make a new row to make deeper copies
     public void addRowToCinema(String rowName, int numberOfSeats) {
         //initialise a new row with name and number of seats
+        if(numberOfSeats < 1)
+            return;
         Rows newRow = new Rows(rowName, numberOfSeats);
         //add new row to our cinema
         rows.add(newRow);
@@ -50,8 +52,8 @@ public class Cinema {
     /**
      * Returns the index in the ArrayList of sessions, which corresponds to the time requested. <br>
      * Finds which session based on time.
-     *
-     * @param time the time of the session we are searching for
+     * This function is expected to return the index in the session list which has the movie time, or -1 if it doesnt exist
+     * @param time the time of the session we are searching for, expected to be validly formatted HH:MM date
      * @return the index in the arrayLift of sessions that corresponds to that time
      */
     //will get the index of the session in the session list based on the session time
@@ -70,8 +72,8 @@ public class Cinema {
 
     /**
      * This function is designed to get the index in the ArrayList of Sessions which contains the booking id requested.
-     *
-     * @param id the booking id we are searching for
+     * This function is expected to return the index in the session list which contains the booking id, or -1 if it doesnt exist
+     * @param id the booking id we are searching for, expected to be a valid integer
      * @return the index in the Arraylist of Sessions which contains our booking Id we are trying to locate
      */
     //this will return the session index in the list of sessions that contains a booking ID
@@ -98,10 +100,10 @@ public class Cinema {
      * Adds a new session to the current cinema. <br>
      * Making sure to make deep copies of the rows in the session else making a booking will effect
      * the rows in this cinema blueprint and all existing sessions.
-     *
-     * @param cinemaNumberShowing cinema number for the session
-     * @param timeShowing         the time of the session
-     * @param movieShowing        the movie which will be displayed during that session
+     * This function is expected to add the session to the session list for the cinema
+     * @param cinemaNumberShowing cinema number for the session, this is expected to be a valid integer
+     * @param timeShowing         the time of the session this is expected to be a validly formatted Date HH:MM
+     * @param movieShowing        the movie which will be displayed during that session this is expected ot be a non null string
      */
     //adding new session to session list
     public void addSession(int cinemaNumberShowing, Date timeShowing, String movieShowing) {
@@ -136,8 +138,8 @@ public class Cinema {
      * This function adds a row to all sessions in that Cinema. <br>
      * This is useful because when we add a row to the Cinema later on, we want to also add it to all
      * existing sessions.
-     *
-     * @param r the row to add
+     * this function is expected to add the row input to every session in the cinema
+     * @param r the row to add, expected to be a non null row with seats
      */
     //this function is designed so that when we add a row to a cinema, we add it to all sessions aswell
     //only makes logical sense that all sessions get the extra row too because a session is just an

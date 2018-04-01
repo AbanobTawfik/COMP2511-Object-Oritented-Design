@@ -39,14 +39,14 @@ public class bookings {
 
     /**
      *
-     * @return the rowNumber for the row which the booking is in
+     * @return the rowNumber for the row which the booking is in, the return value should be >= 0 no negatives
      */
     public int getRowNumber(){
         //return the index in the rowlist where the row is found
         return rowNumber;
     }
     /**
-     * @return the start seat in the row
+     * @return the start seat in the row, the return value should be >= 0 no negatives
      */
     public int getStartSeat() {
         //return the first seat in the booking
@@ -54,7 +54,7 @@ public class bookings {
     }
 
     /**
-     * @return return the number of tickets in the booking
+     * @return return the number of tickets in the booking, the return value should be >0  cant have booking with no tickets
      */
     public int getNumberOfTickets() {
         //return the number of tickets in the booking
@@ -62,7 +62,7 @@ public class bookings {
     }
 
     /**
-     * @return the booking id
+     * @return the booking id, the return value should be >= 0 no negatives
      */
     public int getId() {
         //return our booking id
@@ -82,13 +82,13 @@ public class bookings {
      * This function checks if it's a valid booking all along the way based on if there is a row or cinema or a booking. <br>
      * If booking is successful it will reserve seats in the row based on input and store the data into booking object.
      *
-     * @param numberOfTicketsCreate the index of the cinema in the  cinemas ArrayList for the booking
-     * @param bookingTimeCreate     Time of the booking
-     * @param idCreate              bookingid
-     * @param cinemaNumberCreate    the cinema for the booking
-     * @param cinemas               ArrayList of all cinemas
-     * @param sessionIndex          this is the index in the arraylist of sessions which contains that booking
-     * @param cinemaN               the cinemanumber for the booking
+     * @param numberOfTicketsCreate the index of the cinema in the  cinemas ArrayList for the booking, this should be > 0
+     * @param bookingTimeCreate     Time of the booking, this should be a validly formatted 24h string
+     * @param idCreate              bookingid, this number should be >= 0 no negatives
+     * @param cinemaNumberCreate    the cinema for the booking, this number should be >=0 no negatives
+     * @param cinemas               ArrayList of all cinemas, must contain a cinema with session else booking cannot be made
+     * @param sessionIndex          this is the index in the arraylist of sessions which contains that booking, this must be >= 0 else we cannot make a booking
+     * @param cinemaN               the cinemanumber for the booking, this again should be >=0 has to be the cinema which the session is in not index!
      * @return true if valid booking or else false
      */
     public boolean createBooking(int numberOfTicketsCreate, Date bookingTimeCreate, int idCreate, int cinemaNumberCreate, ArrayList<Cinema> cinemas, int sessionIndex, int cinemaN) {
@@ -136,7 +136,8 @@ public class bookings {
      * The function will then free the seats to the old session, clearing the booking. <br>
      * It will then create the new booking requested. <br>
      * Then afterwards, the Booking will be removed from the bookingList in the old session. <br>
-     *
+     * There aren't really any preconditions for this case as a user can request any sort of input and it will all be handled accordingly.
+     * <br>The post conditions must be that all requests are handled appropriately, and a return value of true/false is returned
      * @param cinemaNumbernew    the index of the cinema in the  cinemas ArrayList for the booking
      * @param bookingTimenew     Time of the booking
      * @param numberOfTicketsnew number of tickets in the booking
@@ -206,17 +207,20 @@ public class bookings {
     /**
      * This function will attempt to remove a booking from the bookingList in the session.
      * If possible it will free all the seats then remove the booking
-     *
-     * @param cinemas      the Arraylist of all cinemas
-     * @param sessionIndex the session index of the booking that is requesting to be cancelled
-     * @return true if succesful, false if unsuccessful
+     * The preconditions are that the session we are cancelling the booking for is >=1 and we have a cinema in our arraylist.
+     * <br> the post conditions are that when we cancel we are expected to return true if successful or false if unsuccessful
+     * @param cinemas      the Arraylist of all cinemas, must have atleast 1 cinema in the arraylist
+     * @param sessionIndex the session index of the booking that is requesting to be cancelled, the index must be >=0
+     * @return true if succesful, false if unsuccessful must handle all input appropriately
      */
     public boolean cancelBooking(ArrayList<Cinema> cinemas, int sessionIndex) {
         //if there is no booking to cancel return false
         if (rowNumber == -1 || startSeat == -1)
             return false;
+        //if the session is invalid return false
+        if(sessionIndex < 0)
+            return false;
         //now want to just free our booking and remove it from session
-
         //finding the index of the cinema in the arraylist of cinemas that has the cinema number for our booking
         int cinemaN = checkCinemaAvailable(cinemaNumber, cinemas);
         //if the cinema is not there return false
@@ -234,9 +238,10 @@ public class bookings {
     }
 
     /**
-     * @param cinemaNumber the cinemaNumber we are tying to lcoate
-     * @param cinemas      the ArrayList which could contain our cinemaNumber
-     * @return the index in the ArrayList that contains the cinemaNumber, or -1 if it doesn't exist
+     * @param cinemaNumber the cinemaNumber we are tying to lcoate must be a valid integer
+     * @param cinemas      the ArrayList which could contain our cinemaNumber must contain atleast 1 cinema
+     * @return the index in the ArrayList that contains the cinemaNumber, or -1 if it doesn't exist, post condition ensure tbat we return a integer
+     *
      */
     public int checkCinemaAvailable(int cinemaNumber, ArrayList<Cinema> cinemas) {
         //initalise as false return incase the cinemanumber is not in the array

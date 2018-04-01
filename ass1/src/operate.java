@@ -18,8 +18,8 @@ public class operate {
     /**
      * This function runs the testFile and prints output to stdout.
      * All testing is done here.
-     *
-     * @param FileInput the file which is going to be read in.
+     * This method will guarantee to perform all testing and output the appropriate returns from those requests
+     * @param FileInput the file which is going to be read in, expected to be a valid file which can be read
      */
     public void runTests(String FileInput)
 
@@ -92,13 +92,15 @@ public class operate {
             //close file after we reached the end of file
             if (sc != null) sc.close();
         }
+        //close file
+        sc.close();
     }
 
     /**
      * This function attempts to find the index in the ArrayList of cinemas, which contains the cinema number
-     *
-     * @param cinema       takes in array list of all cinemas
-     * @param cinemaNumber the cinemaNumber we are trying to locate
+     * This method guarantees to return either the index which has the cinema number we are searching for or -1 if no such cinema exists
+     * @param cinema       takes in array list of all cinemas, expected to be non null
+     * @param cinemaNumber the cinemaNumber we are trying to locate, expected to be a valid integer
      * @return -1 if it does not exist, or index of the cinema
      */
     public int getCinemaIndex(ArrayList<Cinema> cinema, int cinemaNumber) {
@@ -116,8 +118,9 @@ public class operate {
     }
 
     /**
-     * @param cinema takes in array list of all cinemas
-     * @param id     the booking id we are searching for
+     * This method guarantees to either return the cinema index which contains the booking id we are scanning for, or -1 if no booking exists
+     * @param cinema takes in array list of all cinemas, expected to be non null
+     * @param id     the booking id we are searching for, expected to be a valid integer
      * @return -1 if the id doesn't exist or the index in the cinema arraylist which contains that booking
      */
     public int getBookingIdCinema(ArrayList<Cinema> cinema, int id) {
@@ -144,9 +147,9 @@ public class operate {
 
     /**
      * Proccesses The request, will print outcome of the request
-     *
-     * @param inputs the requests from user (split from the '#' comments)
-     * @param cinema takes in array list of all cinemas
+     * This method will guarantee to proccess the request and print an outcome or just go to next line of input if no outcome to print
+     * @param inputs the requests from user (split from the '#' comments), expected to be a non null string
+     * @param cinema takes in array list of all cinemas, expected to be non null
      */
     public void printOutcome(String inputs[], ArrayList<Cinema> cinema) {
         //if our request is Cancel request we want to perform a cancel
@@ -175,9 +178,9 @@ public class operate {
     /**
      * if the request was a "Cancel" request, this will attempt to cancel the booking from the session. <br>
      * it will remove the booking from the assosciated session and free up seats
-     *
-     * @param inputs request from the input file
-     * @param cinema takes in array list of all cinemas
+     * This method will guarantee to either cancel a request and print out the cancelled booking, OR print out cancel rejected always output
+     * @param inputs request from the input file, expected to be non null string
+     * @param cinema takes in array list of all cinemas, expected to be non null
      */
     public void outcomeCancel(String inputs[], ArrayList<Cinema> cinema) {
         //checking if valid input for request if invalid print error message and return
@@ -227,9 +230,9 @@ public class operate {
 
     /**
      * if the request was a "Print" request, this will attempt to print all booking from the session
-     *
-     * @param inputs request from the input file
-     * @param cinema takes in array list of all cinemas
+     * This method will guarantee to print the movie name for that session, and all the bookings (even if they are null no print), or if no session exists just return
+     * @param inputs request from the input file, expected to be non null string
+     * @param cinema takes in array list of all cinemas, expected to be non null
      */
     public void outcomePrint(String inputs[], ArrayList<Cinema> cinema) {
         //checking if valid request input and format
@@ -284,9 +287,9 @@ public class operate {
     /**
      * if the request was a "Cancel" request, it will either add rows to the existing cinema. <br>
      * Or it will create the cinema with the cinema number and add the row to that cinema.
-     *
-     * @param inputs request from the input file
-     * @param cinema takes in array list of all cinemas
+     * This method guarantees to add a row to a cinema or create a cinema with row requested
+     * @param inputs request from the input file, expected to be non null string
+     * @param cinema takes in array list of all cinemas, expected to be non null
      */
     public void outcomeCinema(String inputs[], ArrayList<Cinema> cinema) {
         //checking if input has correct formula
@@ -335,9 +338,9 @@ public class operate {
     /**
      * if the request was a "Session" request, it will add a session to that cinema number. <br>
      * the session is a movie with a time.
-     *
-     * @param inputs request from the input file
-     * @param cinema takes in array list of all cinemas
+     * this method guarantees to add a valid session to a cinema's session list based on input
+     * @param inputs request from the input file, expected to be non null string
+     * @param cinema takes in array list of all cinemas, expected to be non null
      */
     public void outcomeSession(String inputs[], ArrayList<Cinema> cinema) {
         //setting up the formatting for date
@@ -397,9 +400,9 @@ public class operate {
     /**
      * if the request was a "Request" request, it will attempt to make a booking with specified inputs. <br>
      * It will either print the successful booking or Booking rejected.
-     *
-     * @param inputs request from the input file
-     * @param cinema takes in array list of all cinemas
+     * This method guarantees to either, create a booking and print the booking details to stdout, or print booking rejected if impossible always output
+     * @param inputs request from the input file, expected to be non null string
+     * @param cinema takes in array list of all cinemas, expected to be non null
      */
     public void outcomeBooking(String inputs[], ArrayList<Cinema> cinema) {
         //setting up the formatting for date
@@ -508,9 +511,9 @@ public class operate {
     /**
      * if the request was a "Change" request, it will attempt to change the booking with the booking id requested. <br>
      * if the change is not possible the old booking will remain the same.
-     *
-     * @param inputs request from the input file
-     * @param cinema takes in array list of all cinemas
+     * this method guarantees to change a booking and print out the changed details to sdout or print change rejected if impossible, ALWAYS OUTPUT
+     * @param inputs request from the input file, expected to be non null string
+     * @param cinema takes in array list of all cinemas, expected to be non null
      */
     public void outcomeChange(String inputs[], ArrayList<Cinema> cinema) {
         //creating our formatting for our date in hours:minutes

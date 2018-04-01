@@ -64,11 +64,13 @@ public class Rows {
     }
 
     /**
-     * adds seats to a row
-     * @param numberofseats number of seats to be added
+     * adds seats to a row expected to add that many seats to a row.
+     * @param numberofseats number of seats to be added, expected to be an integer > 0
      */
     //adds a seat to the row
     public void addSeatsToRow(int numberofseats){
+        if(numberofseats < 1)
+            return;
         //add the amount of seats requested (loop through numberofseats time)
         for(int k = 0; k < numberofseats; k++)
             //this will add the seat with the correct seatnumber and the correct reservation status
@@ -78,7 +80,7 @@ public class Rows {
     }
 
     /**
-     * This function is designed to find the index of the first free seat in the row
+     * This function is designed to find the index of the first free seat in the row, it is expected to return the first free seat in the row
      * @return ths index of the first free seat in the row
      */
     //this function returns the first unreserved seat in the row
