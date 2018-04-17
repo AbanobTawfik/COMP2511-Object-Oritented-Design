@@ -1,9 +1,4 @@
 public interface Graph<E> {
-    /**
-     * adds a generic node to the graph, this method will guarantee to add the node to the graph
-     * @param node a generic object to be added to the existing graph, must be a non null element
-     */
-    void addNodeToGraph(E node);
 
     /**
      * will add a bi-directional edge between e1, e2 with the same weighting. this method guarantees to

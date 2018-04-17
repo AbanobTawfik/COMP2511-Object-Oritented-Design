@@ -1,7 +1,6 @@
 public class DirectedEdge {
     private Node from;
     private Node to;
-    private int timeBetween;
 
     public DirectedEdge(Node from, Node to) {
         this.from = from;
@@ -15,5 +14,4 @@ public class DirectedEdge {
     public Node getTo() {
         return to;
     }
-
 }

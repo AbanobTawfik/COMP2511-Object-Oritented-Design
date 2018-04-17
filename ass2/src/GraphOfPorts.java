@@ -2,21 +2,30 @@ import java.util.*;
 public class GraphOfPorts implements Graph<Node>{
     private int nV;
     //keep track of the vertices on graph
-    private ArrayList<Node> vertices;
-    private int edges[][];
+    private LinkedList<Node> vertices;
+    private int[][] edges;
+
 
     public GraphOfPorts(int nV) {
+        this.nV = nV;
+        int[][] graphEdges = new int[nV][nV];
         //initalise weighted graph with no edges
         for(int i = 0; i < nV; i++){
             for(int j = 0; j< nV; j++){
-                edges[i][j] = -1;
+                graphEdges[i][j] = -1;
             }
         }
+        setEdges(graphEdges);
     }
 
-    public void addNodeToVerticesList(Node node){
-        vertices.add(node);
+    public void setEdges(int[][] edges) {
+        this.edges = edges;
     }
+
+    public void setVertices(LinkedList<Node> vertices) {
+        this.vertices = vertices;
+    }
+
 
     public int getnV() {
         return nV;
@@ -26,14 +35,6 @@ public class GraphOfPorts implements Graph<Node>{
         return edges;
     }
 
-
-    @Override
-    public void addNodeToGraph(Node node) {
-        int index = getNodeIndex(node);
-        for(int i = 0; i < nV; i++)
-            edges[index][i] = -1;
-        nV++;
-    }
 
     @Override
     public void insertEdge(Node node1, Node node2, int weighting) {
@@ -75,6 +76,12 @@ public class GraphOfPorts implements Graph<Node>{
                 return vertices.get(i);
         }
         return null;
+    }
+
+    public int getWeightOfEdge(Node n1, Node n2){
+        int index1 = n1.getIndexOnGraph();
+        int index2 = n2.getIndexOnGraph();
+        return edges[index1][index2];
     }
 
     public LinkedList<Node> getNeighbours(Node node){

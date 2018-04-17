@@ -5,27 +5,23 @@ public class Node {
     private int refuellingTime;
     private int indexOnGraph;
 
-    public String getPortName() {
-        return portName;
+    public Node(String portName, int refuellingTime, int indexOnGraph) {
+        this.portName = portName;
+        this.refuellingTime = refuellingTime;
+        this.indexOnGraph = indexOnGraph;
     }
 
-    public void setPortName(String portName) {
-        this.portName = portName;
+    public String getPortName() {
+        return portName;
     }
 
     public int getRefuellingTime() {
         return refuellingTime;
     }
 
-    public void setRefuellingTime(int refuellingTime) {
-        this.refuellingTime = refuellingTime;
-    }
 
     public int getIndexOnGraph() {
         return indexOnGraph;
     }
 
-    public void setIndexOnGraph(int indexOnGraph) {
-        this.indexOnGraph = indexOnGraph;
-    }
 }

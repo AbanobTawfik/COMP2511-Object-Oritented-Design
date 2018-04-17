@@ -10,19 +10,23 @@ public class nodeComparator implements Heuristic<Node>, Comparator<Node>{
         this.g = g;
     }
 
+    public void setSchedule(LinkedList<DirectedEdge> schedule) {
+        this.schedule = schedule;
+    }
 
     @Override
     public int compare(Node e1, Node e2){
         if(getNodeDegree(e1) < getNodeDegree(e2))
-            return -1;
-        if(getNodeDegree(e1) > getNodeDegree(e2))
             return 1;
+        if(getNodeDegree(e1) > getNodeDegree(e2))
+            return -1;
         if(getNodeDegree(e1) == getNodeDegree(e2)){
             if(getNodeTime(e1) < getNodeTime(e2))
                 return -1;
             if(getNodeTime(e1) > getNodeTime(e2))
                 return 1;
             if(getNodeTime(e1) == getNodeTime(e2))
+
                 return 0;
         }
         return 0;
@@ -44,18 +48,27 @@ public class nodeComparator implements Heuristic<Node>, Comparator<Node>{
     public int getNodeDegree(Node obj){
         int degree = 0;
         Node tmp = obj;
-        LinkedList<Node> visited = new LinkedList<Node>();
+        LinkedList<Node> toSearch = new LinkedList<Node>();
+        toSearch.add(tmp);
+        boolean addedNode = false;
         //now we want to check the degree of the node to the schedule so we scan through the schedule
-        for(DirectedEdge d : schedule){
-            //if the node is a FROM node in the schedule
-            //we want to add it to our list of seen nodes
-            //then we want to update our tracking node to the to node
-            if(d.getFrom().equals(tmp) && !visited.contains(tmp)){
-                visited.add(tmp);
-                tmp = d.getTo();
-                degree++;
+        while(!toSearch.isEmpty()) {
+            tmp = toSearch.poll();
+            addedNode = false;
+            for (DirectedEdge d : schedule) {
+                //if the node is a FROM node in the schedule
+                //we want to add it to our list of seen nodes
+                //then we want to update our tracking node to the to node
+                if (d.getFrom().equals(tmp)) {
+                    toSearch.add(d.getTo());
+                    addedNode = true;
+                }
             }
+            if(addedNode)
+                degree++;
         }
+
+
         return degree;
     }
 
@@ -63,7 +76,7 @@ public class nodeComparator implements Heuristic<Node>, Comparator<Node>{
     //i.e port To refuel time + time taken to get to it is lowest
     @Override
     public int getNodeTime(Node obj){
-        if(currentpath.size() <= 1)
+        if(currentpath.size() < 1)
             return 0;
         int refuel = obj.getRefuellingTime();
         //now we want to just assign the weight of the refuel time for the obj and the weight between
@@ -75,4 +88,6 @@ public class nodeComparator implements Heuristic<Node>, Comparator<Node>{
         int timeBetweenPorts = matrix[indexOfLastVisitedNode][indexOfNode];
         return refuel + timeBetweenPorts;
     }
+
+
 }

@@ -2,7 +2,7 @@ import java.util.*;
 
 public class ASearch {
     private LinkedList<DirectedEdge> path;
-    private int timeTaken;
+    private int timeTaken = 0;
     private int nodesExpanded;
 
     public LinkedList<DirectedEdge> Search(GraphOfPorts g, LinkedList<DirectedEdge> schedule) {
@@ -13,11 +13,10 @@ public class ASearch {
         if (schedule.size() <= 1)
             return null;
         nodesExpanded = 0;
-        timeTaken = 0;
         //now we want to make two queues, one for the search and one for the final return path
         LinkedList<Node> closed = new LinkedList<Node>();
         //the only queue which requires to be ordered by the heuristic is the open one
-        Comparator<Node> comparator = new nodeComparator(closed,schedule,g);
+        Comparator<Node> comparator = new nodeComparator(closed, schedule, g);
         PriorityQueue<Node> open = new PriorityQueue<Node>(g.getnV(), comparator);
         //assuming ship will start in Sydney each time we want Sydney to be the first Node in our queue for search
         Node initial = (Node) g.getNodeByString("Sydney");
@@ -29,7 +28,6 @@ public class ASearch {
         //similair to BFS search till either the search queue is empty or the route has been completed
         while (!open.isEmpty() && !isCompletedSchedule(closed, schedule)) {
             Node curr = open.poll();
-            timeTaken += curr.getRefuellingTime();
             nodesExpanded++;
             closed.add(curr);
             open.clear();
@@ -49,7 +47,7 @@ public class ASearch {
             if (neighbourDE == 0) {
                 for (Node c : neighbours) {
                     for (DirectedEdge d : schedule) {
-                        if (d.getFrom().equals(c)) {
+                        if (d.getFrom().equals(c) && !open.contains(c)) {
                             open.add(c);
                             neighbourOnSchedule++;
                         }
@@ -60,13 +58,21 @@ public class ASearch {
             //then add the closest node which leads to a scheduled port to find it we use a DFS
             //DFS and add any node which links to a node on schedule FROM to the queue or has a path to it
             //dont want to add dead end which dont lead to our schedule
-            if (neighbourOnSchedule == 0) {
+            if (neighbourOnSchedule == 0 && neighbourDE == 0) {
                 for (Node c : neighbours) {
                     if (BFS(c, g, schedule))
                         open.add(c);
                 }
             }
-            updateSchedule(closed,schedule);
+            updateSchedule(closed, schedule);
+
+            comparator = new nodeComparator(closed, schedule, g);
+            PriorityQueue<Node> tmpQueue = open;
+            open = new PriorityQueue<Node>(open.size(), comparator);
+            for (Node n : tmpQueue) {
+                open.add(n);
+            }
+
         }
         LinkedList<DirectedEdge> path = createPath(closed);
         return path;
@@ -76,7 +82,7 @@ public class ASearch {
     //check if the schedule has been completed by checking remaining schedule with the current one
     public boolean isCompletedSchedule(LinkedList<Node> route, LinkedList<DirectedEdge> schedule) {
         //if there is only 1 node in the list of nodes return need atleast 2 for a directed edge
-        if(route.size() == 1)
+        if (route.size() == 1)
             return false;
         LinkedList<DirectedEdge> check = new LinkedList<DirectedEdge>();
         for (int i = 0; i < route.size() - 1; i++) {
@@ -86,8 +92,8 @@ public class ASearch {
         return route.containsAll(schedule);
     }
 
-    public void updateSchedule(LinkedList<Node> route, LinkedList<DirectedEdge> schedule){
-        if(route.size() == 1)
+    public void updateSchedule(LinkedList<Node> route, LinkedList<DirectedEdge> schedule) {
+        if (route.size() == 1)
             return;
         LinkedList<DirectedEdge> check = new LinkedList<DirectedEdge>();
         for (int i = 0; i < route.size() - 1; i++) {
@@ -95,14 +101,15 @@ public class ASearch {
             check.add(d);
         }
 
-        for(int i = 0; i < schedule.size(); i++){
-            if(check.contains(schedule.get(i))){
-                schedule.remove(i);
+        for (int i = 0; i < schedule.size(); i++) {
+            for (int j = 0; j < check.size(); j++) {
+                if (schedule.get(i).getFrom().equals(check.get(j).getFrom()) && schedule.get(i).getTo().equals(check.get(j).getTo()))
+                    schedule.remove(i);
             }
         }
     }
 
-    public LinkedList<DirectedEdge> createPath(LinkedList<Node> route){
+    public LinkedList<DirectedEdge> createPath(LinkedList<Node> route) {
         LinkedList<DirectedEdge> path = new LinkedList<DirectedEdge>();
         for (int i = 0; i < route.size() - 1; i++) {
             DirectedEdge d = new DirectedEdge(route.get(i), route.get(i + 1));
@@ -146,4 +153,21 @@ public class ASearch {
         }
         return false;
     }
+
+    public int getCost(LinkedList<DirectedEdge> edges, GraphOfPorts g) {
+        int cost = 0;
+        for (int i = 0; i < edges.size(); i++) {
+            //adding the refuelling time of the FROM node
+            cost += edges.get(i).getFrom().getRefuellingTime();
+            //now we want to add the weight aka time taken between the two nodes
+            cost += g.getWeightOfEdge(edges.get(i).getFrom(), edges.get(i).getTo());
+
+        }
+        return cost;
+    }
+
+    public int getNodesExpanded() {
+        return nodesExpanded;
+    }
+
 }
