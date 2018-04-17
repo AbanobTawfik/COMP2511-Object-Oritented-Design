@@ -17,7 +17,7 @@ public class ASearch {
         //now we want to make two queues, one for the search and one for the final return path
         LinkedList<Node> closed = new LinkedList<Node>();
         //the only queue which requires to be ordered by the heuristic is the open one
-        Comparator<Node> comparator = new nodeComparator(schedule,g);
+        Comparator<Node> comparator = new nodeComparator(closed,schedule,g);
         PriorityQueue<Node> open = new PriorityQueue<Node>(g.getnV(), comparator);
         //assuming ship will start in Sydney each time we want Sydney to be the first Node in our queue for search
         Node initial = (Node) g.getNodeByString("Sydney");

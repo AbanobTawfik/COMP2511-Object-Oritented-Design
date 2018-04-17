@@ -96,7 +96,12 @@ public class Operate {
     }
 
     public void process(String request[]){
-
+        if(request[0].equals("Refuelling"))
+            outcomeRefuelling(request);
+        if(request[0].equals("Time"))
+            outcomeTime(request);
+        if(request[0].equals("Shipment"))
+            outcomeShipment();
     }
 
     public void outcomeRefuelling(String request[]){
