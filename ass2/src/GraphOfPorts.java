@@ -1,5 +1,5 @@
 import java.util.*;
-public class GraphOfPorts implements Graph<Node>{
+public class GraphOfPorts implements Graph<Node> {
     private int nV;
     //keep track of the vertices on graph
     private LinkedList<Node> vertices;
@@ -10,8 +10,8 @@ public class GraphOfPorts implements Graph<Node>{
         this.nV = nV;
         int[][] graphEdges = new int[nV][nV];
         //initalise weighted graph with no edges
-        for(int i = 0; i < nV; i++){
-            for(int j = 0; j< nV; j++){
+        for (int i = 0; i < nV; i++) {
+            for (int j = 0; j < nV; j++) {
                 graphEdges[i][j] = -1;
             }
         }
@@ -54,7 +54,7 @@ public class GraphOfPorts implements Graph<Node>{
         int index1 = node1.getIndexOnGraph();
         int index2 = node2.getIndexOnGraph();
 
-        return (edges[index1][index2]>0 && edges[index2][index1] >= 1);
+        return (edges[index1][index2] > 0 && edges[index2][index1] >= 1);
     }
 
 
@@ -69,25 +69,25 @@ public class GraphOfPorts implements Graph<Node>{
     }
 
     @Override
-    public Node getNodeByString(String s){
-        for(int i = 0; i < nV; i++){
-            if(vertices.get(i).getPortName().equals(s))
+    public Node getNodeByString(String s) {
+        for (int i = 0; i < nV; i++) {
+            if (vertices.get(i).getPortName().equals(s))
                 return vertices.get(i);
         }
         return null;
     }
 
-    public int getWeightOfEdge(Node n1, Node n2){
+    public int getWeightOfEdge(Node n1, Node n2) {
         int index1 = n1.getIndexOnGraph();
         int index2 = n2.getIndexOnGraph();
         return edges[index1][index2];
     }
 
-    public LinkedList<Node> getNeighbours(Node node){
+    public LinkedList<Node> getNeighbours(Node node) {
         LinkedList<Node> resultant = new LinkedList<>();
-        for(int i = 0; i < nV; i++){
+        for (int i = 0; i < nV; i++) {
             Node node2 = getNodeByIndex(i);
-            if(isConnected(node, node2))
+            if (isConnected(node, node2))
                 resultant.add(node2);
         }
 

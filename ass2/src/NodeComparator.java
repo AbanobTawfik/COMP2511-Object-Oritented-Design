@@ -80,7 +80,7 @@ public class NodeComparator implements Heuristic<Node>, Comparator<Node>{
             }
         }
         LinkedList<Node> chain = chain(curr);
-        if (chain.size() == 1) {
+        if (chain.size() > 1) {
             for (int i = 0; i < chain.size() - 1; i++) {
                 sum += chain.get(i).getRefuellingTime();
                 sum += edges[chain.get(i).getIndexOnGraph()][chain.get(i + 1).getIndexOnGraph()];
@@ -105,12 +105,13 @@ public class NodeComparator implements Heuristic<Node>, Comparator<Node>{
         LinkedList<Node> toSearch = new LinkedList<Node>();
         Node curr = obj;
         chain.add(curr);
+        toSearch.add(curr);
         while(!toSearch.isEmpty()) {
             curr = toSearch.poll();
             for (DirectedEdge d : schedule) {
-                if (d.getFrom().equals(curr) && !chain.contains(curr)&& !d.getFrom().equals(currentPath.getLast())){
+                if (d.getFrom().equals(curr) && !chain.contains(d.getTo())){
                     toSearch.add(d.getTo());
-                    chain.add(d.getFrom());
+                    chain.add(d.getTo());
                     break;
                 }
             }
@@ -130,10 +131,11 @@ public class NodeComparator implements Heuristic<Node>, Comparator<Node>{
         LinkedList<Node> toSearch = new LinkedList<Node>();
         Node curr = obj;
         backtracking.add(curr);
+        toSearch.add(curr);
         while(!toSearch.isEmpty()) {
             curr = toSearch.poll();
             for (DirectedEdge d : schedule) {
-                if (d.getTo().equals(curr) && !backtracking.contains(curr) && !d.getFrom().equals(currentPath.getLast())){
+                if (d.getTo().equals(curr) && !backtracking.contains(d.getFrom())){
                     toSearch.add(d.getFrom());
                     backtracking.add(d.getFrom());
                     break;
@@ -154,10 +156,18 @@ public class NodeComparator implements Heuristic<Node>, Comparator<Node>{
             return 0;
         int sum = 0;
         int edges[][] = g.getEdges();
+        boolean flag = false;
         for (int i = 0; i < schedule.size(); i++) {
+            flag = false;
             for (int j = 0; j < d.size(); j++) {
                 if (schedule.get(i).getFrom().equals(d.get(j).getFrom()) && schedule.get(i).getTo().equals(d.get(j).getTo()))
-                    continue;
+                {
+                    flag = true;
+                    break;
+                }
+
+            }
+            if(flag == false) {
                 sum += schedule.get(i).getFrom().getRefuellingTime();
                 sum += edges[schedule.get(i).getTo().getIndexOnGraph()][schedule.get(i).getFrom().getIndexOnGraph()];
             }
