@@ -26,6 +26,9 @@ public class GraphOfPorts implements Graph<Node>{
         this.vertices = vertices;
     }
 
+    public LinkedList<Node> getVertices() {
+        return vertices;
+    }
 
     public int getnV() {
         return nV;
@@ -54,10 +57,6 @@ public class GraphOfPorts implements Graph<Node>{
         return (edges[index1][index2]>0 && edges[index2][index1] >= 1);
     }
 
-    @Override
-    public boolean nodeExistsInGraph(Node node) {
-        return vertices.contains(node);
-    }
 
     @Override
     public int getNodeIndex(Node node) {
@@ -94,5 +93,6 @@ public class GraphOfPorts implements Graph<Node>{
 
         return resultant;
     }
+
 
 }

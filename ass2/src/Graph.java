@@ -17,13 +17,6 @@ public interface Graph<E> {
      */
     boolean isConnected(E node1, E node2);
 
-    /**
-     * this method will check if a node exists in the graph
-     * @param node the node we are checking
-     * @return true if it exists in graph, false if it doesn't exist
-     */
-    boolean nodeExistsInGraph(E node);
-
     int getNodeIndex(E node);
 
     E getNodeByIndex(int index);

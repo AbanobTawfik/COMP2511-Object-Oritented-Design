@@ -1,10 +1,18 @@
 import java.util.*;
 
+/**
+ * The type A search.
+ */
 public class ASearch {
-    private LinkedList<DirectedEdge> path;
-    private int timeTaken = 0;
     private int nodesExpanded;
 
+    /**
+     * Search linked list.
+     *
+     * @param g        the g
+     * @param schedule the schedule
+     * @return the linked list
+     */
     public LinkedList<DirectedEdge> Search(GraphOfPorts g, LinkedList<DirectedEdge> schedule) {
         //if the graph only has 1 node there is no search required
         if (g.getnV() <= 1)
@@ -16,10 +24,10 @@ public class ASearch {
         //now we want to make two queues, one for the search and one for the final return path
         LinkedList<Node> closed = new LinkedList<Node>();
         //the only queue which requires to be ordered by the heuristic is the open one
-        Comparator<Node> comparator = new nodeComparator(closed, schedule, g);
+        Comparator<Node> comparator = new NodeComparator(closed, schedule, g);
         PriorityQueue<Node> open = new PriorityQueue<Node>(g.getnV(), comparator);
         //assuming ship will start in Sydney each time we want Sydney to be the first Node in our queue for search
-        Node initial = (Node) g.getNodeByString("Sydney");
+        Node initial = g.getNodeByString("Sydney");
         //if the node Sydney is not existant in the graph we return null error
         if (initial.equals(null))
             return null;
@@ -32,41 +40,13 @@ public class ASearch {
             closed.add(curr);
             open.clear();
             LinkedList<Node> neighbours = g.getNeighbours(curr);
-            int neighbourDE = 0;
-            int neighbourOnSchedule = 0;
             for (Node c : neighbours) {
-                for (DirectedEdge d : schedule) {
-                    if (d.getTo().equals(c) && d.getFrom().equals(curr)) {
-                        open.add(c);
-                        neighbourDE++;
-                    }
-                }
+                open.add(c);
             }
-            //if there are no neighbour ports on schedule from the current node
-            //try to go to the closest port on schedule
-            if (neighbourDE == 0) {
-                for (Node c : neighbours) {
-                    for (DirectedEdge d : schedule) {
-                        if (d.getFrom().equals(c) && !open.contains(c)) {
-                            open.add(c);
-                            neighbourOnSchedule++;
-                        }
-                    }
-                }
-            }
-            //if there are no neighbour ports leading to a scheduled delivery from current node
-            //then add the closest node which leads to a scheduled port to find it we use a DFS
-            //DFS and add any node which links to a node on schedule FROM to the queue or has a path to it
-            //dont want to add dead end which dont lead to our schedule
-            if (neighbourOnSchedule == 0 && neighbourDE == 0) {
-                for (Node c : neighbours) {
-                    if (BFS(c, g, schedule))
-                        open.add(c);
-                }
-            }
+
             updateSchedule(closed, schedule);
 
-            comparator = new nodeComparator(closed, schedule, g);
+            comparator = new NodeComparator(closed, schedule, g);
             PriorityQueue<Node> tmpQueue = open;
             open = new PriorityQueue<Node>(open.size(), comparator);
             for (Node n : tmpQueue) {
@@ -78,7 +58,14 @@ public class ASearch {
         return path;
     }
 
-    //want to scan through LinkedList of nodes and create a Directed EGe
+    /**
+     * Is completed schedule boolean.
+     *
+     * @param route    the route
+     * @param schedule the schedule
+     * @return the boolean
+     */
+//want to scan through LinkedList of nodes and create a Directed EGe
     //check if the schedule has been completed by checking remaining schedule with the current one
     public boolean isCompletedSchedule(LinkedList<Node> route, LinkedList<DirectedEdge> schedule) {
         //if there is only 1 node in the list of nodes return need atleast 2 for a directed edge
@@ -92,6 +79,12 @@ public class ASearch {
         return route.containsAll(schedule);
     }
 
+    /**
+     * Update schedule.
+     *
+     * @param route    the route
+     * @param schedule the schedule
+     */
     public void updateSchedule(LinkedList<Node> route, LinkedList<DirectedEdge> schedule) {
         if (route.size() == 1)
             return;
@@ -109,6 +102,12 @@ public class ASearch {
         }
     }
 
+    /**
+     * Create path linked list.
+     *
+     * @param route the route
+     * @return the linked list
+     */
     public LinkedList<DirectedEdge> createPath(LinkedList<Node> route) {
         LinkedList<DirectedEdge> path = new LinkedList<DirectedEdge>();
         for (int i = 0; i < route.size() - 1; i++) {
@@ -118,42 +117,14 @@ public class ASearch {
         return path;
     }
 
-    //we want to do a BFS that starts at a node and checks if there is a path from it to a scheduled node
-    //if it encounters a node which is a FROM port on the remaining schedule we want to return true
-    //return false otherwise
-    public boolean BFS(Node n, GraphOfPorts g, LinkedList<DirectedEdge> schedule) {
-        int index = g.getNodeIndex(n);
-        //initalise our visited array with false
-        boolean visited[] = new boolean[g.getnV()];
-        Arrays.fill(visited, false);
-        //simple to
-        LinkedList<Node> pathcheck = new LinkedList<Node>();
-        pathcheck.add(n);
-        visited[index] = true;
-        int edges[][] = g.getEdges();
-        while (!pathcheck.isEmpty()) {
-            Node tmp = pathcheck.poll();
-            if (BFSConditionCheck(tmp, schedule))
-                return true;
-            for (int i = 0; i < g.getnV(); i++) {
-                if (edges[index][i] > 0 && !visited[i]) {
-                    visited[i] = true;
-                    Node nodeToAdd = g.getNodeByIndex(i);
-                    pathcheck.add(nodeToAdd);
-                }
-            }
-        }
-        return false;
-    }
 
-    public boolean BFSConditionCheck(Node n, LinkedList<DirectedEdge> schedule) {
-        for (DirectedEdge d : schedule) {
-            if (d.getFrom().equals(n))
-                return true;
-        }
-        return false;
-    }
-
+    /**
+     * Gets cost.
+     *
+     * @param edges the edges
+     * @param g     the g
+     * @return the cost
+     */
     public int getCost(LinkedList<DirectedEdge> edges, GraphOfPorts g) {
         int cost = 0;
         for (int i = 0; i < edges.size(); i++) {
@@ -166,6 +137,11 @@ public class ASearch {
         return cost;
     }
 
+    /**
+     * Gets nodes expanded.
+     *
+     * @return the nodes expanded
+     */
     public int getNodesExpanded() {
         return nodesExpanded;
     }
