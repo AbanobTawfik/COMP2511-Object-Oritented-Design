@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 /*
  * My heuristic for the project is based off the goal to reach the final port
  * Whilst the search will reach every port listed

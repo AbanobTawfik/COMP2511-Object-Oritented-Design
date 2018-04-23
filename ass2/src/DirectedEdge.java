@@ -14,4 +14,12 @@ public class DirectedEdge {
     public Node getTo() {
         return to;
     }
+
+    @Override
+    public String toString() {
+        return "DirectedEdge{" +
+                "from=" + from +
+                ", to=" + to +
+                '}';
+    }
 }

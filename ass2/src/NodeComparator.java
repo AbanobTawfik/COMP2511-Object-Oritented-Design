@@ -1,7 +1,4 @@
-import sun.awt.image.ImageWatched;
-
 import java.util.*;
-
 /**
  * The type Node comparator.
  */
@@ -26,8 +23,6 @@ public class NodeComparator implements Heuristic<Node>, Comparator<Node>{
 
     @Override
     public int compare(Node e1, Node e2){
-        int score1 = getNodeScore(e1);
-        int score2 = getNodeScore(e2);
         if(getNodeScore(e1) < getNodeScore(e2)){
             return -1;
         }
@@ -42,7 +37,7 @@ public class NodeComparator implements Heuristic<Node>, Comparator<Node>{
         //check if the node is not a dead end
         boolean uselessNode = true;
         for(DirectedEdge d : schedule){
-            if((d.getFrom().equals(obj)) || (d.getTo().equals(obj) && d.getFrom().equals(previous)))
+            if((d.getFrom().equals(obj)) || (d.getTo().equals(obj) && d.getFrom().equals(previous)) && !previous.equals(obj))
                 uselessNode = false;
         }
 
