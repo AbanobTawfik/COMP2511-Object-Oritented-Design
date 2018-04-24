@@ -23,6 +23,8 @@ public class NodeComparator implements Heuristic<Node>, Comparator<Node>{
 
     @Override
     public int compare(Node e1, Node e2){
+        int score1 = getNodeScore(e1);
+        int score2 = getNodeScore(e2);
         if(getNodeScore(e1) < getNodeScore(e2)){
             return -1;
         }
@@ -46,6 +48,7 @@ public class NodeComparator implements Heuristic<Node>, Comparator<Node>{
         int edges[][] = g.getEdges();
         int sum = 0;
         LinkedList<DirectedEdge> scheduleRemaining = new LinkedList<DirectedEdge>();
+
         sum += previous.getRefuellingTime();
         sum += edges[previous.getIndexOnGraph()][obj.getIndexOnGraph()];
 
@@ -60,31 +63,36 @@ public class NodeComparator implements Heuristic<Node>, Comparator<Node>{
         for (int i = 0; i < scheduledNeighbours.size(); i++) {
             int index1 = curr.getIndexOnGraph();
             int index2 = scheduledNeighbours.get(i).getIndexOnGraph();
-            sum += curr.getRefuellingTime();
-            sum += edges[index1][index2];
             DirectedEdge d = new DirectedEdge(curr, scheduledNeighbours.get(i));
-            scheduleRemaining.add(d);
-        }
-        LinkedList<Node> backtrack = backtrack(curr);
-        if (backtrack.size() > 1) {
-            for (int i = backtrack.size(); i < 1; i--) {
-                sum += backtrack.get(i).getRefuellingTime();
-                sum += edges[backtrack.get(i).getIndexOnGraph()][backtrack.get(i + 1).getIndexOnGraph()];
-                DirectedEdge d = new DirectedEdge(backtrack.get(i), backtrack.get(i + 1));
+            if(!scheduleRemaining.contains(d))
                 scheduleRemaining.add(d);
-            }
         }
-        LinkedList<Node> chain = chain(curr);
-        if (chain.size() > 1) {
-            for (int i = 0; i < chain.size() - 1; i++) {
-                sum += chain.get(i).getRefuellingTime();
-                sum += edges[chain.get(i).getIndexOnGraph()][chain.get(i + 1).getIndexOnGraph()];
-                DirectedEdge d = new DirectedEdge(chain.get(i), chain.get(i + 1));
-                scheduleRemaining.add(d);
+        for(int j = 0; j < scheduledNeighbours.size();j++) {
+            LinkedList<Node> backtrack = backtrack(scheduledNeighbours.get(j),curr);
+            if (backtrack.size() > 1) {
+                for (int i = backtrack.size() - 1; i > 1; i--) {
+                    sum += backtrack.get(i).getRefuellingTime();
+                    sum += edges[backtrack.get(i).getIndexOnGraph()][backtrack.get(i - 1).getIndexOnGraph()];
+                    sum += backtrack.get(i).getRefuellingTime();
+                    sum += edges[backtrack.get(i).getIndexOnGraph()][backtrack.get(i - 1).getIndexOnGraph()];
+                    DirectedEdge d = new DirectedEdge(backtrack.get(i), backtrack.get(i - 1));
+                    scheduleRemaining.add(d);
+                }
             }
         }
 
-
+        for(int j = 0; j < scheduledNeighbours.size(); j++) {
+            LinkedList<Node> chain = chain(scheduledNeighbours.get(j),curr);
+            if (chain.size() > 1) {
+                for (int i = 0; i < chain.size() - 1; i++) {
+                    sum += chain.get(i).getRefuellingTime();
+                    sum += edges[chain.get(i).getIndexOnGraph()][chain.get(i + 1).getIndexOnGraph()];
+                    DirectedEdge d = new DirectedEdge(chain.get(i), chain.get(i + 1));
+                    if (!scheduleRemaining.contains(d))
+                        scheduleRemaining.add(d);
+                }
+            }
+        }
         sum += compareSchedule(scheduleRemaining);
         return sum;
     }
@@ -95,8 +103,9 @@ public class NodeComparator implements Heuristic<Node>, Comparator<Node>{
      * @param obj the obj
      * @return the linked list
      */
-    public LinkedList<Node> chain(Node obj){
+    public LinkedList<Node> chain(Node obj, Node parent){
         LinkedList<Node> chain = new LinkedList<Node>();
+        chain.add(parent);
         LinkedList<Node> toSearch = new LinkedList<Node>();
         Node curr = obj;
         chain.add(curr);
@@ -121,8 +130,9 @@ public class NodeComparator implements Heuristic<Node>, Comparator<Node>{
      * @param obj the obj
      * @return the linked list
      */
-    public LinkedList<Node> backtrack(Node obj){
+    public LinkedList<Node> backtrack(Node obj,Node parent){
         LinkedList<Node> backtracking = new LinkedList<Node>();
+        backtracking.add(parent);
         LinkedList<Node> toSearch = new LinkedList<Node>();
         Node curr = obj;
         backtracking.add(curr);
@@ -147,8 +157,7 @@ public class NodeComparator implements Heuristic<Node>, Comparator<Node>{
      * @return the int
      */
     public int compareSchedule(LinkedList<DirectedEdge> d){
-        if(d.size() <= 1)
-            return 0;
+
         int sum = 0;
         int edges[][] = g.getEdges();
         boolean flag = false;
@@ -170,3 +179,25 @@ public class NodeComparator implements Heuristic<Node>, Comparator<Node>{
         return sum;
     }
 }
+
+/*
+Refuelling 6 Sydney             # Refuelling time is 6 days in Sydney
+Refuelling 4 Shanghai           # Refuelling time is 4 days in Shanghai
+Refuelling 4 Singapore          # Refuelling time is 4 days in Singapore
+Refuelling 6 Vancouver          # Refuelling time is 6 days in Vancouver
+Refuelling 8 Manila             # Refuelling time is 8 days in Manila
+Time 18 Sydney Shanghai         # Travel time is 18 days from Sydney to Shanghai
+Time 24 Sydney Singapore        # Travel time is 24 days from Sydney to Singapore
+Time 18 Sydney Vancouver        # Travel time is 18 days from Sydney to Vancouver
+Time 10 Sydney Manila           # Travel time is 10 days from Sydney to Manila
+Time 10 Shanghai Singapore      # Travel time is 10 days from Shanghai to Singapore
+Time 24 Shanghai Vancouver      # Travel time is 24 days from Shanghai to Vancouver
+Time 12 Shanghai Manila         # Travel time is 12 days from Shanghai to Manila
+Time 24 Singapore Vancouver     # Travel time is 24 days from Singapore to Vancouver
+Time 22 Singapore Manila        # Travel time is 22 days from Singapore to Manila
+Time 20 Vancouver Manila        # Travel time is 20 days from Vancouver to Manila
+Shipment Singapore Vancouver    # Shipment is required from Singapore to Vancouver
+Shipment Shanghai Singapore     # Shipment is required from Shanghai to Singapore
+Shipment Sydney Vancouver       # Shipment is required from Sydney to Vancouver
+Shipment Sydney Manila          # Shipment is required from Sydney to Manila
+ */
