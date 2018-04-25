@@ -12,7 +12,11 @@ public class GraphOfPorts implements Graph<Node> {
         //initalise weighted graph with no edges
         for (int i = 0; i < nV; i++) {
             for (int j = 0; j < nV; j++) {
-                graphEdges[i][j] = -1;
+                if(i == j)
+                    graphEdges[i][j] = 0;
+
+                graphEdges[i][j] =-1;
+
             }
         }
         setEdges(graphEdges);

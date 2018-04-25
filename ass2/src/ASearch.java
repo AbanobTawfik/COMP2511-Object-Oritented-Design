@@ -3,103 +3,113 @@ import java.util.*;
 /**
  * The type A search.
  */
-public class ASearch {
+public class ASearch implements Heuristic<searchNode>{
     private int nodesExpanded;
+    private LinkedList<DirectedEdge> schedule;
+    private GraphOfPorts g;
 
-    /**
-     * Search linked list.
-     *
-     * @param g        the g
-     * @param schedule the schedule
-     * @return the linked list
-     */
-    public LinkedList<DirectedEdge> Search(GraphOfPorts g, LinkedList<DirectedEdge> schedule) {
-        //if the graph only has 1 node there is no search required
+    public void setSchedule(LinkedList<DirectedEdge> schedule) {
+        this.schedule = schedule;
+    }
+
+    public void setG(GraphOfPorts g) {
+        this.g = g;
+    }
+
+
+    public LinkedList<DirectedEdge> Search() {
         if (g.getnV() <= 1)
             return null;
-        //if there is no schedule or only 1 port then return there is no search required
         if (schedule.size() <= 1)
             return null;
-        nodesExpanded = 0;
-        //now we want to make two queues, one for the search and one for the final return path
-        LinkedList<Node> closed = new LinkedList<Node>();
-        //the only queue which requires to be ordered by the heuristic is the open one
-        Comparator<Node> comparator = new NodeComparator(closed, schedule, g);
-        PriorityQueue<Node> open = new PriorityQueue<Node>(g.getnV(), comparator);
-        //assuming ship will start in Sydney each time we want Sydney to be the first Node in our queue for search
+
+
+        LinkedList<searchNode> closed = new LinkedList<searchNode>();
+        Comparator<searchNode> comparator = new NodeComparator();
+        PriorityQueue<searchNode> open = new PriorityQueue<searchNode>(g.getnV(), comparator);
         Node initial = g.getNodeByString("Sydney");
-        //if the node Sydney is not existant in the graph we return null error
+        DirectedEdge d1 = new DirectedEdge(initial, initial);
+        searchNode initialSearchNode = new searchNode(d1);
+        initialSearchNode.setGScore(0);
+        initialSearchNode.setHScore(getShipmentScore(initialSearchNode));
+        initialSearchNode.setFScore();
         if (initial.equals(null))
             return null;
-        //add the initial node to our queue
-        open.add(initial);
-        //similair to BFS search till either the search queue is empty or the route has been completed
-        while (!open.isEmpty() && !isCompletedSchedule(closed, schedule)) {
-            Node curr = open.poll();
+        open.add(initialSearchNode);
+        while (!open.isEmpty()) {
+            searchNode curr = open.poll();
             nodesExpanded++;
+            if(curr.getChildren().size() > 1)
+                System.out.println( curr + " " + curr.getGScore()
+                );
+
             closed.add(curr);
-            open.clear();
-            LinkedList<Node> neighbours = g.getNeighbours(curr);
-            for (Node c : neighbours) {
-                open.add(c);
+            if (isCompletedSchedule(curr)) {
+                return createPath(curr);
             }
+            for(DirectedEdge d : schedule) {
 
-            updateSchedule(closed, schedule);
+                searchNode newPath = new searchNode(curr.getShipment());
+                LinkedList<DirectedEdge> ships = new LinkedList<DirectedEdge>(curr.getChildren());
+                newPath.setChildren(ships);
+                if(ships.size() == 0){
+                    newPath.addToChildren(new DirectedEdge(curr.getShipment().getTo(),d.getFrom()));
+                }
+                newPath.addToChildren(d);
+                newPath.setGScore(getWeightPath(newPath));
+                newPath.setHScore(getShipmentScore(newPath));
+                newPath.setFScore();
+                ArrayList<Integer> onClosed = onClosed(newPath, closed);
+                ArrayList<Integer> onOpen = onOpen(newPath, open);
+                if (!onClosed.isEmpty()) {
+                    for(int i = 0; i < onClosed.size();i++) {
+                        int FScoreClosed = closed.get(onClosed.get(i)).getFScore();
+                        int FScoreNewPath = newPath.getFScore();
+                        if (FScoreClosed >= FScoreNewPath) {
+                            closed.remove(onClosed.get(i));
+                            open.add(newPath);
+                        }
+                    }
+                } else if (!onOpen.isEmpty()) {
 
-            comparator = new NodeComparator(closed, schedule, g);
-            PriorityQueue<Node> tmpQueue = open;
-            open = new PriorityQueue<Node>(open.size(), comparator);
-            for (Node n : tmpQueue) {
-                open.add(n);
+                    PriorityQueue<searchNode> copy = new PriorityQueue<searchNode>(open);
+                    ArrayList<searchNode> openCopy = new ArrayList<searchNode>();
+                    for(int i = 0; i < copy.size();i++){
+                        openCopy.add(copy.poll());
+                    }
+                    for(int i = 0; i < onOpen.size();i++){
+                        searchNode openNode = openCopy.get(onOpen.get(i));
+                        int FScoreOpen = openNode.getFScore();
+                        int FscoreNewPath = newPath.getFScore();
+                        if (FScoreOpen >= FscoreNewPath) {
+                            open.remove(openNode);
+                            open.add(newPath);
+                        }
+                    }
+                }
+                else{
+                    open.add(newPath);
+                }
+
+
             }
-
         }
-        LinkedList<DirectedEdge> path = createPath(closed);
-        return path;
+
+            return null;
+
     }
 
-    /**
-     * Is completed schedule boolean.
-     *
-     * @param route    the route
-     * @param schedule the schedule
-     * @return the boolean
-     */
-//want to scan through LinkedList of nodes and create a Directed EGe
-    //check if the schedule has been completed by checking remaining schedule with the current one
-    public boolean isCompletedSchedule(LinkedList<Node> route, LinkedList<DirectedEdge> schedule) {
-        //if there is only 1 node in the list of nodes return need atleast 2 for a directed edge
-        if (route.size() == 1)
-            return false;
-        LinkedList<DirectedEdge> check = new LinkedList<DirectedEdge>();
-        for (int i = 0; i < route.size() - 1; i++) {
-            DirectedEdge d = new DirectedEdge(route.get(i), route.get(i + 1));
-            check.add(d);
-        }
-        return route.containsAll(schedule);
-    }
 
-    /**
-     * Update schedule.
-     *
-     * @param route    the route
-     * @param schedule the schedule
-     */
-    public void updateSchedule(LinkedList<Node> route, LinkedList<DirectedEdge> schedule) {
-        if (route.size() == 1)
-            return;
-        LinkedList<DirectedEdge> check = new LinkedList<DirectedEdge>();
-        for (int i = 0; i < route.size() - 1; i++) {
-            DirectedEdge d = new DirectedEdge(route.get(i), route.get(i + 1));
-            check.add(d);
-        }
 
-        for (int i = 0; i < schedule.size(); i++) {
-            for (int j = 0; j < check.size(); j++) {
-                if (schedule.get(i).getFrom().equals(check.get(j).getFrom()) && schedule.get(i).getTo().equals(check.get(j).getTo()))
-                    schedule.remove(i);
-            }
+    public boolean isCompletedSchedule(searchNode path){
+        LinkedList<DirectedEdge> scheduleCopy = new LinkedList<DirectedEdge>();
+        for(int i = 0; i < schedule.size();i++)
+            scheduleCopy.add(schedule.get(i));
+        for(int i = 0; i < path.getChildren().size();i++){
+            if(scheduleCopy.contains(path.getChildren().get(i)))
+                scheduleCopy.remove(path.getChildren().get(i));
         }
+        return scheduleCopy.isEmpty();
     }
 
     /**
@@ -108,42 +118,132 @@ public class ASearch {
      * @param route the route
      * @return the linked list
      */
-    public LinkedList<DirectedEdge> createPath(LinkedList<Node> route) {
+    public LinkedList<DirectedEdge> createPath(searchNode route) {
         LinkedList<DirectedEdge> path = new LinkedList<DirectedEdge>();
-        for (int i = 0; i < route.size() - 1; i++) {
-            DirectedEdge d = new DirectedEdge(route.get(i), route.get(i + 1));
-            path.add(d);
+        for (int i = 0; i < route.getChildren().size(); i++) {
+            path.add(route.getChildren().get(i));
         }
         return path;
     }
 
 
-    /**
-     * Gets cost.
-     *
-     * @param edges the edges
-     * @param g     the g
-     * @return the cost
-     */
     public int getCost(LinkedList<DirectedEdge> edges, GraphOfPorts g) {
-        int cost = 0;
-        for (int i = 0; i < edges.size(); i++) {
-            //adding the refuelling time of the FROM node
-            cost += edges.get(i).getFrom().getRefuellingTime();
-            //now we want to add the weight aka time taken between the two nodes
-            cost += g.getWeightOfEdge(edges.get(i).getFrom(), edges.get(i).getTo());
-
+        ArrayList<Node> path = new ArrayList<Node>();
+        for(int i = 0; i < edges.size();i++){
+            path.add(edges.get(i).getFrom());
+            path.add(edges.get(i).getTo());
         }
-        return cost;
+        int sum = 0;
+        for(int i = 0; i < path.size()-1;i++){
+            if(!path.get(i).equals(path.get(i+1))) {
+                sum += path.get(i).getRefuellingTime();
+                sum += g.getEdges()[path.get(i).getIndexOnGraph()][path.get(i + 1).getIndexOnGraph()];
+            }
+        }
+        return sum;
     }
 
-    /**
-     * Gets nodes expanded.
-     *
-     * @return the nodes expanded
-     */
+
     public int getNodesExpanded() {
         return nodesExpanded;
     }
 
+    @Override
+    public int getShipmentScore(searchNode d) {
+        int sum = getScheduleScoreRemaining(d);
+        int minShipment = Integer.MAX_VALUE;
+        boolean flag = false;
+        if(d.getChildren().size()>1) {
+            for (int i = 0; i < schedule.size() - 1; i++) {
+                if (schedule.contains(new DirectedEdge(d.getChildren().getLast().getTo(), schedule.get(i).getFrom()))) {
+                    int temp = g.getWeightOfEdge(schedule.get(i).getFrom(), d.getChildren().getLast().getTo());
+                    if (temp < minShipment) {
+                        flag = true;
+                        minShipment = temp;
+                    }
+                }
+            }
+        }
+        if(!flag) {
+            minShipment = 0;
+        }
+        sum -= minShipment;
+        for(int i = 0; i < d.getChildren().size() -1 ;i++){
+            sum -= d.getChildren().get(i).getFrom().getRefuellingTime();
+            sum -= g.getEdges()[d.getChildren().get(i).getFrom().getIndexOnGraph()][d.getChildren().get(i).getTo().getIndexOnGraph()];
+        }
+        if(d.getChildren().size() == 1){
+            sum -= d.getChildren().get(0).getFrom().getRefuellingTime();
+            sum -= g.getEdges()[d.getChildren().get(0).getFrom().getIndexOnGraph()][d.getChildren().get(0).getTo().getIndexOnGraph()];
+        }
+        sum = (Integer) sum/schedule.size();
+        return sum;
+    }
+
+
+    public int getWeightPath(searchNode s){
+        ArrayList<Node> path = new ArrayList<Node>();
+        path.add(s.getShipment().getFrom());
+        path.add(s.getShipment().getTo());
+        for(int i = 0; i < s.getChildren().size();i++){
+            path.add(s.getChildren().get(i).getFrom());
+            path.add(s.getChildren().get(i).getTo());
+        }
+
+        int sum = 0;
+
+        for(int i = 0; i < path.size()-1;i++){
+            if(!path.get(i).equals(path.get(i+1))) {
+                sum += path.get(i).getRefuellingTime();
+                sum += g.getEdges()[path.get(i).getIndexOnGraph()][path.get(i + 1).getIndexOnGraph()];
+            }
+        }
+
+        return sum;
+    }
+
+
+    public ArrayList<Integer> onClosed(searchNode p, LinkedList<searchNode> closed){
+        ArrayList<Integer> ret = new ArrayList<Integer>();
+        for(int i = 0; i < closed.size(); i++){
+            if(p.getChildren().containsAll(closed.get(i).getChildren())
+                    && closed.get(i).getChildren().containsAll(p.getChildren()))
+                 ret.add(i);
+        }
+        return ret;
+    }
+    public ArrayList<Integer> onOpen(searchNode p, PriorityQueue<searchNode> open){
+        PriorityQueue<searchNode> copy = new PriorityQueue<searchNode>(open);
+        ArrayList<searchNode> openCopy = new ArrayList<searchNode>();
+        for(int i = 0; i < copy.size();i++){
+            searchNode curr = copy.poll();
+            openCopy.add(curr);
+        }
+        ArrayList<Integer> ret = new ArrayList<Integer>();
+        for(int i = 0; i < openCopy.size(); i++){
+            if(p.getChildren().containsAll(openCopy.get(i).getChildren())
+                    && openCopy.get(i).getChildren().containsAll(p.getChildren()))
+                ret.add(i);;
+        }
+        return ret;
+    }
+
+    public int getScheduleScoreRemaining(searchNode s){
+        int sum = 0;
+        int count = 0;
+        for(int i = 0;i < schedule.size();i++){
+            if (s.getChildren().contains(schedule.get(i)))
+                continue;
+            sum += schedule.get(i).getFrom().getRefuellingTime();
+            sum += g.getEdges()[schedule.get(i).getFrom().getIndexOnGraph()][schedule.get(i).getTo().getIndexOnGraph()];
+            count++;
+        }
+
+        return sum;
+    }
+
 }
+
+
+
+

@@ -8,5 +8,5 @@ public interface Heuristic<E> {
      * @param obj, a non null object which we are comparing it's position to the destination
      * @return the time remaining from the node till the final destination
      */
-     int getNodeScore(E obj);
+     int getShipmentScore(E obj);
 }

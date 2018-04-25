@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class DirectedEdge {
     private Node from;
     private Node to;
@@ -16,10 +18,18 @@ public class DirectedEdge {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DirectedEdge)) return false;
+        DirectedEdge that = (DirectedEdge) o;
+        return Objects.equals(getFrom(), that.getFrom()) &&
+                Objects.equals(getTo(), that.getTo());
+    }
+
+    @Override
     public String toString() {
-        return "DirectedEdge{" +
-                "from=" + from +
-                ", to=" + to +
-                '}';
+        return
+                 from + " -> " +
+                 to ;
     }
 }

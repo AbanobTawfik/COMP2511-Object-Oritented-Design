@@ -89,7 +89,9 @@ public class ShipmentPlanner {
         //close file
         sc.close();
         ASearch a = new ASearch();
-        path = a.Search(g,route);
+        a.setSchedule(route);
+        a.setG(g);
+        path = a.Search();
         printPath(path, a);
 
 
@@ -175,12 +177,19 @@ public class ShipmentPlanner {
         int timeTaken = a.getCost(directedEdges, g);
         System.out.println(nodesExpanded + " nodes expanded");
         System.out.println("cost = " + timeTaken);
-        for(int i = 0; i < directedEdges.size(); i++){
-            String portNameFrom = directedEdges.get(i).getFrom().getPortName();
-            String portNameTo = directedEdges.get(i).getTo().getPortName();
-            System.out.print("Ship " + portNameFrom + " to " + portNameTo);
-            System.out.println();
-        }
+        if(null != directedEdges) {
+            for (int i = 0; i < directedEdges.size()-1; i++) {
+                String portNameFrom = directedEdges.get(i).getFrom().getPortName();
+                String portNameTo = directedEdges.get(i).getTo().getPortName();
+                if(!portNameFrom.equals(portNameTo))
+                System.out.println("Ship " + portNameFrom + " to " + portNameTo);
+                if(!portNameTo.equals(directedEdges.get(i+1).getFrom().getPortName()))
+                System.out.println("Ship " + directedEdges.get(i).getTo().getPortName() + " to " + directedEdges.get(i+1).getFrom().getPortName());
+            }
+            if(!directedEdges.get(directedEdges.size()-2).equals(directedEdges.get(directedEdges.size()-1).getFrom().getPortName())){
+                System.out.println("Ship " + directedEdges.get(directedEdges.size()-1).getFrom() + " to " + directedEdges.get(directedEdges.size()-1).getTo().getPortName());
+            }
 
+        }
     }
 }

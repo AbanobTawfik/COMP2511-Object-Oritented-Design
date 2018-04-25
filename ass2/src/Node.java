@@ -5,6 +5,7 @@ public class Node {
     private int refuellingTime;
     private int indexOnGraph;
 
+
     public Node(String portName, int refuellingTime, int indexOnGraph) {
         this.portName = portName;
         this.refuellingTime = refuellingTime;
@@ -24,4 +25,8 @@ public class Node {
         return indexOnGraph;
     }
 
+    @Override
+    public String toString() {
+        return  portName  ;
+    }
 }
