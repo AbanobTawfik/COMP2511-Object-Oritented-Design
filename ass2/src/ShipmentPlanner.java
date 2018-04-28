@@ -175,9 +175,10 @@ public class ShipmentPlanner {
     public void printPath(LinkedList<DirectedEdge> directedEdges, ASearch a){
         int nodesExpanded = a.getNodesExpanded();
         int timeTaken = a.getCost(directedEdges, g);
-        System.out.println(nodesExpanded + " nodes expanded");
-        System.out.println("cost = " + timeTaken);
-        if(null != directedEdges) {
+
+        if(null != directedEdges && directedEdges.size() > 0) {
+            System.out.println(nodesExpanded + " nodes expanded");
+            System.out.println("cost = " + timeTaken);
             for (int i = 0; i < directedEdges.size()-1; i++) {
                 String portNameFrom = directedEdges.get(i).getFrom().getPortName();
                 String portNameTo = directedEdges.get(i).getTo().getPortName();

@@ -20,7 +20,7 @@ Time 11 Singapore Vancouver     # Travel time is 24 days from Singapore to Vanco
 Time 19 Singapore Manila        # Travel time is 22 days from Singapore to Manila
 Time 10 Vancouver Manila        # Travel time is 20 days from Vancouver to Manila
 Time 10 Sydney Hong
-Time 11 Hong Vancouver
+Time 12 Hong Vancouver
 Time 16 Hong Shanghai
 Time 20 Hong Singapore
 Shipment Manila Hong
@@ -29,4 +29,5 @@ Shipment Vancouver Shanghai
 Shipment Shanghai Singapore
 Shipment Manila Sydney
 Shipment Vancouver Manila
-Shipment Singapore Vancouver
+#Shipment Singapore Vancouver
+FIX UP MY FUCKING SINGLE PATH THINGY ASAP where it wont print if only 1 shipment

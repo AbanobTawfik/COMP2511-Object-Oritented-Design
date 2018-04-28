@@ -13,7 +13,11 @@ Time 12 Shanghai Manila         # Travel time is 12 days from Shanghai to Manila
 Time 24 Singapore Vancouver     # Travel time is 24 days from Singapore to Vancouver
 Time 22 Singapore Manila        # Travel time is 22 days from Singapore to Manila
 Time 20 Vancouver Manila        # Travel time is 20 days from Vancouver to Manila
-Shipment Singapore Vancouver    # Shipment is required from Singapore to Vancouver
-Shipment Shanghai Singapore     # Shipment is required from Shanghai to Singapore
-Shipment Sydney Vancouver       # Shipment is required from Sydney to Vancouver
-Shipment Sydney Manila          # Shipment is required from Sydney to Manila
+Shipment Singapore Vancouver
+Shipment Singapore Sydney
+Shipment Singapore Shanghai
+Shipment Shanghai Singapore
+Shipment Sydney Vancouver
+Shipment Sydney Manila
+Shipment Sydney Singapore
+Shipment Sydney Shanghai
