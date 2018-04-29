@@ -6,7 +6,7 @@ public class ShipmentPlanner {
     private LinkedList<DirectedEdge> route;
     private GraphOfPorts g;
     private LinkedList<DirectedEdge> path;
-    boolean graphInput;
+    private boolean graphInput;
 
     public static void main(String args[]){
         ShipmentPlanner sp = new ShipmentPlanner();

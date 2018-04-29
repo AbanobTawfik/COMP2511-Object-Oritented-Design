@@ -1,48 +1,93 @@
 import java.util.*;
+
+/**
+ * This class is a implementation from the graph interface
+ * it is a graph constructed of vertices from type Node with a 2d array of weights for all the nodes
+ * all the vertices on the graph are given in a list form, and have the same corresponding index's as the row/column index
+ * on the graphs edges
+ */
 public class GraphOfPorts implements Graph<Node> {
     private int nV;
     //keep track of the vertices on graph
     private LinkedList<Node> vertices;
     private int[][] edges;
 
-
+    /**
+     * Instantiates a new Graph with a 2d matrix of weights, size nV (the number of nodes in graph).
+     * <br /> this graph expects a non negative integer as the number of nodes, and will create a object
+     * which contains edges[nV][nV]
+     *
+     * @param nV the number of nodes in the graph
+     */
     public GraphOfPorts(int nV) {
         this.nV = nV;
         int[][] graphEdges = new int[nV][nV];
         //initalise weighted graph with no edges
         for (int i = 0; i < nV; i++) {
             for (int j = 0; j < nV; j++) {
-                if(i == j)
+                if (i == j)
                     graphEdges[i][j] = 0;
-
-                graphEdges[i][j] =-1;
+                else
+                    graphEdges[i][j] = -1;
 
             }
         }
         setEdges(graphEdges);
     }
 
+    /**
+     * this method will set a 2d matrix as the adjacency matrix for the graph with or without corresponding weights
+     *
+     * @param edges the 2d matrix we are storing our weights in
+     */
+    @Override
     public void setEdges(int[][] edges) {
         this.edges = edges;
     }
 
+
+    /**
+     * This method will assosciate a list of vertices to the nodes of the graph, where the index of the vertex on the vertex list
+     * is representitive of the graph matrix index for the node
+     *
+     * @param vertices the vertices
+     */
+    @Override
     public void setVertices(LinkedList<Node> vertices) {
         this.vertices = vertices;
     }
 
-    public LinkedList<Node> getVertices() {
-        return vertices;
-    }
-
+    /**
+     * this method  will return the number of nodes in the graph, it is required for scanning through the adjacency matrix.
+     * <br /> this is expected to always return the number of nodes in the graph
+     *
+     * @return the number of nodes in graph
+     */
+    @Override
     public int getnV() {
         return nV;
     }
 
+    /**
+     * this method will return the edges in the graph, the 2d adjacency matrix with all the weights stored inside
+     * <br /> this method will always be guaranteed to return a 2d matrix with known graph weights
+     *
+     * @return the edges in the adjacency matrix
+     */
+    @Override
     public int[][] getEdges() {
         return edges;
     }
 
-
+    /**
+     * will add a bi-directional edge between two Nodes with the same weighting. this method guarantees to
+     * connect two nodes on a graph and assign a numerical weighting for that connection
+     * <br /> this method expects two nodes and an integer output and will guarantee to connect those nodes with that weighting
+     *
+     * @param node1     the first node we are connecting, non null node
+     * @param node2     the second node we are connecting, non null node
+     * @param weighting a numberical weighting of the connection
+     */
     @Override
     public void insertEdge(Node node1, Node node2, int weighting) {
         //since it is a bidirectional fraph
@@ -53,25 +98,25 @@ public class GraphOfPorts implements Graph<Node> {
 
     }
 
-    @Override
-    public boolean isConnected(Node node1, Node node2) {
-        int index1 = node1.getIndexOnGraph();
-        int index2 = node2.getIndexOnGraph();
-
-        return (edges[index1][index2] > 0 && edges[index2][index1] >= 1);
-    }
-
-
+    /**
+     * Gets the index for node on the graph, since this is an adjacancy list matrix, the index of a node will allow access to a node from it's identifier
+     * <br /> this method accepts any input, and will guarantee to return the index of the node if it exists, or null if no node exists
+     *
+     * @param node the node we are locating
+     * @return the node index or -1 if no node exists
+     */
     @Override
     public int getNodeIndex(Node node) {
         return node.getIndexOnGraph();
     }
 
-    @Override
-    public Node getNodeByIndex(int index) {
-        return vertices.get(index);
-    }
-
+    /**
+     * Gets node by string identifier.
+     * <br /> this method will accept any String input, and will return the node with the respective string value
+     *
+     * @param s the string for the nodes identifier e.g node "Sydney".
+     * @return the node with the respective identifier
+     */
     @Override
     public Node getNodeByString(String s) {
         for (int i = 0; i < nV; i++) {
@@ -80,23 +125,4 @@ public class GraphOfPorts implements Graph<Node> {
         }
         return null;
     }
-
-    public int getWeightOfEdge(Node n1, Node n2) {
-        int index1 = n1.getIndexOnGraph();
-        int index2 = n2.getIndexOnGraph();
-        return edges[index1][index2];
-    }
-
-    public LinkedList<Node> getNeighbours(Node node) {
-        LinkedList<Node> resultant = new LinkedList<>();
-        for (int i = 0; i < nV; i++) {
-            Node node2 = getNodeByIndex(i);
-            if (isConnected(node, node2))
-                resultant.add(node2);
-        }
-
-        return resultant;
-    }
-
-
 }
