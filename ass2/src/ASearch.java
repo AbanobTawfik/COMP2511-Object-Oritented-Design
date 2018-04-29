@@ -14,6 +14,7 @@ public class ASearch implements Heuristic<searchNode> {
     /**
      * this method will set the schedule, it is going to be used to compare the path to the goal state
      * <br/> this method will accept any input
+     *
      * @param schedule the schedule which will contain all the required shipments
      */
     public void setSchedule(LinkedList<DirectedEdge> schedule) {
@@ -23,6 +24,7 @@ public class ASearch implements Heuristic<searchNode> {
     /**
      * Sets the graph for the class which will be used for the A* search.
      * <br/> this class will accept any graph type input
+     *
      * @param g the graph which is being searched
      */
     public void setG(GraphOfPorts g) {
@@ -35,6 +37,7 @@ public class ASearch implements Heuristic<searchNode> {
      * ALWAYS starts at sydney and the goal state is based on the schedule. the method guarantees to return the optimal path
      * from sydney that completes the schedule in the optimal amount of time, whilst utilising an admissable heuristic in
      * order to make the search efficient
+     *
      * @return a linked list of directed edges which is a series of shipments that can be linked into a path
      */
     public LinkedList<DirectedEdge> Search() {
@@ -69,17 +72,16 @@ public class ASearch implements Heuristic<searchNode> {
                 searchNode newPath = new searchNode(curr.getShipment());
                 LinkedList<DirectedEdge> ships = new LinkedList<DirectedEdge>(curr.getChildren());
                 newPath.setChildren(ships);
-                if(newPath.getChildren().contains(d))
+                if (newPath.getChildren().contains(d))
                     continue;
                 if (ships.size() == 0) {
-                    if(d.getFrom().equals(newPath.getShipment().getTo()))
+                    if (d.getFrom().equals(newPath.getShipment().getTo()))
                         newPath.addToChildren(new DirectedEdge(curr.getShipment().getTo(), d.getTo()));
                     else
                         newPath.addToChildren(new DirectedEdge(curr.getShipment().getTo(), d.getFrom()));
-                }
-                else
+                } else
                     newPath.addToChildren(d);
-                if(newPath.getChildren().getLast().getFrom().equals(newPath.getChildren().getLast().getTo()))
+                if (newPath.getChildren().getLast().getFrom().equals(newPath.getChildren().getLast().getTo()))
                     continue;
                 newPath.setGScore(getWeightPath(newPath));
                 newPath.setHScore(getShipmentScore(newPath));
@@ -125,6 +127,7 @@ public class ASearch implements Heuristic<searchNode> {
     /**
      * this method will check a search node with the goal state, which is that it has completed the shcedule
      * <br/> this method will expect a searchNode of any type and will guarantee to return true/false
+     *
      * @param path the path we are checking for a search node
      * @return true if the goal state is reached/otherwise false
      */
@@ -132,11 +135,25 @@ public class ASearch implements Heuristic<searchNode> {
         LinkedList<DirectedEdge> scheduleCopy = new LinkedList<DirectedEdge>();
         for (int i = 0; i < schedule.size(); i++)
             scheduleCopy.add(schedule.get(i));
+        LinkedList<DirectedEdge> d = new LinkedList<DirectedEdge>();
+        if (path.getChildren().size() > 0) {
+            for (int i = 0; i < path.getChildren().size() - 1; i++) {
+                d.add(new DirectedEdge(path.getChildren().get(i).getFrom(), path.getChildren().get(i).getTo()));
+                d.add(new DirectedEdge(path.getChildren().get(i).getTo(), path.getChildren().get(i + 1).getFrom()));
+            }
+            d.add(new DirectedEdge((path.getChildren().getLast().getFrom()), path.getChildren().getLast().getTo()));
+        }
+        if (path.getChildren().size() == 1) {
+            d.add(new DirectedEdge(path.getChildren().get(0).getFrom(), path.getChildren().get(0).getTo()));
+        }
+        if (path.getChildren().size() == 0) {
+            d.add(new DirectedEdge(path.getShipment().getFrom(), path.getShipment().getTo()));
+        }
         for (int i = 0; i < path.getChildren().size(); i++) {
-            if (scheduleCopy.contains(path.getChildren().get(i)))
+            if (d.contains(path.getChildren().get(i)))
                 scheduleCopy.remove(path.getChildren().get(i));
         }
-        return scheduleCopy.isEmpty();
+        return d.containsAll(schedule);
     }
 
 
@@ -144,6 +161,7 @@ public class ASearch implements Heuristic<searchNode> {
      * this method will create a path from a search node which is a linked list of directed edges that can
      * be connected together in order to form a path, this will be called when a path has met the goal state
      * <br/> this method will guarantee to return the path provided it has received a valid search node
+     *
      * @param route the searchNode which contains the path that is most optimal
      * @return the linked list of directed edges which is a representation of the path used in the print function
      */
@@ -157,9 +175,10 @@ public class ASearch implements Heuristic<searchNode> {
 
 
     /**
-     * returns the Gscore aka the path cost from the start to the last node in the path
+     * returns the cost  of the path cost from the start to the last node in the path
      * <br/> this method will guarantee to return an integer which is the absolute distance
      * from the start to the current place, or 0 if no path
+     *
      * @param edges the current path that is having its cost calculated
      * @param g     the graph in order to workout the weight of each connection
      * @return the cost required to get to the current position from the start Port "Sydney"
@@ -197,12 +216,23 @@ public class ASearch implements Heuristic<searchNode> {
      * this is the heuristic used in the search, it is an admissable heuristic as what it does is first, check the
      * path for which shipments it has completed on schedule, then it will add the remaining schedule to initalise the heuristic score
      * . when path is complete score = 0 for heuristic. the heuristic in order to find which path is better to follow
-     * will add the smallest remaining shipment remaining on schedule to the score. for example if the shipments remaining has
-     * scores [15,28,32] it will add 15. a path which has larger shipments remaining will be a worse path overall.
+     * will add the distance + time to the closest port on schedule to the last node in the path, this allows optimisation for the heuristic
+     * whilst still remaining admissable. the heuristic is admissable as the heuristic will never allow over-estimation for a shipment
+     * the heuristic adds the remaining shipment times left over with the current path, and this in alone will always admissable
+     * as the cost will always less be than the shortest cost path
+     * another trick which allows for greater optimisation is, picking the closest shipment to the node with a higher value
+     * nodes which have further neighbouring shipments will be adding a larger sum, whereas a node which is in itself its own neighbour
+     * aka you are on sydney and you have for example sydney -> (SOME RANDOM PORT), then the minimum distance to closest shipment is 0
+     * since sydney itself is on a shipment. this will retain the admissable feature, as it cannot over-estimate the cost, when the path is
+     * on the shipment, we can't add more than the cost of the shortest path like this
+     * in every situation for this heuristic h(x) < H*(x)
+     * <br /> this method is implemented from the heuristic interface which utilises the stratergy pattern for a generic
+     * scoring system, it expects a path or for a general case an object, and will guarantee to return a non negative integer
+     * representive of that object/path's estimated time/distance to the goal state.
      *
-     * The heuristic is admissible in all cases as the cost estimated + the score
-     * @param d
-     * @return
+     * @param d the search node which contains the current path we are searching
+     * @return a estimate of how close the path is to reaching goal state, this will be a non negative integer based on
+     * the current path for the search node.
      */
     @Override
     public int getShipmentScore(searchNode d) {
@@ -211,17 +241,18 @@ public class ASearch implements Heuristic<searchNode> {
 
         int minShipmentRemaining = minShipmentLeft(d);
         //now i want to do same for schedule remaining
-        //sum -= minShipment ;
         sum += minShipmentRemaining;
         return sum;
     }
 
 
     /**
-     * Gets weight path.
+     * This method will return the G_SCORE of the current path, aka the time taken to reach the last node in the path
+     * from the start port Sydney in this case. this method expects a search node which contains a "root" and a path from that root
+     * <br /> this method expects a search node (or path) to calculate the gscore for and will guarantee to return a non negative integer
      *
-     * @param s the s
-     * @return the weight path
+     * @param s the searchNode (path) we are scoring
+     * @return the cost of the path from the start to the last node in it's state
      */
     public int getWeightPath(searchNode s) {
         ArrayList<Node> path = new ArrayList<Node>();
@@ -245,11 +276,19 @@ public class ASearch implements Heuristic<searchNode> {
 
 
     /**
-     * On closed array list.
+     * This method will check if a searchNode is on the closed set of our A* search, it will return every searchNode
+     * which have the same STATE as the current search node, this is very important we say same state, as two search node
+     * with the same shipments but in a jumbled order, are still in the same state since they both have the same shipments
+     * however they will have different path costs, take for example <br/>
+     * Sydney->(Vancouver->Manila, shanghai->Singapore) and <br />
+     * Sydney->(Shanghai->Singapore, Vancouver->Manila) <br/>
+     * these different paths are in the same state as they contain the same shipments HOWEVER they do not have the same score.
+     * <br /> this method expects a valid path for its search node, and a list of search nodes on closed, and will guarantee
+     * to return a list (could be empty list too) containing all nodes which share the same state as our valid path that are on closed.
      *
-     * @param p      the p
-     * @param closed the closed
-     * @return the array list
+     * @param p      the search node aka the path we are checking
+     * @param closed the closed set which contains all other searchnodes (paths)
+     * @return An arraylist containing all the nodes which share the same state as our searchNode (path) P that are in the closed set
      */
     public ArrayList<Integer> onClosed(searchNode p, LinkedList<searchNode> closed) {
         ArrayList<Integer> ret = new ArrayList<Integer>();
@@ -262,11 +301,20 @@ public class ASearch implements Heuristic<searchNode> {
     }
 
     /**
-     * On open array list.
+     * This method will check if a given searchNode, aka path is on the open set. this checks if the path has the same state
+     * as other search nodes (paths) on the open set. This method will then return a list containing all paths that share the same state
+     * as the path we are checking. Similair to onClosed, we are checking if the paths have the same state as this means they have the same
+     * shipments, in a different order but vastly different costs for that path. take for example <br/>
+     * Sydney->(Vancouver->Manila, shanghai->Singapore) and <br />
+     * Sydney->(Shanghai->Singapore, Vancouver->Manila) <br/>
+     * these two path have the same state as they have the same shipments in a different order, however their costs vary depending
+     * on the edge weights and refuelling times.
+     * <br /> his method expects a valid path for its search node, and a list of search nodes on open, and will guarantee
+     * to return a list (could be empty list too) containing all nodes which share the same state as our valid path that are on open.
      *
-     * @param p    the p
-     * @param open the open
-     * @return the array list
+     * @param p    the search node aka the path we are checking
+     * @param open the open set which contains all other searchnodes (paths)
+     * @return An arraylist containing all the nodes which share the same state as our searchNode (path) P that are in the open set
      */
     public ArrayList<Integer> onOpen(searchNode p, PriorityQueue<searchNode> open) {
         PriorityQueue<searchNode> copy = new PriorityQueue<searchNode>(open);
@@ -286,74 +334,76 @@ public class ASearch implements Heuristic<searchNode> {
     }
 
     /**
-     * Gets schedule score remaining.
+     * This method will return the amount of time remaining to complete the direct schedule path remaining. it will first
+     * check which shipments have not been made, it will calculate the cost of those remaining shipments (sum them together).
+     * <br /> this method will expect a path of any kind, and will guarantee to return a non negative integer of how much time is required
+     * to complete the schedule in the current state
      *
-     * @param s the s
-     * @return the schedule score remaining
+     * @param s the path we are calculating remaining time needed to reach goal state
+     * @return the time remaining to finish the schedule directly (not accounting for linking)
      */
     public int getScheduleScoreRemaining(searchNode s) {
         int sum = 0;
+        LinkedList<DirectedEdge> d = new LinkedList<DirectedEdge>();
+        if (s.getChildren().size() > 0) {
+            for (int i = 0; i < s.getChildren().size() - 1; i++) {
+                d.add(new DirectedEdge(s.getChildren().get(i).getFrom(), s.getChildren().get(i).getTo()));
+                d.add(new DirectedEdge(s.getChildren().get(i).getTo(), s.getChildren().get(i + 1).getFrom()));
+            }
+            d.add(new DirectedEdge((s.getChildren().getLast().getFrom()), s.getChildren().getLast().getTo()));
+        }
+        if (s.getChildren().size() == 1) {
+            d.add(new DirectedEdge(s.getChildren().get(0).getFrom(), s.getChildren().get(0).getTo()));
+        }
         for (int i = 0; i < schedule.size(); i++) {
-            if (s.getChildren().contains(schedule.get(i)))
+            if (d.contains(schedule.get(i)))
                 continue;
             sum += schedule.get(i).getFrom().getRefuellingTime();
             sum += g.getEdges()[schedule.get(i).getFrom().getIndexOnGraph()][schedule.get(i).getTo().getIndexOnGraph()];
         }
+
         return sum;
     }
 
+
     /**
-     * Min shipment left int.
-     *
-     * @param s the s
-     * @return the int
+     * This method will return the closest shipment to the last node in our path if one exists. for example <br />
+     * if our schedule was <br/>
+     * Sydney -> vancouver <br/>
+     * Sydney -> Manila <br/>
+     * Shanghai -> Sydney <br/>
+     * and the last node in our path was sydney, since the schedule remaining has sydney -> vancouver/manila, the closest
+     * node on schedule is itself, so it would return 0, it will return the CLOSEST DISTANCE TO A NODE ON SCHEDULE.
+     * This method expects a valid path and will guarantee to return a non negative integer representing the closest distance to a node on path if one exists
+     * @param s the path
+     * @return the closest distance to another node that is on shipment, or 0 otherwise
      */
     public int minShipmentLeft(searchNode s) {
-        int sum = Integer.MAX_VALUE;
+        int temp1 = Integer.MAX_VALUE;
+        Node last = null;
+        if (s.getChildren().size() == 0)
+            last = s.getShipment().getTo();
+        else
+            last = s.getChildren().getLast().getTo();
+        if (null == last)
+            return 0;
         boolean flag = false;
-
         for (int i = 0; i < schedule.size(); i++) {
-            int temp = g.getEdges()[schedule.get(i).getFrom().getIndexOnGraph()][schedule.get(i).getTo().getIndexOnGraph()];
-            temp += schedule.get(i).getFrom().getRefuellingTime();
-            if (s.getChildren().contains(schedule.get(i)) && temp < sum) {
-                sum = temp;
+            int temp = g.getEdges()[schedule.get(i).getFrom().getIndexOnGraph()][last.getIndexOnGraph()];
+            if (!schedule.get(i).getFrom().equals(last))
+                temp += schedule.get(i).getFrom().getRefuellingTime();
+            if (!s.getChildren().contains(schedule.get(i)) && temp < temp1) {
+                temp1 = temp;
                 flag = true;
             }
 
         }
+
         if (flag == false)
-            sum = 0;
-        return sum;
+            temp1 = 0;
+        return temp1;
     }
 
 }
-
-    /*public int minShipmentLeft(searchNode s) {
-        int sum = Integer.MAX_VALUE;
-        boolean flag = false;
-        int temp1 = s.getChildren().getLast().getTo().getRefuellingTime();
-        int temp1 = g.getEdges()[schedule.getFirst().getFrom().getIndexOnGraph()][sc]
-        /*for (int i = 0; i < schedule.size(); i++) {
-            int temp = g.getEdges()[schedule.get(i).getFrom().getIndexOnGraph()][schedule.get(i).getTo().getIndexOnGraph()];
-            temp += schedule.get(i).getFrom().getRefuellingTime();
-            if (s.getChildren().contains(schedule.get(i)) && temp < sum) {
-                sum = temp;
-                flag = true;
-            }
-
-        }
-        for (int i = 0; i < schedule.size(); i++) {
-            int temp = g.getEdges()[schedule.get(i).getFrom().getIndexOnGraph()][schedule.get(i).getTo().getIndexOnGraph()];
-            temp += schedule.get(i).getFrom().getRefuellingTime();
-            if (!s.getChildren().contains(schedule.get(i)) && temp < sum) {
-                sum = temp;
-                flag = true;
-            }
-
-        }
-        if (flag == false)
-            sum = 0;
-        return sum;
-    }*/
 
 

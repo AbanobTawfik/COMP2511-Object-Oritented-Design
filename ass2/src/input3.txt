@@ -18,6 +18,18 @@ Shipment Shanghai Singapore     # Shipment is required from Shanghai to Singapor
 Shipment Sydney Vancouver       # Shipment is required from Sydney to Vancouver
 Shipment Sydney Manila          # Shipment is required from Sydney to Manila
 Shipment Vancouver Sydney
+
+
+
+
+
+
+
+
+
+
+
+
 #Refuelling 0 Sydney
 #Refuelling 0 Manila
 #Refuelling 0 Shanghai
