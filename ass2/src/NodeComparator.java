@@ -1,8 +1,21 @@
 import java.util.*;
 /**
- * The type Node comparator.
+ * This node comparator class implements the comparator interface utilising the stratergy pattern,
+ * it allows for the comparison of search nodes (paths) based on their respective Fscores, which is
+ * the sum of their actual cost of path and an estimation to goal state
  */
 public class NodeComparator implements Comparator<searchNode> {
+    /**
+     * this method will be used as a linear comparator for the priority Queue, it will compare the nodes based on their
+     * Fscore. and the nodes with lower fscore will be closer to the head, where the nodes with the higher fscore will be
+     * closer to the tail
+     * @param e1 the first searchNode, aka path we are comparing scores
+     * @param e2 the second searchNode, aka path we are comparing scores
+     * @return this will return either -1, 1 or 0. it will return -1 if the first path has a lower score than the second path
+     * <br /> it will return  1 if the first path has a higher score than the second path.
+     * <br/>otherwise 0 if they are equal
+     * the comparison is used to order the priority queue
+     */
     @Override
     public int compare(searchNode e1, searchNode e2) {
 

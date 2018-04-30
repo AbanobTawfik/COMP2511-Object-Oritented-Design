@@ -17,9 +17,7 @@ Shipment Singapore Vancouver    # Shipment is required from Singapore to Vancouv
 Shipment Shanghai Singapore     # Shipment is required from Shanghai to Singapore
 Shipment Sydney Vancouver       # Shipment is required from Sydney to Vancouver
 Shipment Sydney Manila          # Shipment is required from Sydney to Manila
-Shipment Vancouver Sydney
-
-
+#Shipment Vancouver Sydney
 
 
 
