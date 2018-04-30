@@ -577,5 +577,3 @@ public class ASearch implements Heuristic<searchNode> {
     }
 
 }
-
-

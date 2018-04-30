@@ -11,7 +11,9 @@ import java.util.Objects;
  * this class allows sydney-> vancouver to be represented as a node pair IN THE CORRECT ORDER (Sydney, vancouver)
  */
 public class DirectedEdge {
+    //the node which a shipment originates from
     private Node from;
+    //the node which a shipment finishes at
     private Node to;
 
     /**
@@ -22,8 +24,15 @@ public class DirectedEdge {
      * @param from Node which the shipment starts in
      * @param to   Node which the shipment finishes at
      */
+
+    /*
+     * this will create an object which is a directional node pair
+     * Node from -> Node to
+     */
     public DirectedEdge(Node from, Node to) {
+        //set the from node given
         this.from = from;
+        //set the to ndoe given
         this.to = to;
     }
 
@@ -33,6 +42,7 @@ public class DirectedEdge {
      * @return the node which the shipment originates from
      */
     public Node getFrom() {
+        //return the origin of the shipment
         return from;
     }
 
@@ -42,6 +52,7 @@ public class DirectedEdge {
      * @return the node which the shipment finishes at
      */
     public Node getTo() {
+        //return the destination of the shipment
         return to;
     }
 
@@ -52,10 +63,17 @@ public class DirectedEdge {
      * @return true if the object we are comparing is equivalent in everyway or false if not.
      */
     @Override
+    /*
+     * this method is required for comparing two shipments
+     */
     public boolean equals(Object o) {
+        //if its equal to the current directed edge itself, then return true
         if (this == o) return true;
+        //if the object is not a directed edge return false
         if (!(o instanceof DirectedEdge)) return false;
+        //otherwise cast the object as a directed edge
         DirectedEdge that = (DirectedEdge) o;
+        //return ALL ELEMENTS of the objects fields are EXACTLY equal to the directed edge
         return Objects.equals(getFrom(), that.getFrom()) &&
                 Objects.equals(getTo(), that.getTo());
     }

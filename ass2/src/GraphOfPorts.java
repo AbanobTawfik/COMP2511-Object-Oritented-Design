@@ -6,10 +6,16 @@ import java.util.*;
  * all the vertices on the graph are given in a list form, and have the same corresponding index's as the row/column index
  * on the graphs edges
  */
+/*
+ * this class utilises the stratergy pattern to create a graph of type Node which is an
+ * adjacency matrix graph type
+ */
 public class GraphOfPorts implements Graph<Node> {
+    //this is the number of nodes in the graph
     private int nV;
     //keep track of the vertices on graph
     private LinkedList<Node> vertices;
+    //the edges assosciated with that graph
     private int[][] edges;
 
     /**
@@ -20,18 +26,24 @@ public class GraphOfPorts implements Graph<Node> {
      * @param nV the number of nodes in the graph
      */
     public GraphOfPorts(int nV) {
+        //when creating a graph
         this.nV = nV;
+        //this will be used to se the edges for our graph
         int[][] graphEdges = new int[nV][nV];
-        //initalise weighted graph with no edges
+        //initalise weighted graph with edges weighted -1 (non existant)
+        //scan through the rows and columns of the matrix
         for (int i = 0; i < nV; i++) {
             for (int j = 0; j < nV; j++) {
+                //the edgeweight to the same node sydney->Sydney = 0
                 if (i == j)
                     graphEdges[i][j] = 0;
+                //otherwise initalise the edge weight as not existant (-1)
                 else
                     graphEdges[i][j] = -1;
 
             }
         }
+        //set the edges we initalised for the graph
         setEdges(graphEdges);
     }
 
@@ -42,6 +54,7 @@ public class GraphOfPorts implements Graph<Node> {
      */
     @Override
     public void setEdges(int[][] edges) {
+        //this method will set the edges for the graph
         this.edges = edges;
     }
 
@@ -54,6 +67,7 @@ public class GraphOfPorts implements Graph<Node> {
      */
     @Override
     public void setVertices(LinkedList<Node> vertices) {
+        //this method will set a list of vertices assosciated with that graph (identifiers for the nodes)
         this.vertices = vertices;
     }
 
@@ -65,6 +79,7 @@ public class GraphOfPorts implements Graph<Node> {
      */
     @Override
     public int getnV() {
+        //this method will return the number of vertices in graph (useful for scanning through the graph)
         return nV;
     }
 
@@ -76,6 +91,7 @@ public class GraphOfPorts implements Graph<Node> {
      */
     @Override
     public int[][] getEdges() {
+        //this method will return the edges of the graph which will be used to work out edge weights
         return edges;
     }
 
@@ -90,9 +106,12 @@ public class GraphOfPorts implements Graph<Node> {
      */
     @Override
     public void insertEdge(Node node1, Node node2, int weighting) {
-        //since it is a bidirectional fraph
+        //since it is a bidirectional fraph inserting an edges has to be the same in both direction
+        //Sydney -> Vancouver and Vancouver->Sydney have same travel time (different refuel times)
+        //we want to first find the index where the nodes are located
         int index1 = getNodeIndex(node1);
         int index2 = getNodeIndex(node2);
+        //then we went to set the the weight of the connection bi-directionally to the same weight input
         edges[index1][index2] = weighting;
         edges[index2][index1] = weighting;
 
@@ -107,6 +126,7 @@ public class GraphOfPorts implements Graph<Node> {
      */
     @Override
     public int getNodeIndex(Node node) {
+        //this method returns the index on the graph where the node is located
         return node.getIndexOnGraph();
     }
 
@@ -119,10 +139,13 @@ public class GraphOfPorts implements Graph<Node> {
      */
     @Override
     public Node getNodeByString(String s) {
+        //this method will scan through the vertex list
         for (int i = 0; i < nV; i++) {
+            //if the portName is equivalent, then return the node that has the same port name
             if (vertices.get(i).getPortName().equals(s))
                 return vertices.get(i);
         }
+        //return null if no node is found
         return null;
     }
 }

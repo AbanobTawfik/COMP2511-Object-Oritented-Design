@@ -27,7 +27,11 @@ Shipment Manila Hong
 Shipment Sydney Vancouver
 Shipment Vancouver Shanghai
 Shipment Shanghai Singapore
-Shipment Manila Sydney
-Shipment Vancouver Manila
-Shipment Singapore Vancouver
+#Shipment Manila Sydney
+#Shipment Vancouver Manila
+#Shipment Singapore Vancouver
 FIX UP MY FUCKING SINGLE PATH THINGY ASAP where it wont print if only 1 shipment
+
+#
+
+

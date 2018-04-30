@@ -4,6 +4,9 @@ import java.util.*;
  * it allows for the comparison of search nodes (paths) based on their respective Fscores, which is
  * the sum of their actual cost of path and an estimation to goal state
  */
+ /*
+  * this will be used as a comparator  for our priority queue
+  */
 public class NodeComparator implements Comparator<searchNode> {
     /**
      * this method will be used as a linear comparator for the priority Queue, it will compare the nodes based on their
@@ -16,15 +19,22 @@ public class NodeComparator implements Comparator<searchNode> {
      * <br/>otherwise 0 if they are equal
      * the comparison is used to order the priority queue
      */
+    /*
+     * this is our comparator's comparison method, it will compare searchNodes (paths) based
+     * on their FScore values.
+     */
+
     @Override
     public int compare(searchNode e1, searchNode e2) {
-
+        //if node 1 has a a lower FScore than node 2, return -1 which will put e1 BEFORE e2
         if (e1.getFScore() < e2.getFScore()) {
             return -1;
         }
+        //if node 1 has a higher FScore than node 2, return 1 which will put e2 BEFORE e1
         if (e1.getFScore() > e2.getFScore()) {
             return 1;
         }
+        //else return they are same whichw ill keep order same
         return 0;
     }
 }
