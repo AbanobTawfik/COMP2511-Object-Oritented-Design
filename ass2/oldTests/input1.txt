@@ -1,0 +1,37 @@
+is it manila -> hong -> manila ->sydney?
+Refuelling 0 Sydney             # Refuelling time is 6 days in Sydney
+;kijuwergfhbvc jkn;dfvs
+##@$@#$@
+:LF"SWDkfpdsfjkvdjok
+Refuelling 0 Shanghai           # Refuelling time is 4 days in Shanghai
+Refuelling 0 Singapore          # Refuelling time is 4 days in Singapore
+Refuelling 0 Vancouver          # Refuelling time is 6 days in Vancouver
+Refuelling 0 Manila             # Refuelling time is 8 days in Manila
+Refuelling 0 Hong
+Time 13 Sydney Shanghai         # Travel time is 18 days from Sydney to Shanghai
+Time 18 Sydney Singapore        # Travel time is 24 days from Sydney to Singapore
+Time 7 Sydney Vancouver        # Travel time is 18 days from Sydney to Vancouver
+Time 8 Sydney Manila           # Travel time is 10 days from Sydney to Manila
+Time 2 Manila Hong
+Time 5 Shanghai Singapore      # Travel time is 10 days from Shanghai to Singapore
+Time 6 Shanghai Vancouver      # Travel time is 24 days from Shanghai to Vancouver
+Time 15 Shanghai Manila         # Travel time is 12 days from Shanghai to Manila
+Time 11 Singapore Vancouver     # Travel time is 24 days from Singapore to Vancouver
+Time 19 Singapore Manila        # Travel time is 22 days from Singapore to Manila
+Time 10 Vancouver Manila        # Travel time is 20 days from Vancouver to Manila
+Time 10 Sydney Hong
+Time 12 Hong Vancouver
+Time 16 Hong Shanghai
+Time 20 Hong Singapore
+Shipment Manila Hong
+#Shipment Sydney Vancouver
+#Shipment Vancouver Shanghai
+#Shipment Shanghai Singapore
+#Shipment Manila Sydney
+#Shipment Vancouver Manila
+#Shipment Singapore Vancouver
+FIX UP MY FUCKING SINGLE PATH THINGY ASAP where it wont print if only 1 shipment
+
+#
+
+
