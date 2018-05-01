@@ -1,0 +1,24 @@
+please note my programs will work even if the triangle inequality is not in place
+it will always find THE BEST PATH EVEN IF THE TRIANGLE INEQUALITY IS NOT IN PLACE
+This test will be a simple test to make sure all shipments on a triangular path can return an optimal path
+that crosses every possible path (similair to euclidian path but bidireactional)
+
+#triangle with 3 vertices will use a perfect triplet triangle 65, 72, 97
+Refuelling 12 Vertex2                        #Refuelling time 12 days in Vertex2
+Refuelling 27 Vertex3                        #Refuelling time 27 days in Vertex3
+Refuelling 36 Sydney                         #Refuelling time 36 days in Sydney
+
+#connecting Vertex to all other nodes
+Time 72 Sydney Vertex2                       #Travel time is 10 days from Sydney to Vertex2
+Time 65 Sydney Vertex3                       #Travel time is 10 days from Sydney to Vertex3
+
+#connecting Vertex2 to all other nodes
+Time 97 Vertex2 Vertex3                      #Travel time is 10 days from Vertex2 to Vertex3
+
+#creating our schedule
+Shipment Sydney Vertex2                      #Shipment is required from Sydney to Vertex2
+Shipment Sydney Vertex3                      #Shipment is required from Sydney to Vertex3
+Shipment Vertex2 Vertex3                     #Shipment is required from Vertex2 to Vertex3
+Shipment Vertex2 Sydney                      #Shipment is required from Vertex2 to Sydney
+Shipment Vertex3 Sydney                      #Shipment is required from Vertex3 to Sydney
+Shipment Vertex3 Vertex2                     #Shipment is required from Vertex3 to Vertex2

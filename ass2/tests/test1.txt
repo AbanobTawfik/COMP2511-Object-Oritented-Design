@@ -1,0 +1,140 @@
+please note my programs will work even if the triangle inequality is not in place
+it will always find THE BEST PATH EVEN IF THE TRIANGLE INEQUALITY IS NOT IN PLACE
+This is a larger test on a more exhaustive case, where it will test a shipment with many many possible branches
+
+garbage
+testing invalid input too
+#RUNESCAPE MAP LUL
+sdafsdafsda
+fds
+dfsdf
+ffff
+
+#all the nodes in the graph
+Refuelling 10 Sydney                        #Refuelling time 10 days in Sydney
+Refuelling 15 Camelot                       #Refuelling time 10 days in Camelot
+Refuelling 20 Lumbridge                     #Refuelling time 10 days in Lumbridge
+Refuelling 40 Ardougne                      #Refuelling time 10 days in Ardougne
+Refuelling 13 Yanille                       #Refuelling time 10 days in Yanille
+Refuelling 26 GrandExchange                 #Refuelling time 10 days in GrandExchange
+Refuelling 37 Alkharid                      #Refuelling time 10 days in Alkharid
+Refuelling 33 Falador                       #Refuelling time 10 days in Falador
+Refuelling 23 Taverly                       #Refuelling time 10 days in Taverly
+Refuelling 22 PortSarim                     #Refuelling time 10 days in PortSarim
+Refuelling 19 Catherby                      #Refuelling time 10 days in Catherby
+Refuelling 0 Wilderness                     #Refuelling time 10 days in Wilderness
+Refuelling 29 Canafis                       #Refuelling time 10 days in Canafis
+
+#connecting sydney to all other nodes
+Time 400 Sydney Camelot                     #Travel time is 400 days from Sydney to Camelot
+Time 100 Sydney Lumbridge                   #Travel time is 100 days from Sydney to Lumbridge
+Time 569 Sydney Ardougne                    #Travel time is 569 days from Sydney to Ardougne
+Time 800 Sydney Yanille                     #Travel time is 800 days from Sydney to Yanille
+Time 12 Sydney GrandExchange                #Travel time is 12 days from Sydney to GrandExchange
+Time 90 Sydney Alkharid                     #Travel time is 90 days from Sydney to Alkharid
+Time 100 Sydney Falador                     #Travel time is 100 days from Sydney to Falador
+Time 125 Sydney Taverly                     #Travel time is 125 days from Sydney to Taverly
+Time 125 Sydney PortSarim                   #Travel time is 125 days from Sydney to PortSarim
+Time 270 Sydney Catherby                    #Travel time is 270 days from Sydney to Catherby
+Time 20 Sydney Wilderness                   #Travel time is 20 days from Sydney to Wilderness
+Time 150 Sydney Canafis                     #Travel time is 150 days from Sydney to Canafis
+
+#connecting camelot to all other nodes
+Time 489 Camelot Lumbridge                  #Travel time is 489 days from Camelot to Lumbridge
+Time 150 Camelot Ardougne                   #Travel time is 150 days from Camelot to Ardougne
+Time 377 Camelot Yanille                    #Travel time is 377 days from Camelot to Yanille
+Time 371 Camelot GrandExchange              #Travel time is 371 days from Camelot to GrandExchange
+Time 460 Camelot Alkharid                   #Travel time is 460 days from Camelot to Alkharid
+Time 250 Camelot Falador                    #Travel time is 250 days from Camelot to Falador
+Time 165 Camelot Taverly                    #Travel time is 165 days from Camelot to Taverly
+Time 223 Camelot PortSarim                  #Travel time is 223 days from Camelot to PortSarim
+Time 40 Camelot Catherby                    #Travel time is 40 days from Camelot to Catherby
+Time 300 Camelot Wilderness                 #Travel time is 300 days from Camelot to Wilderness
+Time 655 Camelot Canafis                    #Travel time is 655 days from Camelot to Canafis
+
+#connecting lumbridge to all other nodes
+Time 758 Lumbridge Ardougne                 #Travel time is 758 days from Lumbridge to Ardougne
+Time 1085 Lumbridge Yanille                 #Travel time is 1085 days from Lumbridge to Yanille
+Time 154 Lumbridge GrandExchange            #Travel time is 154 days from Lumbridge to GrandExchange
+Time 9 Lumbridge Alkharid                   #Travel time is 9 days from Lumbridge to Alkharid
+Time 185 Lumbridge Falador                  #Travel time is 185 days from Lumbridge to Falador
+Time 232 Lumbridge Taverly                  #Travel time is 232 days from Lumbridge to Taverly
+Time 127 Lumbridge PortSarim                #Travel time is 127 days from Lumbridge to PortSarim
+Time 443 Lumbridge Catherby                 #Travel time is 443 days from Lumbridge to Catherby
+Time 117 Lumbridge Wilderness               #Travel time is 117 days from Lumbridge to Wilderness
+Time 239 Lumbridge Canafis                  #Travel time is 239 days from Lumbridge to Canafis
+
+#connecting ardougne to all other nodes
+Time 183 Ardougne Yanille                   #Travel time is 183 days from Ardougne to Yanille
+Time 654 Ardougne GrandExchange             #Travel time is 654 days from Ardougne to GrandExchange
+Time 702 Ardougne Alkharid                  #Travel time is 702 days from Ardougne to Alkharid
+Time 243 Ardougne Falador                   #Travel time is 243 days from Ardougne to Falador
+Time 209 Ardougne Taverly                   #Travel time is 209 days from Ardougne to Taverly
+Time 343 Ardougne PortSarim                 #Travel time is 343 days from Ardougne to PortSarim
+Time 165 Ardougne Catherby                  #Travel time is 165 days from Ardougne to Catherby
+Time 598 Ardougne Wilderness                #Travel time is 598 days from Ardougne to Wilderness
+Time 802 Ardougne Canafis                   #Travel time is 802 days from Ardougne to Canafis
+
+#connecting yanille to all other nodes
+Time 821 Yanille GrandExchange              #Travel time is 821 days from Yanille to GrandExchange
+Time 789 Yanille Alkharid                   #Travel time is 789 days from Yanille to Alkharid
+Time 643 Yanille Falador                    #Travel time is 643 days from Yanille to Falador
+Time 302 Yanille Taverly                    #Travel time is 302 days from Yanille to Taverly
+Time 700 Yanille PortSarim                  #Travel time is 700 days from Yanille to PortSarim
+Time 340 Yanille Catherby                   #Travel time is 340 days from Yanille to Catherby
+Time 834 Yanille Wilderness                 #Travel time is 834 days from Yanille to Wilderness
+Time 976 Yanille Canafis                    #Travel time is 976 days from Yanille to Canafis
+
+#connecting grandExchange to all other nodes
+Time 122 GrandExchange Alkharid             #Travel time is 400 days from GrandExchange to Alkharid
+Time 90  GrandExchange Falador              #Travel time is 400 days from GrandExchange to Falador
+Time 130 GrandExchange Taverly              #Travel time is 400 days from GrandExchange to Taverly
+Time 159 GrandExchange PortSarim            #Travel time is 400 days from GrandExchange to PortSarim
+Time 170 GrandExchange Catherby             #Travel time is 400 days from GrandExchange to Catherby
+Time 10  GrandExchange Wilderness           #Travel time is 400 days from GrandExchange to Wilderness
+Time 138 GrandExchange Canafis              #Travel time is 400 days from GrandExchange to Canafis
+
+#connecting alkharid to all other nodes
+Time 200 Alkharid Falador                   #Travel time is 200 days from Alkharid to Falador
+Time 230 Alkharid Taverly                   #Travel time is 230 days from Alkharid to Taverly
+Time 174 Alkharid PortSarim                 #Travel time is 174 days from Alkharid to PortSarim
+Time 270 Alkharid Catherby                  #Travel time is 270 days from Alkharid to Catherby
+Time 130 Alkharid Wilderness                #Travel time is 130 days from Alkharid to Wilderness
+Time 120 Alkharid Canafis                   #Travel time is 120 days from Alkharid to Canafis
+
+#connecting falador to all other nodes
+Time 40  Falador Taverly                    #Travel time is 40 days from Falador to Taverly
+Time 40  Falador PortSarim                  #Travel time is 40 days from Falador to PortSarim
+Time 80  Falador Catherby                   #Travel time is 80 days from Falador to Catherby
+Time 140 Falador Wilderness                 #Travel time is 140 days from Falador to Wilderness
+Time 300 Falador Canafis                    #Travel time is 300 days from Falador to Canafis
+
+#connecting taverly to all other nodes
+Time 80 Taverly PortSarim                   #Travel time is 80 days from Taverly to PortSarim
+Time 40 Taverly Catherby                    #Travel time is 40 days from Taverly to Catherby
+Time 280 Taverly Wilderness                 #Travel time is 280 days from Taverly to Wilderness
+Time 334 Taverly Canafis                    #Travel time is 334 days from Taverly to Canafis
+
+#connecting port sarim to all other nodes
+Time 130 PortSarim Catherby                 #Travel time is 130 days from PortSarim to Catherby
+Time 150 PortSarim Wilderness               #Travel time is 150 days from PortSarim to Wilderness
+Time 350 PortSarim Canafis                  #Travel time is 350 days from PortSarim to Canafis
+
+#connecting catherby to all other nodes
+Time 290 Catherby Wilderness                #Travel time is 290 days from Catherby to Wilderness
+Time 400 Catherby Canafis                   #Travel time is 400 days from Catherby to Canafis
+
+#connecting wilderness to all other nodes
+Time 100 Wilderness Canafis                 #Travel time is 100 days from Wilderness to Canafis
+
+#this test is very exhaustive and will take a long time without heuristic
+#creating our schedule
+Shipment Sydney Lumbridge                   #Shipment is required from Sydney to Lumbridge
+Shipment Yanille GrandExchange              #Shipment is required from Yanille to GrandExchange
+Shipment Ardougne Camelot                   #Shipment is required from Ardougne to Camelot
+Shipment Camelot Wilderness                 #Shipment is required from Camelot to Wilderness
+Shipment Wilderness Sydney                  #Shipment is required from Wilderness to Sydney
+Shipment Lumbridge Sydney                   #Shipment is required from Lumbridge to Sydney
+Shipment Wilderness Canafis                 #Shipment is required from Wilderness to Canafis
+Shipment Canafis Taverly                    #Shipment is required from Canafis to Taverly
+Shipment Taverly Alkharid                   #Shipment is required from Taverly to Alkharid

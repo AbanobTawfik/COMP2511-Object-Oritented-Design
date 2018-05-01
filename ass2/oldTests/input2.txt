@@ -1,0 +1,23 @@
+Refuelling 6 Sydney             # Refuelling time is 6 days in Sydney
+Refuelling 4 Shanghai           # Refuelling time is 4 days in Shanghai
+Refuelling 4 Singapore          # Refuelling time is 4 days in Singapore
+Refuelling 6 Vancouver          # Refuelling time is 6 days in Vancouver
+Refuelling 8 Manila             # Refuelling time is 8 days in Manila
+Time 18 Sydney Shanghai         # Travel time is 18 days from Sydney to Shanghai
+Time 24 Sydney Singapore        # Travel time is 24 days from Sydney to Singapore
+Time 18 Sydney Vancouver        # Travel time is 18 days from Sydney to Vancouver
+Time 10 Sydney Manila           # Travel time is 10 days from Sydney to Manila
+Time 10 Shanghai Singapore      # Travel time is 10 days from Shanghai to Singapore
+Time 24 Shanghai Vancouver      # Travel time is 24 days from Shanghai to Vancouver
+Time 12 Shanghai Manila         # Travel time is 12 days from Shanghai to Manila
+Time 24 Singapore Vancouver     # Travel time is 24 days from Singapore to Vancouver
+Time 22 Singapore Manila        # Travel time is 22 days from Singapore to Manila
+Time 20 Vancouver Manila        # Travel time is 20 days from Vancouver to Manila
+Shipment Singapore Vancouver
+Shipment Singapore Sydney
+Shipment Singapore Shanghai
+Shipment Shanghai Singapore
+Shipment Sydney Vancouver
+Shipment Sydney Manila
+Shipment Sydney Singapore
+Shipment Sydney Shanghai
