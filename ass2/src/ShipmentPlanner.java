@@ -13,7 +13,7 @@ import java.util.*;
  * (outdegree of all nodes are m since they are all connected)
  * The runtime complexity analysis for the A*Search without a heuristic in worst case is O(m^n).
  * in best case it will be O(n) where n is the number of shipments on the schedule.
- * However, through the use of my heuristic I will be eliminating paths that are “useless” and
+ * However, through the use of my heuristic I will be eliminating paths that are useless and
  * prioritising paths which have great scores. The way my heuristic will do this is take the path,
  * and add the remaining schedule weight to the path, and the closest distance to the nearest node
  * on shipment to the last node in the path (0 if the last node in the path is a shipment itself).
@@ -22,7 +22,7 @@ import java.util.*;
  * open set. This will get rid of paths which have longer distances to reach goal state since they
  * will not be optimal paths. In order to calculate the effectiveness of the heuristic I will be using
  * the formula supplied on Wikipedia that
- * N + 1 = 1 + k + k^2 + …. + k^n to solve for K,
+ * N + 1 = 1 + k + k^2 + (all inbetween) + k^n to solve for K,
  * where N are the number of nodes expanded.
  * In one of my searches 19 nodes expanded, and n = 7 m = 5
  * 20 = 1 + k + k^2 + k^3 + k^4 + k^5 + k^6 + k^7
