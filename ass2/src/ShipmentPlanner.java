@@ -6,24 +6,54 @@ import java.util.*;
  * and creates a graph based on input, connect the edges on the graph by supplying weighting, then finding a shipment plan
  * for a given schedule.
  */
+/* HEURISTIC RUNTIME ANALYSIS
+ * (as quoted from Wikipedia)
+ * Consider integer n which represents the number of shipments where n>=0
+ * And consider integer m which represents the number of nodes on graph where m >=0
+ * (outdegree of all nodes are m since they are all connected)
+ * The runtime complexity analysis for the A*Search without a heuristic in worst case is O(m^n).
+ * in best case it will be O(n) where n is the number of shipments on the schedule.
+ * However, through the use of my heuristic I will be eliminating paths that are “useless” and
+ * prioritising paths which have great scores. The way my heuristic will do this is take the path,
+ * and add the remaining schedule weight to the path, and the closest distance to the nearest node
+ * on shipment to the last node in the path (0 if the last node in the path is a shipment itself).
+ * What this will do is, paths which have longer distance to complete shipment, or paths which are
+ * further away from shipments are discarded, their scores will be high and towards the end of the
+ * open set. This will get rid of paths which have longer distances to reach goal state since they
+ * will not be optimal paths. In order to calculate the effectiveness of the heuristic I will be using
+ * the formula supplied on Wikipedia that
+ * N + 1 = 1 + k + k^2 + …. + k^n to solve for K,
+ * where N are the number of nodes expanded.
+ * In one of my searches 19 nodes expanded, and n = 7 m = 5
+ * 20 = 1 + k + k^2 + k^3 + k^4 + k^5 + k^6 + k^7
+ * 19 = k + k^2 + k^3 + k^4 + k^5 + k^6 + k^7
+ * Using an online calculator
+ * K = 1.25215
+ * The heuristic I have used brings runtime costs to O(1.25215^n) rather than the O(5^n).
+ * this is because the heuristic will get rid of all extra branching which will result in less
+ * suboptimal paths checked, since suboptimal paths will not be expanded on further during search.
+ */
 public class ShipmentPlanner {
+    //initalise the vertex list as a new list of nodes
     //this will be the list of nodes which comprise the graph
-    private LinkedList<Node> vertices;
+    private LinkedList<Node> vertices = new LinkedList<Node>();
+    //initalise our schedule as a new list of directed edges(shipments)
     //this will be the shipments required on the schedule
-    private LinkedList<DirectedEdge> schedule;
+    private LinkedList<DirectedEdge> schedule = new LinkedList<DirectedEdge>();
     //this will be the graph used in the search
     private GraphOfPorts g;
     //this will be the path returned from the A* search
     private LinkedList<DirectedEdge> path;
+    //initalise flag as false (scan in node input)
     //this will be used as a flag to check when all the nodes have been scanned from input
-    private boolean graphInput;
+    private boolean graphInput = false;
 
     /**
      * This is the main class where the program runs
      *
      * @param args the command line arguements read in
      */
-    public static void main(String args[]){
+    public static void main(String args[]) {
         //bootstrapping the class to run the main method
         ShipmentPlanner sp = new ShipmentPlanner();
         //read file input from args[0]
@@ -35,14 +65,7 @@ public class ShipmentPlanner {
      *
      * @param FileInput the file read in from command line
      */
-    public void runTests(String FileInput)
-    {
-        //initalise flag as false (scan in node input)
-        graphInput = false;
-        //initalise the vertex list as a new list of nodes
-        vertices = new LinkedList<Node>();
-        //initalise our schedule as a new list of directed edges(shipments)
-        schedule = new LinkedList<DirectedEdge>();
+    public void runTests(String FileInput) {
         //file input
         Scanner sc = null;
         try {
@@ -138,15 +161,15 @@ public class ShipmentPlanner {
     /*
      * proccess the line request from the file scan
      */
-    public void process(String request[]){
+    public void process(String request[]) {
         //if the first word of the request IS "Refuelling" we want to go to the refuel handler
-        if(request[0].equals("Refuelling"))
+        if (request[0].equals("Refuelling"))
             outcomeRefuelling(request);
         //if the first word of the request IS "Time" we want to go to the Time handler
-        if(request[0].equals("Time"))
+        if (request[0].equals("Time"))
             outcomeTime(request);
         //if the first word of the request IS "Shipment" we want to go to the Shipment handler
-        if(request[0].equals("Shipment"))
+        if (request[0].equals("Shipment"))
             outcomeShipment(request);
         //otherwise no handle return to file scanning
     }
@@ -160,7 +183,7 @@ public class ShipmentPlanner {
     /*
      * handler for handling refuelling requests creates a node on our graph
      */
-    public void outcomeRefuelling(String request[]){
+    public void outcomeRefuelling(String request[]) {
         try {
             //check if the first part of the request is an integer
             Integer.parseInt(request[1]);
@@ -176,7 +199,7 @@ public class ShipmentPlanner {
         //set the port name as the part of input after integer so in our case "Sydney"
         String portName = request[2];
         //now create a new node from the port name, index and refuel time and add it to the vertex list
-        Node add = new Node(portName,refuelTime,nodeIndex);
+        Node add = new Node(portName, refuelTime, nodeIndex);
         vertices.add(add);
     }
 
@@ -189,7 +212,7 @@ public class ShipmentPlanner {
     /*
      * handler for handling Time requests creates adds edge weight on our graph
      */
-    public void outcomeTime(String request[]){
+    public void outcomeTime(String request[]) {
         //if this is the first time coming accross graph input we want to
         //make our graph and add the edge in the request
         try {
@@ -209,13 +232,13 @@ public class ShipmentPlanner {
         int indexOfPort1 = getNodeIndexByString(port1Name);
         int indexOfPort2 = getNodeIndexByString(port2Name);
         //if neither node exists in the graph we want to skip over
-        if(indexOfPort1 == -1 || indexOfPort2 == -1)
+        if (indexOfPort1 == -1 || indexOfPort2 == -1)
             return;
         //now we want to retrieve those nodes from the vertex list
         Node port1 = vertices.get(indexOfPort1);
         Node port2 = vertices.get(indexOfPort2);
         //IF the graph has not been created yet (flag still false)
-        if(!graphInput){
+        if (!graphInput) {
             //we want to create our graph with the given vertex list
             //since we are no longer scanning in node input
             int nV = vertices.size();
@@ -224,12 +247,12 @@ public class ShipmentPlanner {
             //set it's vertices as the current vertex list
             g.setVertices(vertices);
             //now we use the inbuilt function to create an edge between the two nodes
-            g.insertEdge(port1,port2,weight);
+            g.insertEdge(port1, port2, weight);
             //set the flag as true (graph has been created) wont create a new graph again and reset
             graphInput = true;
-        }else {
+        } else {
             //otherwise just add the edge weight to the graph
-            g.insertEdge(port1,port2,weight);
+            g.insertEdge(port1, port2, weight);
         }
     }
 
@@ -239,7 +262,7 @@ public class ShipmentPlanner {
      *
      * @param request the line request from the input file
      */
-    public void outcomeShipment(String request[]){
+    public void outcomeShipment(String request[]) {
         //["Shipment" "Sydney" "Manila"]
         //now we want to set the first and second port name in order to locate them (order IS VERY VERY important since)
         //the shipment has specific direction it MUST be made from sydney TO manila, which is extremely different from manila to sydney
@@ -249,7 +272,7 @@ public class ShipmentPlanner {
         int indexOfPort1 = getNodeIndexByString(port1Name);
         int indexOfPort2 = getNodeIndexByString(port2Name);
         //if neither node exists in the graph we want to skip over
-        if(indexOfPort1 == -1 || indexOfPort2 == -1)
+        if (indexOfPort1 == -1 || indexOfPort2 == -1)
             return;
         //we want to now retrieve those nodes from the vertex list
         Node port1 = vertices.get(indexOfPort1);
@@ -267,18 +290,19 @@ public class ShipmentPlanner {
      * as nodes are referenced by string.
      * <br/> this method expects a string of any sort, and will guarantee to return the index where the node is located
      * or -1 if the node doesn't exist in the graph
+     *
      * @param s the string which is used to identify the node
      * @return the index of the node in the graph, if it exists or -1 otherwise.
      */
     /*
      * returns the index of the node based on the string value
      */
-    public int getNodeIndexByString(String s){
+    public int getNodeIndexByString(String s) {
         //this function will scan through the vertex list
-        for(int i = 0; i < vertices.size(); i++){
+        for (int i = 0; i < vertices.size(); i++) {
             //it will check if the port name of the vertex at index i is the
             //same string as the one entered in input
-            if(vertices.get(i).getPortName().equals(s))
+            if (vertices.get(i).getPortName().equals(s))
                 //return the index if it is found
                 return i;
         }
@@ -296,43 +320,43 @@ public class ShipmentPlanner {
     /*
      * This method will print the path for the A* result
      */
-    public void printPath(LinkedList<DirectedEdge> directedEdges, ASearch a){
+    public void printPath(LinkedList<DirectedEdge> directedEdges, ASearch a) {
         //retrieving the number of nodes expanded search
         int nodesExpanded = a.getNodesExpanded();
         //retrieving the time taken in the search
         int timeTaken = a.getCost(directedEdges, g);
         //if the A* search returns a path then we want to print an output, otherwise we print nothing
-        if(null != directedEdges && directedEdges.size() > 0) {
+        if (null != directedEdges && directedEdges.size() > 0) {
             //print out the number of nodes expanded
             System.out.println(nodesExpanded + " nodes expanded");
             //print out the cost of the path
             System.out.println("cost = " + timeTaken);
             //now we want to scan up until the last node
-            for (int i = 0; i < directedEdges.size()-1; i++) {
+            for (int i = 0; i < directedEdges.size() - 1; i++) {
                 //we want to (for simplicity of writing the code) get the port name of the from Node
                 //we want to get the port name of the TO node
                 String portNameFrom = directedEdges.get(i).getFrom().getPortName();
                 String portNameTo = directedEdges.get(i).getTo().getPortName();
                 //if the shipment is to itself, i.e sydney->sydney DO NOT print
-                if(!portNameFrom.equals(portNameTo))
-                //now we print ship portFrom TO portTO
-                System.out.println("Ship " + portNameFrom + " to " + portNameTo);
+                if (!portNameFrom.equals(portNameTo))
+                    //now we print ship portFrom TO portTO
+                    System.out.println("Ship " + portNameFrom + " to " + portNameTo);
                 //if the shipment to the next node is not the same example
                 //Sydney -> Vancouver
                 //Vanoucver -> Manila
                 // we dont want to print Vancouver -> Vancouver, just Vancouver -> Manila
-                if(!portNameTo.equals(directedEdges.get(i+1).getFrom().getPortName()))
-                //otherwise we want print the connection shipment eg
-                //Sydney ->Manila
-                //Vancouver ->Shanghai
-                //this will allow us to print Manila->Vancouver despite no direct connection
-                System.out.println("Ship " + directedEdges.get(i).getTo().getPortName() + " to " + directedEdges.get(i+1).getFrom().getPortName());
+                if (!portNameTo.equals(directedEdges.get(i + 1).getFrom().getPortName()))
+                    //otherwise we want print the connection shipment eg
+                    //Sydney ->Manila
+                    //Vancouver ->Shanghai
+                    //this will allow us to print Manila->Vancouver despite no direct connection
+                    System.out.println("Ship " + directedEdges.get(i).getTo().getPortName() + " to " + directedEdges.get(i + 1).getFrom().getPortName());
 
             }
             //now we print the final shipment as it, from -> TO provided they are not the same node
             //eg sydney->Sydney
-            if(!directedEdges.get(directedEdges.size()-2).equals(directedEdges.get(directedEdges.size()-1).getFrom().getPortName())){
-                System.out.print("Ship " + directedEdges.get(directedEdges.size()-1).getFrom() + " to " + directedEdges.get(directedEdges.size()-1).getTo().getPortName());
+            if (!directedEdges.get(directedEdges.size() - 2).equals(directedEdges.get(directedEdges.size() - 1).getFrom().getPortName())) {
+                System.out.print("Ship " + directedEdges.get(directedEdges.size() - 1).getFrom() + " to " + directedEdges.get(directedEdges.size() - 1).getTo().getPortName());
             }
 
         }
