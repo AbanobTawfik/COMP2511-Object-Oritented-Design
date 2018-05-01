@@ -1,4 +1,9 @@
 #RUNESCAPE MAP LUL
+sdafsdafsda
+fds
+dfsdf
+ffff
+#all the nodes in the graph
 Refuelling 10 Sydney
 Refuelling 15 Camelot
 Refuelling 20 Lumbridge
@@ -13,6 +18,7 @@ Refuelling 19 Catherby
 Refuelling 0 Wilderness
 Refuelling 29 Canafis
 
+#connecting sydney to all other nodes
 Time 400 Sydney Camelot
 Time 100 Sydney Lumbridge
 Time 569 Sydney Ardougne
@@ -26,6 +32,7 @@ Time 270 Sydney Catherby
 Time 20 Sydney Wilderness
 Time 150 Sydney Canafis
 
+#connecting camelot to all other nodes
 Time 489 Camelot Lumbridge
 Time 150 Camelot Ardougne
 Time 377 Camelot Yanille
@@ -38,6 +45,7 @@ Time 40 Camelot Catherby
 Time 300 Camelot Wilderness
 Time 655 Camelot Canafis
 
+#connecting lumbridge to all other nodes
 Time 758 Lumbridge Ardougne
 Time 1085 Lumbridge Yanille
 Time 154 Lumbridge GrandExchange
@@ -49,6 +57,7 @@ Time 443 Lumbridge Catherby
 Time 117 Lumbridge Wilderness
 Time 239 Lumbridge Canafis
 
+#connecting ardougne to all other nodes
 Time 183 Ardougne Yanille
 Time 654 Ardougne GrandExchange
 Time 702 Ardougne Alkharid
@@ -59,6 +68,7 @@ Time 165 Ardougne Catherby
 Time 598 Ardougne Wilderness
 Time 802 Ardougne Canafis
 
+#connecting yanille to all other nodes
 Time 821 Yanille GrandExchange
 Time 789 Yanille Alkharid
 Time 643 Yanille Falador
@@ -68,6 +78,7 @@ Time 340 Yanille Catherby
 Time 834 Yanille Wilderness
 Time 976 Yanille Canafis
 
+#connecting grandExchange to all other nodes
 Time 122 GrandExchange Alkharid
 Time 90 GrandExchange Falador
 Time 130 GrandExchange Taverly
@@ -76,6 +87,7 @@ Time 170 GrandExchange Catherby
 Time 10 GrandExchange Wilderness
 Time 138 GrandExchange Canafis
 
+#connecting alkharid to all other nodes
 Time 200 Alkharid Falador
 Time 230 Alkharid Taverly
 Time 174 Alkharid PortSarim
@@ -83,24 +95,39 @@ Time 270 Alkharid Catherby
 Time 130 Alkharid Wilderness
 Time 120 Alkharid Canafis
 
+#connecting falador to all other nodes
 Time 40 Falador Taverly
 Time 40 Falador PortSarim
 Time 80 Falador Catherby
 Time 140 Falador Wilderness
 Time 300 Falador Canafis
 
+#connecting taverly to all other nodes
 Time 80 Taverly PortSarim
 Time 40 Taverly Catherby
 Time 280 Taverly Wilderness
 Time 334 Taverly Canafis
 
+#connecting port sarim to all other nodes
 Time 130 PortSarim Catherby
 Time 150 PortSarim Wilderness
 Time 350 PortSarim Canafis
 
+#connecting catherby to all other nodes
 Time 290 Catherby Wilderness
 Time 400 Catherby Canafis
 
+#connecting wilderness to all other nodes
 Time 100 Wilderness Canafis
 
+#creating our schedule
 Shipment Sydney Lumbridge
+Shipment Yanille GrandExchange
+Shipment Ardougne Camelot
+Shipment Camelot Wilderness
+Shipment Wilderness Sydney
+Shipment Lumbridge Sydney
+Shipment Wilderness Canafis
+Shipment Canafis Taverly
+Shipment Tavery PortSarim
+Shipment Taverly Alkharid

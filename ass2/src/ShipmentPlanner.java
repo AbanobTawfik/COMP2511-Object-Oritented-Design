@@ -326,6 +326,7 @@ public class ShipmentPlanner {
         int nodesExpanded = a.getNodesExpanded();
         //retrieving the time taken in the search
         int timeTaken = a.getCost(directedEdges, g);
+
         //if the A* search returns a path then we want to print an output, otherwise we print nothing
         if (null != directedEdges && directedEdges.size() > 0) {
             //print out the number of nodes expanded
@@ -356,8 +357,12 @@ public class ShipmentPlanner {
             }
             //now we print the final shipment as it, from -> TO provided they are not the same node
             //eg sydney->Sydney
-            if (!directedEdges.get(directedEdges.size() - 2).equals(directedEdges.get(directedEdges.size() - 1).getFrom().getPortName())) {
+            if (directedEdges.size() > 1 && !directedEdges.get(directedEdges.size() - 2).equals(directedEdges.get(directedEdges.size() - 1).getFrom().getPortName())) {
                 System.out.print("Ship " + directedEdges.get(directedEdges.size() - 1).getFrom() + " to " + directedEdges.get(directedEdges.size() - 1).getTo().getPortName());
+            }
+            if(directedEdges.size() == 1){
+                System.out.print("Ship " + directedEdges.get(0).getFrom() + " to " + directedEdges.get(0).getTo().getPortName());
+
             }
 
         }
