@@ -1,0 +1,106 @@
+#RUNESCAPE MAP LUL
+Refuelling 10 Sydney
+Refuelling 15 Camelot
+Refuelling 20 Lumbridge
+Refuelling 40 Ardougne
+Refuelling 13 Yanille
+Refuelling 26 GrandExchange
+Refuelling 37 Alkharid
+Refuelling 33 Falador
+Refuelling 23 Taverly
+Refuelling 22 PortSarim
+Refuelling 19 Catherby
+Refuelling 0 Wilderness
+Refuelling 29 Canafis
+
+Time 400 Sydney Camelot
+Time 100 Sydney Lumbridge
+Time 569 Sydney Ardougne
+Time 800 Sydney Yanille
+Time 12 Sydney GrandExchange
+Time 90 Sydney Alkharid
+Time 100 Sydney Falador
+Time 125 Sydney Taverly
+Time 125 Sydney PortSarim
+Time 270 Sydney Catherby
+Time 20 Sydney Wilderness
+Time 150 Sydney Canafis
+
+Time 489 Camelot Lumbridge
+Time 150 Camelot Ardougne
+Time 377 Camelot Yanille
+Time 371 Camelot GrandExchange
+Time 460 Camelot Alkharid
+Time 250 Camelot Falador
+Time 165 Camelot Taverly
+Time 223 Camelot PortSarim
+Time 40 Camelot Catherby
+Time 300 Camelot Wilderness
+Time 655 Camelot Canafis
+
+Time 758 Lumbridge Ardougne
+Time 1085 Lumbridge Yanille
+Time 154 Lumbridge GrandExchange
+Time 9 Lumbridge Alkharid
+Time 185 Lumbridge Falador
+Time 232 Lumbridge Taverly
+Time 127 Lumbridge PortSarim
+Time 443 Lumbridge Catherby
+Time 117 Lumbridge Wilderness
+Time 239 Lumbridge Canafis
+
+Time 183 Ardougne Yanille
+Time 654 Ardougne GrandExchange
+Time 702 Ardougne Alkharid
+Time 243 Ardougne Falador
+Time 209 Ardougne Taverly
+Time 343 Ardougne PortSarim
+Time 165 Ardougne Catherby
+Time 598 Ardougne Wilderness
+Time 802 Ardougne Canafis
+
+Time 821 Yanille GrandExchange
+Time 789 Yanille Alkharid
+Time 643 Yanille Falador
+Time 302 Yanille Taverly
+Time 700 Yanille PortSarim
+Time 340 Yanille Catherby
+Time 834 Yanille Wilderness
+Time 976 Yanille Canafis
+
+Time 122 GrandExchange Alkharid
+Time 90 GrandExchange Falador
+Time 130 GrandExchange Taverly
+Time 159 GrandExchange PortSarim
+Time 170 GrandExchange Catherby
+Time 10 GrandExchange Wilderness
+Time 138 GrandExchange Canafis
+
+Time 200 Alkharid Falador
+Time 230 Alkharid Taverly
+Time 174 Alkharid PortSarim
+Time 270 Alkharid Catherby
+Time 130 Alkharid Wilderness
+Time 120 Alkharid Canafis
+
+Time 40 Falador Taverly
+Time 40 Falador PortSarim
+Time 80 Falador Catherby
+Time 140 Falador Wilderness
+Time 300 Falador Canafis
+
+Time 80 Taverly PortSarim
+Time 40 Taverly Catherby
+Time 280 Taverly Wilderness
+Time 334 Taverly Canafis
+
+Time 130 PortSarim Catherby
+Time 150 PortSarim Wilderness
+Time 350 PortSarim Canafis
+
+Time 290 Catherby Wilderness
+Time 400 Catherby Canafis
+
+Time 100 Wilderness Canafis
+
+Shipment Sydney Lumbridge

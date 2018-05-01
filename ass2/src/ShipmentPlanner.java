@@ -30,8 +30,9 @@ import java.util.*;
  * Using an online calculator
  * K = 1.25215
  * The heuristic I have used brings runtime costs to O(1.25215^n) rather than the O(5^n).
- * this is because the heuristic will get rid of all extra branching which will result in less
- * suboptimal paths checked, since suboptimal paths will not be expanded on further during search.
+ * this is because the heuristic will get rid of all extra branching which will result in less suboptimal paths checked,
+ * since suboptimal paths will not be expanded on further during search.
+
  */
 public class ShipmentPlanner {
     //initalise the vertex list as a new list of nodes

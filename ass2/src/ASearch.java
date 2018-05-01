@@ -65,7 +65,7 @@ public class ASearch implements Heuristic<searchNode> {
         //retrieving the first node which we start our search with, Sydney node
         Node initial = g.getNodeByString("Sydney");
         //if sydney is not on the graph then we want to return null since it wont be able to start
-        if (initial.equals(null))
+        if (null == initial)
             return null;
         //now we are initalising our search node root by bootstrapping sydney
         //since the searchNode works with shipments, and sydney is just a node
