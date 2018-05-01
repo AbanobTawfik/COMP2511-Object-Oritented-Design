@@ -1,28 +1,8 @@
-please note my programs will work even if the triangle inequality is not in place
-it will always find THE BEST PATH EVEN IF THE TRIANGLE INEQUALITY IS NOT IN PLACE
-This is a larger test on a more exhaustive case, where it will test a shipment with many many possible branches
-
-
-garbage
-#RUNESCAPE MAP LUL
-sdafsdafsda
-fds
-dfsdf
-ffff
 #all the nodes in the graph
-Refuelling 10 Sydney                        #Refuelling time 10 days in Sydney
-Refuelling 15 Camelot                       #Refuelling time 10 days in Camelot
-Refuelling 20 Lumbridge                     #Refuelling time 10 days in Lumbridge
-Refuelling 40 Ardougne                      #Refuelling time 10 days in Ardougne
-Refuelling 13 Yanille                       #Refuelling time 10 days in Yanille
-Refuelling 26 GrandExchange                 #Refuelling time 10 days in GrandExchange
-Refuelling 37 Alkharid                      #Refuelling time 10 days in Alkharid
-Refuelling 33 Falador                       #Refuelling time 10 days in Falador
-Refuelling 23 Taverly                       #Refuelling time 10 days in Taverly
-Refuelling 22 PortSarim                     #Refuelling time 10 days in PortSarim
-Refuelling 19 Catherby                      #Refuelling time 10 days in Catherby
-Refuelling 0 Wilderness                     #Refuelling time 10 days in Wilderness
-Refuelling 29 Canafis                       #Refuelling time 10 days in Canafis
+Refuelling 0 Sydney                        #Refuelling time 10 days in Sydney
+Refuelling 0 Camelot                       #Refuelling time 10 days in Camelot
+Refuelling 0 Lumbridge                     #Refuelling time 10 days in Lumbridge
+Refuelling 0 Ardougne                      #Refuelling time 10 days in Ardougne
 
 #connecting sydney to all other nodes
 Time 400 Sydney Camelot                     #Travel time is 400 days from Sydney to Camelot
@@ -136,4 +116,5 @@ Shipment Wilderness Sydney                  #Shipment is required from Wildernes
 Shipment Lumbridge Sydney                   #Shipment is required from Lumbridge to Sydney
 Shipment Wilderness Canafis                 #Shipment is required from Wilderness to Canafis
 Shipment Canafis Taverly                    #Shipment is required from Canafis to Taverly
+Shipment Taverly PortSarim                  #Shipment is required from Taverly to PortSarim
 Shipment Taverly Alkharid                   #Shipment is required from Taverly to Alkharid

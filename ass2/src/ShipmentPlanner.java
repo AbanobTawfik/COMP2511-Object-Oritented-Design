@@ -37,14 +37,14 @@ import java.util.*;
 public class ShipmentPlanner {
     //initalise the vertex list as a new list of nodes
     //this will be the list of nodes which comprise the graph
-    private LinkedList<Node> vertices = new LinkedList<Node>();
+    private ArrayList<Node> vertices = new ArrayList<Node>();
     //initalise our schedule as a new list of directed edges(shipments)
     //this will be the shipments required on the schedule
-    private LinkedList<DirectedEdge> schedule = new LinkedList<DirectedEdge>();
+    private ArrayList<DirectedEdge> schedule = new ArrayList<DirectedEdge>();
     //this will be the graph used in the search
     private GraphOfPorts g;
     //this will be the path returned from the A* search
-    private LinkedList<DirectedEdge> path;
+    private ArrayList<DirectedEdge> path;
     //initalise flag as false (scan in node input)
     //this will be used as a flag to check when all the nodes have been scanned from input
     private boolean graphInput = false;
@@ -321,7 +321,7 @@ public class ShipmentPlanner {
     /*
      * This method will print the path for the A* result
      */
-    public void printPath(LinkedList<DirectedEdge> directedEdges, ASearch a) {
+    public void printPath(ArrayList<DirectedEdge> directedEdges, ASearch a) {
         //retrieving the number of nodes expanded search
         int nodesExpanded = a.getNodesExpanded();
         //retrieving the time taken in the search
@@ -358,10 +358,10 @@ public class ShipmentPlanner {
             //now we print the final shipment as it, from -> TO provided they are not the same node
             //eg sydney->Sydney
             if (directedEdges.size() > 1 && !directedEdges.get(directedEdges.size() - 2).equals(directedEdges.get(directedEdges.size() - 1).getFrom().getPortName())) {
-                System.out.print("Ship " + directedEdges.get(directedEdges.size() - 1).getFrom() + " to " + directedEdges.get(directedEdges.size() - 1).getTo().getPortName());
+                System.out.println("Ship " + directedEdges.get(directedEdges.size() - 1).getFrom() + " to " + directedEdges.get(directedEdges.size() - 1).getTo().getPortName());
             }
             if(directedEdges.size() == 1){
-                System.out.print("Ship " + directedEdges.get(0).getFrom() + " to " + directedEdges.get(0).getTo().getPortName());
+                System.out.println("Ship " + directedEdges.get(0).getFrom() + " to " + directedEdges.get(0).getTo().getPortName());
 
             }
 

@@ -14,7 +14,7 @@ public class GraphOfPorts implements Graph<Node> {
     //this is the number of nodes in the graph
     private int nV;
     //keep track of the vertices on graph
-    private LinkedList<Node> vertices;
+    private ArrayList<Node> vertices;
     //the edges assosciated with that graph
     private int[][] edges;
 
@@ -66,7 +66,7 @@ public class GraphOfPorts implements Graph<Node> {
      * @param vertices the vertices
      */
     @Override
-    public void setVertices(LinkedList<Node> vertices) {
+    public void setVertices(ArrayList<Node> vertices) {
         //this method will set a list of vertices assosciated with that graph (identifiers for the nodes)
         this.vertices = vertices;
     }

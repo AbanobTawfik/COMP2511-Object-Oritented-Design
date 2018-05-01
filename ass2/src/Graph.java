@@ -49,7 +49,7 @@ public interface Graph<E> {
      * is representitive of the graph matrix index for the node
      * @param vertices the vertices
      */
-    void setVertices(LinkedList<E> vertices);
+    void setVertices(ArrayList<E> vertices);
 
 
     /**

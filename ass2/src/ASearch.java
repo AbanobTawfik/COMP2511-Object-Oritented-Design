@@ -11,7 +11,7 @@ public class ASearch implements Heuristic<searchNode> {
     private int nodesExpanded;
     //the schedule which is representative of the goal state, when a path has
     //completed all shipments on the schedule, the goal state is reached
-    private LinkedList<DirectedEdge> schedule;
+    private ArrayList<DirectedEdge> schedule;
     //the graph which is being used to conduct the search
     private GraphOfPorts g;
 
@@ -21,7 +21,7 @@ public class ASearch implements Heuristic<searchNode> {
      *
      * @param schedule the schedule which will contain all the required shipments
      */
-    public void setSchedule(LinkedList<DirectedEdge> schedule) {
+    public void setSchedule(ArrayList<DirectedEdge> schedule) {
         //this sets the schedule for the A*Search class
         this.schedule = schedule;
     }
@@ -46,7 +46,7 @@ public class ASearch implements Heuristic<searchNode> {
      *
      * @return a linked list of directed edges which is a series of shipments that can be linked into a path
      */
-    public LinkedList<DirectedEdge> Search() {
+    public ArrayList<DirectedEdge> Search() {
         //if there are no vertices on the graph or there is only 1
         //(no shipments can be made from same port to same port) return nothing
         if (g.getnV() <= 1)
@@ -56,7 +56,7 @@ public class ASearch implements Heuristic<searchNode> {
             return null;
 
         //initalise the closed list for the search
-        LinkedList<searchNode> closed = new LinkedList<searchNode>();
+        ArrayList<searchNode> closed = new ArrayList<searchNode>();
         //this will be the comparator for the priority queue, it will compare
         //searchNodes based on the Fscore (final path score)
         Comparator<searchNode> comparator = new NodeComparator();
@@ -110,7 +110,7 @@ public class ASearch implements Heuristic<searchNode> {
                 searchNode newPath = new searchNode(curr.getShipment());
                 //now we add all the shipments from the previous path onto the new path as
                 //the new path is an extension of the previous path
-                LinkedList<DirectedEdge> ships = new LinkedList<DirectedEdge>(curr.getChildren());
+                ArrayList<DirectedEdge> ships = new ArrayList<DirectedEdge>(curr.getChildren());
                 newPath.setChildren(ships);
                 //if there are no shipments to append, we want to create the first one by
                 //connecting sydney the first shipment start, to the scheduled shipment
@@ -132,7 +132,7 @@ public class ASearch implements Heuristic<searchNode> {
                     newPath.addToChildren(d);
                 //if the last shipment in the path, has the same to and from node, we want to skip
                 //dont want a bunch of shanghai -> shanghai nodes etc.
-                if (newPath.getChildren().getLast().getFrom().equals(newPath.getChildren().getLast().getTo()))
+                if (newPath.getChildren().get(newPath.getChildren().size()-1).getFrom().equals(newPath.getChildren().get(newPath.getChildren().size()-1).getTo()))
                     continue;
                 //now we want to set the GScore of the path, as the weight of the path from the start
                 newPath.setGScore(getWeightPath(newPath));
@@ -219,7 +219,7 @@ public class ASearch implements Heuristic<searchNode> {
      */
     public boolean isCompletedSchedule(searchNode path) {
         //this will be used to construct our parth
-        LinkedList<DirectedEdge> d = new LinkedList<DirectedEdge>();
+        ArrayList<DirectedEdge> d = new ArrayList<DirectedEdge>();
         //if there are more than one shipments on the path we want to
         //add them all by connecting the path
         if (path.getChildren().size() > 1) {
@@ -233,7 +233,7 @@ public class ASearch implements Heuristic<searchNode> {
             }
             //since the above loop only goes to the second last node (to avoid null pointer errors)
             //add the last shipment in the path
-            d.add(new DirectedEdge((path.getChildren().getLast().getFrom()), path.getChildren().getLast().getTo()));
+            d.add(new DirectedEdge((path.getChildren().get(path.getChildren().size()-1).getFrom()), path.getChildren().get(path.getChildren().size()-1).getTo()));
         }
         //if there is only one shipment on the path, to avoid null pointer errors in the above
         //we only add that shipment to the constructed path
@@ -258,12 +258,12 @@ public class ASearch implements Heuristic<searchNode> {
      * @param route the searchNode which contains the path that is most optimal
      * @return the linked list of directed edges which is a representation of the path used in the print function
      */
-    public LinkedList<DirectedEdge> createPath(searchNode route) {
+    public ArrayList<DirectedEdge> createPath(searchNode route) {
         //in this function we want to add all the shipments in the path in our return
         //our print function will print out the connected nodes
 
         //initalise the new path
-        LinkedList<DirectedEdge> path = new LinkedList<DirectedEdge>();
+        ArrayList<DirectedEdge> path = new ArrayList<DirectedEdge>();
         //add all the children shipments (the path itself) to the path
         for (int i = 0; i < route.getChildren().size(); i++) {
             path.add(route.getChildren().get(i));
@@ -285,7 +285,7 @@ public class ASearch implements Heuristic<searchNode> {
     /*
      * this function will return the cost of the path from start to end (when it finds a succesful path)
      */
-    public int getCost(LinkedList<DirectedEdge> edges, GraphOfPorts g) {
+    public int getCost(ArrayList<DirectedEdge> edges, GraphOfPorts g) {
         //if there are no edges (shipments) in the path
         //we return 0
         if (null == edges)
@@ -421,7 +421,7 @@ public class ASearch implements Heuristic<searchNode> {
     /*
      * this function will return all the paths that are on closed with the same state as our searchnode P
      */
-    public ArrayList<Integer> onClosed(searchNode p, LinkedList<searchNode> closed) {
+    public ArrayList<Integer> onClosed(searchNode p, ArrayList<searchNode> closed) {
         //initalise a arraylist of integers to store the INDEX's of the nodes
         //where the path is located on closed
         ArrayList<Integer> ret = new ArrayList<Integer>();
@@ -497,13 +497,13 @@ public class ASearch implements Heuristic<searchNode> {
      */
     public int getScheduleScoreRemaining(searchNode s) {
         int sum = 0;
-        LinkedList<DirectedEdge> d = new LinkedList<DirectedEdge>();
+        ArrayList<DirectedEdge> d = new ArrayList<DirectedEdge>();
         if (s.getChildren().size() > 0) {
             for (int i = 0; i < s.getChildren().size() - 1; i++) {
                 d.add(new DirectedEdge(s.getChildren().get(i).getFrom(), s.getChildren().get(i).getTo()));
                 d.add(new DirectedEdge(s.getChildren().get(i).getTo(), s.getChildren().get(i + 1).getFrom()));
             }
-            d.add(new DirectedEdge((s.getChildren().getLast().getFrom()), s.getChildren().getLast().getTo()));
+            d.add(new DirectedEdge((s.getChildren().get(s.getChildren().size()-1).getFrom()), s.getChildren().get(s.getChildren().size()-1).getTo()));
         }
         if (s.getChildren().size() == 1) {
             d.add(new DirectedEdge(s.getChildren().get(0).getFrom(), s.getChildren().get(0).getTo()));
@@ -545,7 +545,7 @@ public class ASearch implements Heuristic<searchNode> {
             last = s.getShipment().getTo();
         else
             //otherwise take the very last node in the path
-            last = s.getChildren().getLast().getTo();
+            last = s.getChildren().get(s.getChildren().size()-1).getTo();
         //if for some reason the last node is null (no last node) return 0
         if (null == last)
             return 0;

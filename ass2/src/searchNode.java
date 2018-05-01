@@ -13,7 +13,7 @@ public class searchNode {
     //(Sydney -> Sydney) this is because we are working with shipments, not nodes
     private DirectedEdge shipment;
     //the list of shipments in the path from the root
-    private LinkedList<DirectedEdge> children;
+    private ArrayList<DirectedEdge> children;
     //the cost of the path in current state from the start root shipment
     private int GScore;
     //the estimated cost required to reach goal state for the current shipment
@@ -33,7 +33,7 @@ public class searchNode {
         //setting the shipment as the root for the search node
         this.shipment = shipment;
         //initalising a new list for the path from that root
-        this.children = new LinkedList<DirectedEdge>();
+        this.children = new ArrayList<DirectedEdge>();
         //initalising the GScore as maximum integer value to accurately test less than
         this.GScore = Integer.MAX_VALUE;
     }
@@ -56,7 +56,7 @@ public class searchNode {
      *
      * @return the shipments which compose the path
      */
-    public LinkedList<DirectedEdge> getChildren() {
+    public ArrayList<DirectedEdge> getChildren() {
         //returns the path for the search node from the root of the shipment
         return children;
     }
@@ -68,7 +68,7 @@ public class searchNode {
      *
      * @param children the path we are setting for our searchNode
      */
-    public void setChildren(LinkedList<DirectedEdge> children) {
+    public void setChildren(ArrayList<DirectedEdge> children) {
         //this will set the list of shipments (path) for a search node
         this.children = children;
     }
