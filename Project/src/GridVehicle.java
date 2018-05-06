@@ -22,6 +22,7 @@ public class GridVehicle extends StackPane {
     private double oldYCoordinate = col*tileSizeWidth;
     private int rowinit;
     private int colinit;
+    boolean reset = false;
 
 
     public GridVehicle(double tileSizeWidth, double tileSizeHeight, boolean goalCar, Vehicle vehicle)
@@ -46,39 +47,48 @@ public class GridVehicle extends StackPane {
         getChildren().add(carBlock);
 
 
-        double finalTileSizeWidth = tileSizeWidth;
-        double finalTileSizeHeight = tileSizeHeight;
-        setOnMouseClicked(event -> {
-        });
-
         setOnMouseDragged(event ->{
             double deltaX = event.getSceneX();
             double deltaY = event.getSceneY();
-            double offsetXtemp = col * finalTileSizeWidth;
-            double offsetYtemp = row * finalTileSizeHeight;
-            offsetX = deltaX - offsetXtemp;
-            offsetY = deltaY - offsetYtemp;
-            moveCar(offsetX,offsetY);
+            moveCar(deltaX,deltaY);
         });
 
-        double finalTileSizeHeight1 = tileSizeHeight;
-        double finalTileSizeWidth1 = tileSizeWidth;
+        double finalTileSizeHeight = tileSizeHeight;
+        double finalTileSizeWidth = tileSizeWidth;
         setOnMouseReleased(event -> {
-            double lockX = col * finalTileSizeWidth1;
-            double lockY = row * finalTileSizeHeight1;
+
+            double lockX = col * finalTileSizeWidth + offsetX;
+            double lockY = row * finalTileSizeHeight + offsetY;
             moveCar(lockX,lockY);
+            offsetX = 0;
+            offsetY = 0;
+            reset = false;
         });
     }
 
     public void moveCar(double xNew, double yNew){
-        System.out.println("Offset x - " + offsetX + "Offset y - " + offsetY);
-
+        if(!reset) {
+            double deltaX = xNew;
+            double deltaY = yNew;
+            double offsetXtemp = (col) * tileSizeWidth;
+            double offsetYtemp = (row) * tileSizeHeight;
+            offsetX = deltaX - offsetXtemp;
+            offsetY = deltaY - offsetYtemp;
+            reset = true;
+        }
         //want to store old coordinate on grid location
-        if(vehicle.isHorizontal())
-            col = Math.round(((float)(xNew)/((float)tileSizeWidth)));
-        else
-            row = Math.round(((float)(yNew)/((float)tileSizeHeight)));
-
+        if(vehicle.isHorizontal()) {
+            if(oldXCoordinate < xNew)
+                col = (int) Math.ceil(((float) (xNew-offsetX) / ((float) tileSizeWidth)));
+            else
+                col = (int) Math.floor(((float) (xNew-offsetX) / ((float) tileSizeWidth)));
+        }
+        else {
+            if(oldYCoordinate < yNew)
+                row = (int) Math.ceil(((float) (yNew - offsetY) / ((float) tileSizeHeight)));
+            else
+                row = (int) Math.floor(((float) (yNew - offsetY) / ((float) tileSizeHeight)));
+        }
 
         double rowDiff = yNew;
         double colDiff = xNew;
@@ -88,12 +98,13 @@ public class GridVehicle extends StackPane {
         else
             oldYCoordinate = yNew;
 
+        System.out.println(oldYCoordinate);
         rowDiff -= tileSizeHeight*rowinit;
         colDiff -= colinit*tileSizeWidth;
 
 
-        offsetX = 0;
-        offsetY = 0;
+        rowDiff -= offsetY;
+        colDiff -= offsetX;
 
         if(vehicle.isHorizontal())
             setTranslateX(colDiff);

@@ -81,10 +81,10 @@ public class GridLock extends Application{
             }
         }
 
-        Vehicle v = new Vehicle(true, 2);
+        Vehicle v = new Vehicle(true, 3);
         GridVehicle car = new GridVehicle(tileSizeWidth,tileSizeHeight,true,v);
-        car.setCol(0);
-        car.setRow(5);
+        car.setCol(2);
+        car.setRow(2);
         vehicles.add(car, car.getCol(), car.getRow());
         //car.moveCar(2,2);
 
