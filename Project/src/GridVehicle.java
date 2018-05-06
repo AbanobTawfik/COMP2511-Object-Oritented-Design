@@ -11,8 +11,8 @@ public class GridVehicle extends StackPane {
     private boolean goalCar;
     private int row;
     private int col;
-    private double offsetX = 0;
-    private double offsetY = 0;
+    private double offsetX;
+    private double offsetY;
     int boardSize = 6;
     double gridWidth = 1440;
     double gridHeight = 900;
@@ -49,25 +49,16 @@ public class GridVehicle extends StackPane {
         double finalTileSizeWidth = tileSizeWidth;
         double finalTileSizeHeight = tileSizeHeight;
         setOnMouseClicked(event -> {
-            try{
-                sleep(100);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+        });
 
+        setOnMouseDragged(event ->{
             double deltaX = event.getSceneX();
             double deltaY = event.getSceneY();
             double offsetXtemp = col * finalTileSizeWidth;
             double offsetYtemp = row * finalTileSizeHeight;
             offsetX = deltaX - offsetXtemp;
             offsetY = deltaY - offsetYtemp;
-            System.out.println("Offset x - " + offsetX + "Offset y - " + offsetY);
-        });
-
-        setOnMouseDragged(event ->{
-            double deltaX = event.getSceneX();
-            double deltaY = event.getSceneY();
-            moveCar(deltaX,deltaY);
+            moveCar(offsetX,offsetY);
         });
 
         double finalTileSizeHeight1 = tileSizeHeight;
@@ -76,12 +67,11 @@ public class GridVehicle extends StackPane {
             double lockX = col * finalTileSizeWidth1;
             double lockY = row * finalTileSizeHeight1;
             moveCar(lockX,lockY);
-            offsetX = 0;
-            offsetY = 0;
         });
     }
 
     public void moveCar(double xNew, double yNew){
+        System.out.println("Offset x - " + offsetX + "Offset y - " + offsetY);
 
         //want to store old coordinate on grid location
         if(vehicle.isHorizontal())
@@ -102,8 +92,9 @@ public class GridVehicle extends StackPane {
         colDiff -= colinit*tileSizeWidth;
 
 
-        rowDiff -= offsetY;
-        colDiff -= offsetX;
+        offsetX = 0;
+        offsetY = 0;
+
         if(vehicle.isHorizontal())
             setTranslateX(colDiff);
         else
