@@ -84,12 +84,6 @@ public class GridGenerator {
         car2.initialShift();
 
 
-        /*System.out.println("Row car1 " + vehicles.getRowIndex(car));
-        System.out.println("col car1 " + vehicles.getColumnIndex(car));
-        System.out.println("Row car2 " + vehicles.getRowIndex(car1));
-        System.out.println("col car2 " + vehicles.getColumnIndex(car1));
-        System.out.println(vehicles);
-        */
         finalBoard.getChildren().addAll(gridpane,vehicles);
         return finalBoard;
     }
