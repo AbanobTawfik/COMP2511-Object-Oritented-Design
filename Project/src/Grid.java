@@ -2,6 +2,8 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
+import java.util.Arrays;
+
 
 public class Grid {
     private int boardSize = 6;
@@ -34,4 +36,5 @@ public class Grid {
     public int getBoardSize() {
         return boardSize;
     }
+
 }

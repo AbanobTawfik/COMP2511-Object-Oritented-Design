@@ -7,6 +7,7 @@ import static java.lang.Thread.sleep;
 //col -> width
 // row -> height
 public class GridVehicle extends StackPane {
+    private Grid grid;
     private Vehicle vehicle;
     private boolean goalCar;
     private int row;
@@ -25,9 +26,9 @@ public class GridVehicle extends StackPane {
     boolean reset = false;
 
 
-    public GridVehicle(double tileSizeWidth, double tileSizeHeight, boolean goalCar, Vehicle vehicle)
+    public GridVehicle(double tileSizeWidth, double tileSizeHeight, boolean goalCar, Vehicle vehicle,Grid grid)
     {
-
+        this.grid = grid;
         this.vehicle = vehicle;
         double vehicleSizeX = tileSizeWidth;
         double vehicleSizeY = tileSizeHeight;
@@ -39,14 +40,14 @@ public class GridVehicle extends StackPane {
 
         Rectangle carBlock = new Rectangle(vehicleSizeX,vehicleSizeY);
         carBlock.setStroke(Color.BLACK);
-        if(goalCar)
+        if(goalCar) {
             carBlock.setFill(Color.RED);
+        }
         else
             carBlock.setFill(Color.GRAY);
 
         getChildren().add(carBlock);
-
-
+        //want to now fix the grid status
         setOnMouseDragged(event ->{
             double deltaX = event.getSceneX();
             double deltaY = event.getSceneY();
@@ -67,6 +68,8 @@ public class GridVehicle extends StackPane {
     }
 
     public void moveCar(double xNew, double yNew){
+        System.out.println("row - " + row);
+        System.out.println("col - " + col);
         if(!reset) {
             double deltaX = xNew;
             double deltaY = yNew;
@@ -76,12 +79,17 @@ public class GridVehicle extends StackPane {
             offsetY = deltaY - offsetYtemp;
             reset = true;
         }
+
+        int tempcol = col;
+        int temprow = row;
         //want to store old coordinate on grid location
         if(vehicle.isHorizontal()) {
             if(oldXCoordinate < xNew)
                 col = (int) Math.ceil(((float) (xNew-offsetX) / ((float) tileSizeWidth)));
             else
                 col = (int) Math.floor(((float) (xNew-offsetX) / ((float) tileSizeWidth)));
+
+
         }
         else {
             if(oldYCoordinate < yNew)
@@ -98,7 +106,6 @@ public class GridVehicle extends StackPane {
         else
             oldYCoordinate = yNew;
 
-        System.out.println(oldYCoordinate);
         rowDiff -= tileSizeHeight*rowinit;
         colDiff -= colinit*tileSizeWidth;
 
@@ -106,10 +113,28 @@ public class GridVehicle extends StackPane {
         rowDiff -= offsetY;
         colDiff -= offsetX;
 
-        if(vehicle.isHorizontal())
+        if(vehicle.isHorizontal()) {
             setTranslateX(colDiff);
-        else
+            if (col > (boardSize - vehicle.getSize())) {
+                col = tempcol;
+                return;
+            }
+            if(col < 0){
+                col = 0;
+                return;
+            }
+        }
+        else {
             setTranslateY(rowDiff);
+            if (row > (boardSize - vehicle.getSize())) {
+                row = temprow;
+                return;
+            }
+            if(row < 0){
+                row = 0;
+                return;
+            }
+        }
     }
 
     public int getRow() {
@@ -119,6 +144,10 @@ public class GridVehicle extends StackPane {
     public void setRow(int row) {
         this.row = row;
         this.rowinit = row;
+        if(vehicle.isHorizontal()) {
+            for(int i = 0; i < vehicle.getSize();i++)
+                this.grid.getGrid()[row][col+i] = true;
+        }
     }
 
     public int getCol() {
@@ -128,5 +157,18 @@ public class GridVehicle extends StackPane {
     public void setCol(int col) {
         this.col = col;
         this.colinit = col;
+        if(!vehicle.isHorizontal()) {
+            for (int i = 0; i < vehicle.getSize(); i++)
+                this.grid.getGrid()[col][row + i] = true;
+        }
+
     }
+
+    public void initialShift(){
+        double offsetXtemp = (colinit) * tileSizeWidth;
+        double offsetYtemp = (rowinit) * tileSizeHeight;
+        setTranslateX(offsetXtemp);
+        setTranslateY(offsetYtemp);
+    }
+
 }
