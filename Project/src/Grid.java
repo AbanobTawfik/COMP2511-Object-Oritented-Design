@@ -37,4 +37,19 @@ public class Grid {
         return boardSize;
     }
 
+    @Override
+    public String toString() {
+        String s = new String();
+        for(int i = 0; i < boardSize; i ++){
+            s += "[";
+            for(int j = 0; j < boardSize; j++){
+                s += grid[i][j];
+                s += " ";
+            }
+            s += "]\n";
+        }
+        return "Grid{" +
+                "grid=" + s +
+                '}';
+    }
 }

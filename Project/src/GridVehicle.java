@@ -10,22 +10,15 @@ import static java.lang.Thread.sleep;
 public class GridVehicle extends StackPane {
     private Grid grid;
     private Vehicle vehicle;
-    private boolean goalCar;
     private int row;
     private int col;
     private double offsetX;
     private double offsetY;
-    int boardSize = 6;
-    double gridWidth = 1440;
-    double gridHeight = 900;
-    double tileSizeWidth = gridWidth / boardSize;
-    double tileSizeHeight = gridHeight / boardSize;
-    private double oldXCoordinate = row * tileSizeHeight;
-    private double oldYCoordinate = col * tileSizeWidth;
+    private double oldXCoordinate = row * GridVariables.tileSizeHeight;
+    private double oldYCoordinate = col * GridVariables.tileSizeWidth;
     private int rowinit;
     private int colinit;
     boolean reset = false;
-    boolean shift = false;
 
 
     public GridVehicle(double tileSizeWidth, double tileSizeHeight, boolean goalCar, Vehicle vehicle, Grid grid) {
@@ -67,13 +60,11 @@ public class GridVehicle extends StackPane {
     }
 
     public void moveCar(double xNew, double yNew) {
-        System.out.println("row - " + row);
-        System.out.println("col - " + col);
         if (!reset) {
             double deltaX = xNew;
             double deltaY = yNew;
-            double offsetXtemp = (col) * tileSizeWidth;
-            double offsetYtemp = (row) * tileSizeHeight;
+            double offsetXtemp = (col) * GridVariables.tileSizeWidth;
+            double offsetYtemp = (row) * GridVariables.tileSizeHeight;
             offsetX = deltaX - offsetXtemp;
             offsetY = deltaY - offsetYtemp;
             reset = true;
@@ -84,17 +75,19 @@ public class GridVehicle extends StackPane {
         //want to store old coordinate on grid location
         if (vehicle.isHorizontal()) {
             if (oldXCoordinate < xNew)
-                col = (int) Math.ceil(((float) (xNew - offsetX) / ((float) tileSizeWidth)));
+                col = (int) Math.ceil(((float) (xNew - offsetX) / ((float) GridVariables.tileSizeWidth)));
 
-            else
-                col = (int) Math.floor(((float) (xNew - offsetX) / ((float) tileSizeWidth)));
+            else{
+                col = (int) Math.floor(((float) (xNew - offsetX) / ((float) GridVariables.tileSizeWidth)));
 
+            }
 
         } else {
             if (oldYCoordinate < yNew)
-                row = (int) Math.ceil(((float) (yNew - offsetY) / ((float) tileSizeHeight)));
+                row = (int) Math.ceil(((float) (yNew - offsetY) / ((float) GridVariables.tileSizeHeight)));
             else
-                row = (int) Math.floor(((float) (yNew - offsetY) / ((float) tileSizeHeight)));
+                row = (int) Math.floor(((float) (yNew - offsetY) / ((float) GridVariables.tileSizeHeight)));
+
         }
 
         double rowDiff = yNew;
@@ -109,21 +102,38 @@ public class GridVehicle extends StackPane {
         colDiff -= offsetX;
 
         if (vehicle.isHorizontal()) {
+            if(col > tempcol && col+vehicle.getSize() < GridVariables.boardSize && grid.getGrid()[row][col + vehicle.getSize()-1]){
+                col = tempcol;
+                setTranslateX(oldXCoordinate);
+                return;
+            }
+            if(col < tempcol && col-vehicle.getSize() >= 0 && grid.getGrid()[row][col - vehicle.getSize()+1]){
+                col = tempcol;
+                setTranslateX(oldXCoordinate);
+                return;
+            }
             setTranslateX(colDiff);
-            if (col > (boardSize - vehicle.getSize())) {
+            
+            for(int i = 0; i < vehicle.getSize();i++) {
+                grid.getGrid()[row][tempcol + i] = false;
+            }
+
+            if (col > (GridVariables.boardSize - vehicle.getSize())) {
                 col = tempcol;
                 return;
             }
+
             if (col < 0) {
                 col = 0;
                 return;
             }
         } else {
             setTranslateY(rowDiff);
-            if (row > (boardSize - vehicle.getSize())) {
+            if (row > (GridVariables.boardSize - vehicle.getSize())) {
                 row = temprow;
                 return;
             }
+
             if (row < 0) {
                 row = 0;
                 return;
@@ -138,10 +148,6 @@ public class GridVehicle extends StackPane {
     public void setRow(int row) {
         this.row = row;
         this.rowinit = row;
-        if (vehicle.isHorizontal()) {
-            for (int i = 0; i < vehicle.getSize(); i++)
-                this.grid.getGrid()[row][col + i] = true;
-        }
     }
 
     public int getCol() {
@@ -151,20 +157,19 @@ public class GridVehicle extends StackPane {
     public void setCol(int col) {
         this.col = col;
         this.colinit = col;
-        if (!vehicle.isHorizontal()) {
-            for (int i = 0; i < vehicle.getSize(); i++)
-                this.grid.getGrid()[col][row + i] = true;
-        }
-
     }
 
     public void initialShift() {
-        double offsetXtemp = (colinit) * tileSizeWidth;
-        double offsetYtemp = (rowinit) * tileSizeHeight;
+        double offsetXtemp = (colinit) * GridVariables.tileSizeWidth;
+        double offsetYtemp = (rowinit) * GridVariables.tileSizeHeight;
         setTranslateX(offsetXtemp);
         setTranslateY(offsetYtemp);
-
-
+        if (!vehicle.isHorizontal()) {
+            for (int i = 0; i < vehicle.getSize(); i++)
+                this.grid.getGrid()[rowinit+i][colinit] = true;
+        }else{
+            for (int i = 0; i < vehicle.getSize(); i++)
+                this.grid.getGrid()[rowinit][colinit + i] = true;
+        }
     }
-
 }
