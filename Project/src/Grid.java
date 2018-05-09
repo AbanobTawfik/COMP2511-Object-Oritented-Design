@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class Grid {
     private int boardSize = 6;
-    private boolean[][] grid = new boolean[boardSize][boardSize];
+    private GridVehicle[][] grid = new GridVehicle[boardSize][boardSize];
     //this is the index for thw row column where the goal has to pass through
     private final int goalColumn = 2;
     private final int goalRow = 2;
@@ -16,7 +16,7 @@ public class Grid {
         for(int i = 0 ; i < boardSize; i++){
             for(int j = 0; j < boardSize; j++)
                 //false means nothing is in the panel
-                grid[i][j] = false;
+                grid[i][j] = null;
         }
 
     }
@@ -29,7 +29,7 @@ public class Grid {
         return goalRow;
         }
 
-    public boolean[][] getGrid() {
+    public GridVehicle[][] getGrid() {
         return grid;
     }
 

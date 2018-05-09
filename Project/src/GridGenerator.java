@@ -23,7 +23,6 @@ public class GridGenerator {
         //initalising the rows for this grid (adds a slot at each row index)
         for(int i = 0; i < GridVariables.boardSize; i++) {
             RowConstraints row = new RowConstraints();
-            row.setMinHeight(0);
             //this lets the nodes fill the grid tile
             row.setFillHeight(true);
             gridpane.getRowConstraints().add(row);
@@ -31,7 +30,6 @@ public class GridGenerator {
         //initalising the columns for this grid (adds a slot at each col index)
         for(int i = 0; i < GridVariables.boardSize; i++) {
             ColumnConstraints col = new ColumnConstraints();
-            col.setMinWidth(0);
             //this lets the nodes fill the grid tile
             col.setFillWidth(true);
             gridpane.getColumnConstraints().add(col);
@@ -41,7 +39,7 @@ public class GridGenerator {
         for(int i = 0; i < GridVariables.boardSize; i++){
             for(int j = 0; j < GridVariables.boardSize; j++){
                 //tiles are represented by a rectangle that is white with black border
-                Rectangle tile = new Rectangle(GridVariables.tileSizeWidth-2.5,GridVariables.tileSizeHeight-2.5);
+                Rectangle tile = new Rectangle(GridVariables.tileSizeWidth-1.15,GridVariables.tileSizeHeight-1.15);
                 if(i == GridVariables.boardSize - 1 && j == GridVariables.grid.getGoalRow()) {
                     tile.setStroke(Color.BLACK);
                     tile.setFill(Color.GREEN);
@@ -55,9 +53,8 @@ public class GridGenerator {
 
             }
         }
-
-        vehicles.setManaged(true);
-        Vehicle v = new Vehicle(true, 3);
+        //vehicles.setManaged(true);
+        Vehicle v = new Vehicle(true, 2);
         GridVehicle car = new GridVehicle(GridVariables.tileSizeWidth,GridVariables.tileSizeHeight,true,v,grid);
         car.setCol(1);
         car.setRow(2);
@@ -66,7 +63,7 @@ public class GridGenerator {
 
         Vehicle v1 = new Vehicle(false,3);
         GridVehicle car1 = new GridVehicle(GridVariables.tileSizeWidth,GridVariables.tileSizeHeight,false,v1,grid);
-        car1.setCol(4);
+        car1.setCol(3);
         car1.setRow(1);
         vehicles.getChildren().add(car1);
         car1.initialShift();
@@ -74,7 +71,7 @@ public class GridGenerator {
         Vehicle v2 = new Vehicle(true,2);
         GridVehicle car2 = new GridVehicle(GridVariables.tileSizeWidth,GridVariables.tileSizeHeight,false,v2,grid);
         car2.setCol(3);
-        car2.setRow(5);
+        car2.setRow(4);
         vehicles.getChildren().add(car2);
         car2.initialShift();
 
