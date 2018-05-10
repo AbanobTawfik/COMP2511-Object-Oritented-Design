@@ -362,4 +362,21 @@ public class GridVehicle extends StackPane {
         updateGrid(col, row);
 
     }
+    
+    /**
+     * This method will be used to check if the goal car has gone through the goal tile,
+     * This method guarantees to return a true/false expression representing if the car has met goal state
+     *
+     * @return true if the goal car has gone through the goal row, which will always be on the last column, false if
+     * the goal state has not been met
+     */
+    public boolean victoryCondition(){
+        //return the following
+        //1. the last valid row (where the car will snap on release) is the goal row
+        //2. the column (always the case) is the size of the board minus the size of the vehicle
+        //   this is so that the FRONT of the vehicle passing through is goal state, rather than the back
+        //3. the vehicle is the goal car we need to move through
+        //the goal car will always start on row 2 and is always horizontal so the vertical case is never considered 
+        return lastValidRow == GridVariables.g.getGoalRow() && lastValidColumn == GridVariables.boardSize-vehicle.getSize() && goalCar;
+    }
 }
