@@ -75,6 +75,7 @@ public class GridVehicle extends StackPane {
         });
     }
 
+
     public boolean lastValidPosition(double x, double y){
         int tilewidth = (int) GridVariables.tileSizeWidth;
         int posI = (int) (x+GridVariables.tileSizeWidth/vehicle.getSize());

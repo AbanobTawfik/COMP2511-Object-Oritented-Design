@@ -63,7 +63,7 @@ public class GridGenerator {
 
         Vehicle v1 = new Vehicle(false,3);
         GridVehicle car1 = new GridVehicle(GridVariables.tileSizeWidth,GridVariables.tileSizeHeight,false,v1,grid);
-        car1.setCol(3);
+        car1.setCol(5);
         car1.setRow(1);
         vehicles.getChildren().add(car1);
         car1.initialShift();
