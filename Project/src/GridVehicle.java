@@ -35,6 +35,8 @@ public class GridVehicle extends StackPane {
     private ArrayList<Pair<Integer, Integer>> coordinatesBlocked = new ArrayList<>();
     //this flag will be used as a check for when the car initially collides with another, i.e invalid move
     private boolean flag = true;
+    //This is a flag which will tell us if the car which is selected is the goal car which reaches goal state
+    private boolean goalCar;
 
     /**
      * This function will create a grid vehicle which handles both front and backend. this function will create
@@ -57,6 +59,8 @@ public class GridVehicle extends StackPane {
         this.row = row;
         //sets the initial column for the GridVehicle
         this.col = col;
+        //sets the boolean if the car is goal car
+        this.goalCar = goalCar;
         //initiallising the width of the rectangle (pixels in x direction)
         double vehicleSizeX = GridVariables.tileSizeWidth;
         //initiallising the height of the rectangle (pixels in y direction)
