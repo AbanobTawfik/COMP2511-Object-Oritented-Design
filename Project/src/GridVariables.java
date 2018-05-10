@@ -1,3 +1,7 @@
+import javafx.scene.Parent;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+
 /**
  * This class is designed to store all variables used by every file in the project
  * if any change to sboard is required regarding size and constants
@@ -67,5 +71,9 @@ public class GridVariables {
      * that is, the goal car has been moved through the goal row
      */
     //this is the check flag if the goal state has been met
-    public static final boolean victory
+    public static final boolean victory = false;
+
+    public static final VBox menu = new VBox();
+
+    public static final Pane root = new Pane();
 }

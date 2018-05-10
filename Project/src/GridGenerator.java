@@ -1,9 +1,9 @@
+import javafx.event.EventType;
 import javafx.scene.Group;
 import javafx.scene.Parent;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.control.Button;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -21,17 +21,20 @@ public class GridGenerator {
      */
     public Parent generateGrid() {
         //this will be the Parent used for the scene
-        Pane finalBoard = new Pane();
         //sets the background to black
-        finalBoard.setStyle("-fx-background-color: black");
+        GridVariables.root.setStyle("-fx-background-color: black");
         //set the size of the parent to the resolution in the global grid variables.
-        finalBoard.setPrefSize(GridVariables.gridWidth, GridVariables.gridHeight);
-
-
+        GridVariables.root.setPrefSize(GridVariables.gridWidth, GridVariables.gridHeight);
         //this is the 2d grid we will be using for GUI
         GridPane gridpane = new GridPane();
         //this is the group which will hold the vehicles on the board
         Group vehicles = new Group();
+        //this will be the main menu used for the game, i will set it up so it will open on 2 conditions
+        //if the goal state is met
+        //or the user presses the esc key
+        //this will be the title for the menu
+        GridVariables.menu.setId("Main Menu");
+        GridVariables.menu.getChildren().addAll(new Button("Easy Level"), new Button("Not as Meme"), new Button("Turn Back"));
         //initalising the rows for this grid (adds a slot at each row index)
         for (int i = 0; i < GridVariables.boardSize; i++) {
             //initalises rows for the grid pane
@@ -99,12 +102,13 @@ public class GridGenerator {
 
         vehicles.getChildren().add(car2);
         car2.initialShift();
-
-        finalBoard.getChildren().addAll(gridpane, vehicles);
-
+        GridVariables.root.getChildren().addAll(gridpane, vehicles,GridVariables.menu);
         //reset the number of moves when new board is created
         GridVariables.numberOfMoves = 0;
         //return the final board containing the grid and the group of vehicles
-        return finalBoard;
+        GridVariables.root.setManaged(false);
+        return GridVariables.root;
     }
+
+
 }
