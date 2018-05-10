@@ -44,7 +44,7 @@ public class GridVariables {
      * the application is open in the Y direction
      */
     //this is the resolution of the app on screen 900pixelsY
-    public static final double gridHeight = 900;
+    public static final double gridHeight = 800;
 
     /**
      * This is the size of the tile in the X direction in amount of pixels.
@@ -61,4 +61,11 @@ public class GridVariables {
     //the size of each tile on board in Y direction
     //divide the pixels in Y direction by board size for evenly sized tiles
     public static final double tileSizeHeight = gridHeight / boardSize;
+
+    /**
+     * This is a global check condition to check if goal state is reached
+     * that is, the goal car has been moved through the goal row
+     */
+    //this is the check flag if the goal state has been met
+    public static final boolean victory
 }
