@@ -1,4 +1,3 @@
-import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
@@ -13,7 +12,7 @@ public class GridVariables {
      * the user has performed in a game
      */
     //this is a counter for counting how many drags in the board
-    public static int numberOfMoves = 0;
+    public static int NUMBER_OF_MOVES = 0;
 
     /**
      * This will be the grid used accross all files to keep consistent access accross all
@@ -31,24 +30,24 @@ public class GridVariables {
     public static final GridVehicle[][] grid = g.getGrid();
     /**
      * This constant will show how many tiles in both directions required for the grid
-     * grid size is boardSize * boardSize
+     * grid size is BOARD_SIZE * BOARD_SIZE
      */
     //this is the size of all boards, kept constant in all the grid variables
-    public static final int boardSize = 6;
+    public static final int BOARD_SIZE = 6;
 
     /**
      * This constant will be the amount of pixels taken by the application when
      * the application is open in the X direction
      */
     //this is the resolution of the app on screen 1440pixelsX
-    public static final double gridWidth = 1440;
+    public static final double GRID_WIDTH = 1440;
 
     /**
      * This constant will be the amount of pixels taken by the application when
      * the application is open in the Y direction
      */
     //this is the resolution of the app on screen 900pixelsY
-    public static final double gridHeight = 800;
+    public static final double GRID_HEIGHT = 800;
 
     /**
      * This is the size of the tile in the X direction in amount of pixels.
@@ -56,7 +55,7 @@ public class GridVariables {
      */
     //the size of each tile on board in X direction
     //divide the pixels in X direction by board size for evenly sized tiles
-    public static final double tileSizeWidth = gridWidth / boardSize;
+    public static final double TILE_SIZE_WIDTH = GRID_WIDTH / BOARD_SIZE;
 
     /**
      * This is the size of the tile in the Y direction in amount of pixels.
@@ -64,7 +63,7 @@ public class GridVariables {
      */
     //the size of each tile on board in Y direction
     //divide the pixels in Y direction by board size for evenly sized tiles
-    public static final double tileSizeHeight = gridHeight / boardSize;
+    public static final double TILE_SIZE_HEIGHT = GRID_HEIGHT / BOARD_SIZE;
 
     /**
      * This is a global check condition to check if goal state is reached

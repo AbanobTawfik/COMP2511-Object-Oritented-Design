@@ -62,18 +62,18 @@ public class GridVehicle extends StackPane {
         //sets the boolean if the car is goal car
         this.goalCar = goalCar;
         //initiallising the width of the rectangle (pixels in x direction)
-        double vehicleSizeX = GridVariables.tileSizeWidth;
+        double vehicleSizeX = GridVariables.TILE_SIZE_WIDTH;
         //initiallising the height of the rectangle (pixels in y direction)
-        double vehicleSizeY = GridVariables.tileSizeHeight;
+        double vehicleSizeY = GridVariables.TILE_SIZE_HEIGHT;
         //if the vehicle is horizontal, we set it's pixel size in x direction to
         //vehicle size * tile size in x
         if (vehicle.isHorizontal()) {
-            vehicleSizeX = (GridVariables.tileSizeWidth) * vehicle.getSize();
+            vehicleSizeX = (GridVariables.TILE_SIZE_WIDTH) * vehicle.getSize();
         }
         //otherwise it's vertical and do the converse, set it's pixel size in y direction to
         //vehicle size * tile size in y direction
         else
-            vehicleSizeY = (GridVariables.tileSizeHeight) * vehicle.getSize();
+            vehicleSizeY = (GridVariables.TILE_SIZE_HEIGHT) * vehicle.getSize();
         //creating the vehicle as rectangle with size as calculated above
         Rectangle carBlock = new Rectangle(vehicleSizeX, vehicleSizeY);
         //thicker stroke so the blocks are visually more seperated, white stroke on black vehicles
@@ -128,17 +128,17 @@ public class GridVehicle extends StackPane {
             if (vehicle.isHorizontal())
                 //snaps the vehicle back to the last valid column and row (lastValidColumn and lastValidRow)
                 //when horizontal we only want to snap in x coordinate based on last valid x only IGNORE Y
-                relocate(lastValidColumn * GridVariables.tileSizeWidth, row * GridVariables.tileSizeHeight);
+                relocate(lastValidColumn * GridVariables.TILE_SIZE_WIDTH, row * GridVariables.TILE_SIZE_HEIGHT);
             else
                 //snaps the vehicle back to the last valid column and row (lastValidColumn and lastValidRow)
                 //when vertical we only want to snap in Y coordinate based on last valid Y only IGNORE X
-                relocate(col * GridVariables.tileSizeWidth, lastValidRow * GridVariables.tileSizeHeight);
+                relocate(col * GridVariables.TILE_SIZE_WIDTH, lastValidRow * GridVariables.TILE_SIZE_HEIGHT);
             //update the back end grid, will free the old coordinates blocked by vehicle
             //and then it will set the new coordinates blocked based on the column + row it snapped to and vehicle size
             updateGrid(lastValidColumn, lastValidRow);
             //increment the number of moves performed counter by 1
-            GridVariables.numberOfMoves++;
-            System.out.println(GridVariables.numberOfMoves);
+            GridVariables.NUMBER_OF_MOVES++;
+            System.out.println(GridVariables.NUMBER_OF_MOVES);
             //thicker stroke so the blocks are visually more seperated, white stroke on black vehicles
             //when the vehicle is released it goes back to white stroke
             carBlock.setStrokeWidth(2);
@@ -162,10 +162,10 @@ public class GridVehicle extends StackPane {
      */
     public boolean lastValidPosition(double x, double y) {
         //since we are doing integer divison, cast tilesizewidth to integer
-        int tilewidth = (int) GridVariables.tileSizeWidth;
+        int tilewidth = (int) GridVariables.TILE_SIZE_WIDTH;
         //the updated column position is the offset + the pixel coordinate for the FIRST block in the vehicle
         //if we dont divide by vehicle size it will pick the end block for the vehicle
-        int posI = (int) (x + GridVariables.tileSizeWidth / vehicle.getSize());
+        int posI = (int) (x + GridVariables.TILE_SIZE_WIDTH / vehicle.getSize());
         //the resulting move column is the updated coordinate origin column (top left corner)  divided by the width of the column
         int resultCol = posI / tilewidth;
         //if this column is in a negative index FALSE INVALID MOVE, this will also set boundary at 0, so it cannot go
@@ -173,11 +173,11 @@ public class GridVehicle extends StackPane {
         if (posI < 0) {
             return false;
         }
-        //since we are doing integer divison, cast tileSizeHeight to integer
-        int tileHeight = (int) GridVariables.tileSizeHeight;
+        //since we are doing integer divison, cast TILE_SIZE_HEIGHT to integer
+        int tileHeight = (int) GridVariables.TILE_SIZE_HEIGHT;
         //the updated row position is the offset + the pixel coordinate for the FIRST block in the vehicle
         //if we dont divide by vehicle size it will pick the end block for the vehicle
-        int posI2 = (int) (y + GridVariables.tileSizeHeight / vehicle.getSize());
+        int posI2 = (int) (y + GridVariables.TILE_SIZE_HEIGHT / vehicle.getSize());
         //the resulting move row is the updated coordinate origin row (top left corner) divided by the height of the row
         int resultRow = posI2 / tileHeight;
         //if this row is in a negative index, like above. it sets the boundary at 0 for row, cannot go up into negative space
@@ -321,28 +321,28 @@ public class GridVehicle extends StackPane {
         //jumping over obstacles
         //if the vehicle is horizontal and the attempted move IS VALID
         //WE MAKE SURE WE DO NOT RELOCATE IT AT ALL VERTICALLY! ALL THE VERTICAL COORDINATES VARIABLES ETC STAY THE SAME
-        if (flag && vehicle.isHorizontal() && lastValidPosition(xNew - initialClickOffsetInX + getLayoutX(), (row) * GridVariables.tileSizeHeight)) {
+        if (flag && vehicle.isHorizontal() && lastValidPosition(xNew - initialClickOffsetInX + getLayoutX(), (row) * GridVariables.TILE_SIZE_HEIGHT)) {
             //relocate the object based on offset
             //xNew - initalClickOffsetInx is the drag offset from where the block was and cursor position,
             //and we add that to the objects absolute position (getlayoutX) is absolute position
             //the reason we have xNew - initalClickOffsetInX is to stop the block from just jumping around
             //sporadically, and jumping based on click offset.
             //relocate changes the objects origin once relocated which is much better fix than translate
-            relocate(xNew - initialClickOffsetInX + getLayoutX(), (row) * GridVariables.tileSizeHeight);
+            relocate(xNew - initialClickOffsetInX + getLayoutX(), (row) * GridVariables.TILE_SIZE_HEIGHT);
             //update the last position the object is at based on xNew (the click)
             initialClickOffsetInX = xNew;
         }
         //if the vehicle is vertical and the attempted move IS VALID
         //we make sure WE DO NOT MOVE THE OBJECT OR UPDATE ANY OF THE VARIABLES IN THE X (horizontal) positions
         else {
-            if (flag && (!vehicle.isHorizontal()) && lastValidPosition((col) * GridVariables.tileSizeWidth, yNew - initialClickOffsetInY + getLayoutY())) {
+            if (flag && (!vehicle.isHorizontal()) && lastValidPosition((col) * GridVariables.TILE_SIZE_WIDTH, yNew - initialClickOffsetInY + getLayoutY())) {
                 //relocate the object based on offset
                 //YNew - initalClickOffsetInY is the drag offset from where the block was and cursor position,
                 //and we add that to the objects absolute position (getlayoutY) is absolute position
                 //the reason we have YNew - initalClickOffsetInY is to stop the block from just jumping around
                 //sporadically, and jumping based on click offset.
                 //relocate changes the objects origin once relocated which is much better fix than translate
-                relocate((col) * GridVariables.tileSizeWidth, yNew - initialClickOffsetInY + getLayoutY());
+                relocate((col) * GridVariables.TILE_SIZE_WIDTH, yNew - initialClickOffsetInY + getLayoutY());
                 //update the last position the object is based on YNew (the click)
                 initialClickOffsetInY = yNew;
             }
@@ -357,16 +357,16 @@ public class GridVehicle extends StackPane {
     public void initialShift() {
         //this initial shift links back end to front end
         //the initial shift in x is the column where it will be placed, multiplied by the pixel size of the tile width
-        double offsetXtemp = (col) * GridVariables.tileSizeWidth;
+        double offsetXtemp = (col) * GridVariables.TILE_SIZE_WIDTH;
         //the initial shift in the y is the row where it will be placed, multiplied by the pixel size of the tile hiehgt
-        double offsetYtemp = (row) * GridVariables.tileSizeHeight;
+        double offsetYtemp = (row) * GridVariables.TILE_SIZE_HEIGHT;
         //relocate object to the initial shift coordinates
         relocate(offsetXtemp, offsetYtemp);
         //update the backend grid
         updateGrid(col, row);
 
     }
-    
+
     /**
      * This method will be used to check if the goal car has gone through the goal tile,
      * This method guarantees to return a true/false expression representing if the car has met goal state
@@ -380,7 +380,7 @@ public class GridVehicle extends StackPane {
         //2. the column (always the case) is the size of the board minus the size of the vehicle
         //   this is so that the FRONT of the vehicle passing through is goal state, rather than the back
         //3. the vehicle is the goal car we need to move through
-        //the goal car will always start on row 2 and is always horizontal so the vertical case is never considered 
-        return lastValidRow == GridVariables.g.getGoalRow() && lastValidColumn == GridVariables.boardSize-vehicle.getSize() && goalCar;
+        //the goal car will always start on row 2 and is always horizontal so the vertical case is never considered
+        return lastValidRow == GridVariables.g.getGoalRow() && lastValidColumn == GridVariables.BOARD_SIZE -vehicle.getSize() && goalCar;
     }
 }

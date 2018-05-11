@@ -1,8 +1,6 @@
-import javafx.event.EventType;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -24,7 +22,7 @@ public class GridGenerator {
         //sets the background to black
         GridVariables.root.setStyle("-fx-background-color: black");
         //set the size of the parent to the resolution in the global grid variables.
-        GridVariables.root.setPrefSize(GridVariables.gridWidth, GridVariables.gridHeight);
+        GridVariables.root.setPrefSize(GridVariables.GRID_WIDTH, GridVariables.GRID_HEIGHT);
         //this is the 2d grid we will be using for GUI
         GridPane gridpane = new GridPane();
         //this is the group which will hold the vehicles on the board
@@ -36,7 +34,7 @@ public class GridGenerator {
         GridVariables.menu.setId("Main Menu");
         GridVariables.menu.getChildren().addAll(new Button("Easy Level"), new Button("Not as Meme"), new Button("Turn Back"));
         //initalising the rows for this grid (adds a slot at each row index)
-        for (int i = 0; i < GridVariables.boardSize; i++) {
+        for (int i = 0; i < GridVariables.BOARD_SIZE; i++) {
             //initalises rows for the grid pane
             RowConstraints row = new RowConstraints();
             //this lets the nodes fill the grid tile
@@ -44,7 +42,7 @@ public class GridGenerator {
             gridpane.getRowConstraints().add(row);
         }
         //initalising the columns for this grid (adds a slot at each col index)
-        for (int i = 0; i < GridVariables.boardSize; i++) {
+        for (int i = 0; i < GridVariables.BOARD_SIZE; i++) {
             //initalises the columns for the grid pane
             ColumnConstraints col = new ColumnConstraints();
             //this lets the nodes fill the grid tile
@@ -53,12 +51,12 @@ public class GridGenerator {
         }
 
         //filling our grid with tiles for the game
-        for (int i = 0; i < GridVariables.boardSize; i++) {
-            for (int j = 0; j < GridVariables.boardSize; j++) {
+        for (int i = 0; i < GridVariables.BOARD_SIZE; i++) {
+            for (int j = 0; j < GridVariables.BOARD_SIZE; j++) {
                 //tiles are represented by a rectangle that is white with black border
                 //the -1.15 is so the rectangle fits better with the vehicles
-                Rectangle tile = new Rectangle(GridVariables.tileSizeWidth - 1.15, GridVariables.tileSizeHeight - 1.15);
-                if (i == GridVariables.boardSize - 1 && j == GridVariables.g.getGoalRow()) {
+                Rectangle tile = new Rectangle(GridVariables.TILE_SIZE_WIDTH - 1.15, GridVariables.TILE_SIZE_HEIGHT - 1.15);
+                if (i == GridVariables.BOARD_SIZE - 1 && j == GridVariables.g.getGoalRow()) {
                     //this sets the goal tile filled green so it stands out better
                     //the stroke is a black border around the grid
                     tile.setStroke(Color.BLACK);
@@ -102,9 +100,33 @@ public class GridGenerator {
 
         vehicles.getChildren().add(car2);
         car2.initialShift();
-        GridVariables.root.getChildren().addAll(gridpane, vehicles,GridVariables.menu);
+
+        Vehicle v3 = new Vehicle(true, 2);
+        GridVehicle car3 = new GridVehicle(false, v3, 0, 0);
+
+        vehicles.getChildren().add(car3);
+        car3.initialShift();
+
+        Vehicle v4 = new Vehicle(true, 2);
+        GridVehicle car4 = new GridVehicle(false, v4, 0, 3);
+
+        vehicles.getChildren().add(car4);
+        car4.initialShift();
+
+        Vehicle v5 = new Vehicle(true, 2);
+        GridVehicle car5 = new GridVehicle(false, v5, 4, 0);
+
+        vehicles.getChildren().add(car5);
+        car5.initialShift();
+
+        Vehicle v6 = new Vehicle(false, 2);
+        GridVehicle car6 = new GridVehicle(false, v6, 1, 4);
+        vehicles.getChildren().add(car6);
+        car6.initialShift();
+
+        GridVariables.root.getChildren().addAll(gridpane, vehicles);
         //reset the number of moves when new board is created
-        GridVariables.numberOfMoves = 0;
+        GridVariables.NUMBER_OF_MOVES = 0;
         //return the final board containing the grid and the group of vehicles
         GridVariables.root.setManaged(false);
         return GridVariables.root;

@@ -30,7 +30,7 @@ public class GridLock extends Application {
         GridGenerator g = new GridGenerator();
         //screates new scene from the grid generator method (the parent)
         //and the resolution for the scene
-        Scene scene = new Scene(g.generateGrid(), GridVariables.gridWidth, GridVariables.gridHeight);
+        Scene scene = new Scene(g.generateGrid(), GridVariables.GRID_WIDTH, GridVariables.GRID_HEIGHT);
         //this method will display the application
         scene.setOnKeyPressed(e->{
             if(e.getCode().equals(KeyCode.ESCAPE))

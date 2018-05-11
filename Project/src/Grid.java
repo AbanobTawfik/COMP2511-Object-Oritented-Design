@@ -4,7 +4,7 @@
  */
 public class Grid {
     //a 2d matrix of gridvehicles used to keep track of the back end
-    private GridVehicle[][] grid = new GridVehicle[GridVariables.boardSize][GridVariables.boardSize];
+    private GridVehicle[][] grid = new GridVehicle[GridVariables.BOARD_SIZE][GridVariables.BOARD_SIZE];
     //this is the index for the row where the goal car has to pass through (always at last column)
     private final int goalRow = 2;
 
@@ -13,8 +13,8 @@ public class Grid {
      */
     public Grid() {
         //scan through the rows and columns and initalise every index as null
-        for (int i = 0; i < GridVariables.boardSize; i++) {
-            for (int j = 0; j < GridVariables.boardSize; j++)
+        for (int i = 0; i < GridVariables.BOARD_SIZE; i++) {
+            for (int j = 0; j < GridVariables.BOARD_SIZE; j++)
                 //null means nothing is in the panel
                 grid[i][j] = null;
         }
