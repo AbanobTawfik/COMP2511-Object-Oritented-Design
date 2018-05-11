@@ -37,6 +37,12 @@ public class GridVehicle extends StackPane {
     private boolean flag = true;
     //This is a flag which will tell us if the car which is selected is the goal car which reaches goal state
     private boolean goalCar;
+    //the back-end grid, this is so updating board state and checking board state is done and handled by back end grid class
+    private Grid grid;
+    //this will keep track of the most recent row where a crash has occured (allows for movement after crash provided valid)
+    private int crashRow;
+    //this will keep track of the most recent column where a crash has occured (allows for movement after crash provided valid)
+    private int crashCol;
 
     /**
      * This function will create a grid vehicle which handles both front and backend. this function will create
@@ -51,8 +57,9 @@ public class GridVehicle extends StackPane {
      * @param vehicle the vehicle which contains the base orientation and size
      * @param row     the row which the vehicle is initally placed
      * @param col     the column where the vehicle is initially placed
+     * @param grid    the grid which contains the board state (allows us to access methods to update board state inside the grid class)
      */
-    public GridVehicle(boolean goalCar, Vehicle vehicle, int row, int col) {
+    public GridVehicle(boolean goalCar, Vehicle vehicle, int row, int col, Grid grid) {
         //sets the vehicle for the GridVehicle
         this.vehicle = vehicle;
         //sets the initial row for the GridVehicle
@@ -61,6 +68,8 @@ public class GridVehicle extends StackPane {
         this.col = col;
         //sets the boolean if the car is goal car
         this.goalCar = goalCar;
+        //sets the grid board state for the car, (allows grid to update state rather than this class
+        this.grid = grid;
         //initiallising the width of the rectangle (pixels in x direction)
         double vehicleSizeX = GridVariables.TILE_SIZE_WIDTH;
         //initiallising the height of the rectangle (pixels in y direction)
@@ -135,7 +144,7 @@ public class GridVehicle extends StackPane {
                 relocate(col * GridVariables.TILE_SIZE_WIDTH, lastValidRow * GridVariables.TILE_SIZE_HEIGHT);
             //update the back end grid, will free the old coordinates blocked by vehicle
             //and then it will set the new coordinates blocked based on the column + row it snapped to and vehicle size
-            updateGrid(lastValidColumn, lastValidRow);
+            grid.updateGrid(lastValidColumn, lastValidRow, coordinatesBlocked, vehicle, this);
             //increment the number of moves performed counter by 1
             GridVariables.NUMBER_OF_MOVES++;
             System.out.println(GridVariables.NUMBER_OF_MOVES);
@@ -186,7 +195,7 @@ public class GridVehicle extends StackPane {
         }
         //now we are checking the back end board for valid move
         //if the resulting move col + row (the row and column the object will be snapped in) is valid
-        if (isValidMove(resultCol, resultRow)) {
+        if (grid.isValidMove(resultCol, resultRow, vehicle, this)) {
             //we want to update the last valid column
             lastValidColumn = resultCol;
             //update the last valid row
@@ -195,112 +204,16 @@ public class GridVehicle extends StackPane {
             return true;
         }
         //if the move was invalid, we want to set our flag as false so the object can no longer move
-        if (!isValidMove(resultCol, resultRow))
+        if (!grid.isValidMove(resultCol, resultRow, vehicle, this)) {
             //set the flag as false
             flag = false;
+            crashCol = resultCol;
+            crashRow = resultRow;
+        }
         //also return false (invalid moves)
         return false;
     }
 
-    /**
-     * this method will check if there is an obstruction (object) in the updated column and row for the attempted move
-     * this is the backend check for if there is an object obstruction. this method will guarantee to return true if there
-     * are no obstructions, and false if otherwise, provided it receives valid integers for the row and column index to check
-     *
-     * @param col the column index for the attempted move
-     * @param row the row index for the attempted move
-     * @return true if the index is either null or the current object itself (since the vehicle spans), false if there is an object in that index
-     */
-    /*
-     * there are 2 checks, one is if the vehicle is horizxontal, and the other is if the vehicle is vertical
-     */
-    public boolean isValidMove(int col, int row) {
-        //if the object is horizontal
-        if (vehicle.isHorizontal()) {
-            //scan through matrix based on vehicle size
-            for (int i = 0; i < vehicle.getSize(); i++) {
-                //to avoid mull pointer issue and bound the car to the board (so it doesnt go over boardsize)
-                //if the attempted move is outside board RETURN FALSE
-                if (col + i >= GridVariables.grid.length) {
-                    return false;
-                }
-                //this is the main check
-                //If ANY block of the current object moved across collides with another. i.e.
-                //the updated coordinates dont contain any object, or the current object itself (cant collide with itself)
-                //if the object slided across does not have any objects in the way beside itself is the main check
-                if (GridVariables.grid[col + i][row] != this && null != GridVariables.grid[col + i][row])
-                    return false;
-            }
-        }
-        //if the object is vertical
-        else {
-            //scan through matrix based on vehicle size
-            for (int i = 0; i < vehicle.getSize(); i++) {
-                //to avoid mull pointer issue and bound the car to the board (so it doesnt go over boardsize)
-                //if the attempted move is outside board RETURN FALSE
-                if (row + i >= GridVariables.grid.length) {
-                    return false;
-                }
-                //similair to above
-                //this is the main check
-                //If ANY block of the current object moved across collides with another. i.e.
-                //the updated coordinates dont contain any object, or the current object itself (cant collide with itself)
-                //if the object slided across does not have any objects in the way beside itself is the main check
-                if (GridVariables.grid[col][row + i] != this && null != GridVariables.grid[col][row + i])
-                    return false;
-            }
-        }
-        //default return true, that means the scan didn't fail for the shifted block
-        return true;
-    }
-
-    /**
-     * This method will update the back end on an attempted move, once the mouse is released and the vehicle
-     * is snapped into the row and column, it will free the old row + column (backend) where the object was previously
-     * and it will store the object in the new row and column provided.
-     * This method guarantees to free the current coordinates occupied from the grid by nulling the row column pair index
-     * and it will guarantee to place the object in the grid (backend) at the row and column given, provided it is supplied
-     * with a valid non zero integer
-     *
-     * @param column the column where the object is located at after it is snapped
-     * @param roww   the roww where the object is lovated at after it is snapped
-     */
-    /*
-     * this function will update the back end grid based on where the row and column of the object. this is called
-     * initially when the object is shifted from the top left origin, and when the cursor is released
-     */
-    public void updateGrid(int column, int roww) {
-        //scan through the coordinates blocked by the current object
-        for (Pair<Integer, Integer> coordinates : coordinatesBlocked) {
-            //clear up on the back end grid teh column + row index in matrix where the object is located
-            GridVariables.grid[coordinates.getKey()][coordinates.getValue()] = null;
-        }
-        //clear the list of coordinates blocked so we can properly updated
-        coordinatesBlocked.clear();
-        //if the vehicle is vertical/horizontal the update will be different so,
-        //if the vehicle is hoirzontal
-        if (vehicle.isHorizontal()) {
-            //scan through the based on vehicle size
-            for (int i = 0; i < vehicle.getSize(); i++) {
-                //add the column + row index into the coordinate blocked pair
-                coordinatesBlocked.add(new Pair<>(column + i, roww));
-                //set the index at the column + row to be equal to the current object to update board
-                //the row is always same since it doesnt change since the object is horizontal only horizontal movement
-                GridVariables.grid[column + i][roww] = this;
-            }
-        }
-        //if the vehicle is vertical
-        else {
-            //scan through the based on vehicle size
-            for (int i = 0; i < vehicle.getSize(); i++) {
-                //add the column + row index into the coordinate blocked pair
-                coordinatesBlocked.add(new Pair<>(column, roww + i));
-                //set the index at the column + row to be equal to the current object to update board
-                //the column is always same since it doesnt change since vertical, only moves vertically
-                GridVariables.grid[column][roww + i] = this;
-            }
-        }
-    }
 
     /**
      * This method will relocate an object on the grid pane based on the objects orientation, and the displacement
@@ -347,6 +260,94 @@ public class GridVehicle extends StackPane {
                 initialClickOffsetInY = yNew;
             }
         }
+        //note for this FORWARD -> TO THE RIGHT and BACKWARDS <- TO THE LEFT
+        //if a collision has occured and the vehicle wants to move AWAY from the collision provided the move away is a legal move
+        //we will allow the vehicle to move away from the collision on the following conditions
+        //if the vehicle
+        //1. crashed (flag == false)
+        //2. and the vehicle is horizontal
+        //3. and the car has crashed moving BACK
+        //4. and the car is trying to move FORWARD
+        //5. and the move is LEGAL (valid)
+        //we allow the car to freely and smoothly move backward updating its details AND making the flag true now
+        if (!flag && vehicle.isHorizontal() && lastValidColumn < crashCol && (xNew - initialClickOffsetInX + getLayoutX() < lastValidColumn * GridVariables.TILE_SIZE_WIDTH)
+                && lastValidPosition(xNew - initialClickOffsetInX + getLayoutX(), (row) * GridVariables.TILE_SIZE_HEIGHT)) {
+            //relocate the object based on offset
+            //xNew - initalClickOffsetInx is the drag offset from where the block was and cursor position,
+            //and we add that to the objects absolute position (getlayoutX) is absolute position
+            //the reason we have xNew - initalClickOffsetInX is to stop the block from just jumping around
+            //sporadically, and jumping based on click offset.
+            //relocate changes the objects origin once relocated which is much better fix than translate
+            flag = true;
+            relocate(xNew - initialClickOffsetInX + getLayoutX(), (row) * GridVariables.TILE_SIZE_HEIGHT);
+            //update the last position the object is at based on xNew (the click)
+            initialClickOffsetInX = xNew;
+        }
+
+        //if the vehicle
+        //1. crashed (flag == false)
+        //2. and the vehicle is horizontal
+        //3. and the car has crashed moving FORWARD
+        //4. and the car is trying to move BACKWARDS
+        //5. and the move is LEGAL (valid)
+        //we allow the car to freely and smoothly move FORWARD updating its details AND making the flag true now
+        if (!flag && vehicle.isHorizontal() && lastValidColumn > crashCol && (xNew - initialClickOffsetInX + getLayoutX() > lastValidColumn * GridVariables.TILE_SIZE_WIDTH)
+                && lastValidPosition(xNew - initialClickOffsetInX + getLayoutX(), (row) * GridVariables.TILE_SIZE_HEIGHT)) {
+            //relocate the object based on offset
+            //xNew - initalClickOffsetInx is the drag offset from where the block was and cursor position,
+            //and we add that to the objects absolute position (getlayoutX) is absolute position
+            //the reason we have xNew - initalClickOffsetInX is to stop the block from just jumping around
+            //sporadically, and jumping based on click offset.
+            //relocate changes the objects origin once relocated which is much better fix than translate
+            flag = true;
+            relocate(xNew - initialClickOffsetInX + getLayoutX(), (row) * GridVariables.TILE_SIZE_HEIGHT);
+            //update the last position the object is at based on xNew (the click)
+            initialClickOffsetInX = xNew;
+        }
+        //this is the case for Vertical movements after collisions
+        //note up  refers to moving towards the ceiling and down refers moving towards the floor
+        else {
+            //if the vehicle
+            //1. crashed (flag == false)
+            //2. and the vehicle is Vertical
+            //3. and the car has crashed moving DOWN
+            //4. and the car is trying to move UP
+            //5. and the move is LEGAL (valid)
+            //we allow the car to freely and smoothly move UP updating its details AND making the flag true now
+            if (!flag && !vehicle.isHorizontal() && lastValidRow > crashRow && (yNew - initialClickOffsetInY + getLayoutY() > lastValidRow * GridVariables.TILE_SIZE_HEIGHT)
+                    && lastValidPosition((col) * GridVariables.TILE_SIZE_WIDTH, yNew - initialClickOffsetInY + getLayoutY())) {
+                //relocate the object based on offset
+                //YNew - initalClickOffsetInY is the drag offset from where the block was and cursor position,
+                //and we add that to the objects absolute position (getlayoutY) is absolute position
+                //the reason we have YNew - initalClickOffsetInY is to stop the block from just jumping around
+                //sporadically, and jumping based on click offset.
+                //relocate changes the objects origin once relocated which is much better fix than translate
+                flag = true;
+                relocate((col) * GridVariables.TILE_SIZE_WIDTH, yNew - initialClickOffsetInY + getLayoutY());
+                //update the last position the object is based on YNew (the click)
+                initialClickOffsetInY = yNew;
+            }
+            //if the vehicle
+            //1. crashed (flag == false)
+            //2. and the vehicle is Vertical
+            //3. and the car has crashed moving UP
+            //4. and the car is trying to move DOWN
+            //5. and the move is LEGAL (valid)
+            //we allow the car to freely and smoothly move DOWN updating its details AND making the flag true now
+            if (!flag && !vehicle.isHorizontal() && lastValidRow < crashRow && (yNew - initialClickOffsetInY + getLayoutY() > lastValidRow * GridVariables.TILE_SIZE_HEIGHT)
+                    && lastValidPosition((col) * GridVariables.TILE_SIZE_WIDTH, yNew - initialClickOffsetInY + getLayoutY())) {
+                //relocate the object based on offset
+                //YNew - initalClickOffsetInY is the drag offset from where the block was and cursor position,
+                //and we add that to the objects absolute position (getlayoutY) is absolute position
+                //the reason we have YNew - initalClickOffsetInY is to stop the block from just jumping around
+                //sporadically, and jumping based on click offset.
+                //relocate changes the objects origin once relocated which is much better fix than translate
+                flag = true;
+                relocate((col) * GridVariables.TILE_SIZE_WIDTH, yNew - initialClickOffsetInY + getLayoutY());
+                //update the last position the object is based on YNew (the click)
+                initialClickOffsetInY = yNew;
+            }
+        }
     }
 
     /**
@@ -363,7 +364,7 @@ public class GridVehicle extends StackPane {
         //relocate object to the initial shift coordinates
         relocate(offsetXtemp, offsetYtemp);
         //update the backend grid
-        updateGrid(col, row);
+        grid.updateGrid(col, row, coordinatesBlocked, vehicle, this);
 
     }
 
@@ -371,16 +372,15 @@ public class GridVehicle extends StackPane {
      * This method will be used to check if the goal car has gone through the goal tile,
      * This method guarantees to return a true/false expression representing if the car has met goal state
      *
-     * @return true if the goal car has gone through the goal row, which will always be on the last column, false if
-     * the goal state has not been met
+     * @return true if the goal car has gone through the goal row, which will always be on the last column, false if the goal state has not been met
      */
-    public boolean victoryCondition(){
+    public boolean victoryCondition() {
         //return the following
         //1. the last valid row (where the car will snap on release) is the goal row
         //2. the column (always the case) is the size of the board minus the size of the vehicle
         //   this is so that the FRONT of the vehicle passing through is goal state, rather than the back
         //3. the vehicle is the goal car we need to move through
         //the goal car will always start on row 2 and is always horizontal so the vertical case is never considered
-        return lastValidRow == GridVariables.g.getGoalRow() && lastValidColumn == GridVariables.BOARD_SIZE -vehicle.getSize() && goalCar;
+        return lastValidRow == grid.getGoalRow() && lastValidColumn == GridVariables.BOARD_SIZE - vehicle.getSize() && goalCar;
     }
 }

@@ -22,6 +22,7 @@ public class GridLock extends Application {
     /**
      * This method will stage a program to be launched. will load the scene with a title
      * and display.
+     *
      * @param stage a literal stage for the program which has the loaded scene, and title
      */
     @Override
@@ -32,8 +33,8 @@ public class GridLock extends Application {
         //and the resolution for the scene
         Scene scene = new Scene(g.generateGrid(), GridVariables.GRID_WIDTH, GridVariables.GRID_HEIGHT);
         //this method will display the application
-        scene.setOnKeyPressed(e->{
-            if(e.getCode().equals(KeyCode.ESCAPE))
+        scene.setOnKeyPressed(e -> {
+            if (e.getCode().equals(KeyCode.ESCAPE))
                 toggleMenu();
         });
         stage.setScene(scene);
@@ -41,10 +42,10 @@ public class GridLock extends Application {
         stage.show();
     }
 
-    public void toggleMenu(){
-        if(GridVariables.root.getChildren().contains(GridVariables.menu))
+    public void toggleMenu() {
+        if (GridVariables.root.getChildren().contains(GridVariables.menu))
             GridVariables.root.getChildren().remove(GridVariables.menu);
-        else if(!GridVariables.root.getChildren().contains(GridVariables.menu))
+        else if (!GridVariables.root.getChildren().contains(GridVariables.menu))
             GridVariables.root.getChildren().add(GridVariables.menu);
         else
             return;

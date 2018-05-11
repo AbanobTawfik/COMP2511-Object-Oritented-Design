@@ -15,20 +15,6 @@ public class GridVariables {
     public static int NUMBER_OF_MOVES = 0;
 
     /**
-     * This will be the grid used accross all files to keep consistent access accross all
-     * Grid Vehicles.
-     */
-    //this is the global grid for the project
-    public static final Grid g = new Grid();
-
-    /**
-     * This will be the 2d matrix to hold all the objects to allow easier collision detection
-     * this is global so that all grid vehicles don't require to store the grid in
-     * make a more efficient and optimal program
-     */
-    //this is the global matrix used to hold all the vehicles
-    public static final GridVehicle[][] grid = g.getGrid();
-    /**
      * This constant will show how many tiles in both directions required for the grid
      * grid size is BOARD_SIZE * BOARD_SIZE
      */
@@ -65,14 +51,7 @@ public class GridVariables {
     //divide the pixels in Y direction by board size for evenly sized tiles
     public static final double TILE_SIZE_HEIGHT = GRID_HEIGHT / BOARD_SIZE;
 
-    /**
-     * This is a global check condition to check if goal state is reached
-     * that is, the goal car has been moved through the goal row
-     */
-    //this is the check flag if the goal state has been met
-    public static final boolean victory = false;
-
-    public static final VBox menu = new VBox();
+    public static final VBox menu = new VBox(GRID_WIDTH/40);
 
     public static final Pane root = new Pane();
 }

@@ -11,10 +11,13 @@ import javafx.scene.shape.Rectangle;
  * and a group of vehicles that can be moved
  */
 public class GridGenerator {
+    private Grid grid = new Grid();
+
     /**
      * Generates a grid with a board of tiles, and a group of vehicles. This method
      * will guarantee to return a Parent which will be used as a root for the scene it is provided
      * to.
+     *
      * @return the root used for the scene
      */
     public Parent generateGrid() {
@@ -56,7 +59,7 @@ public class GridGenerator {
                 //tiles are represented by a rectangle that is white with black border
                 //the -1.15 is so the rectangle fits better with the vehicles
                 Rectangle tile = new Rectangle(GridVariables.TILE_SIZE_WIDTH - 1.15, GridVariables.TILE_SIZE_HEIGHT - 1.15);
-                if (i == GridVariables.BOARD_SIZE - 1 && j == GridVariables.g.getGoalRow()) {
+                if (i == GridVariables.BOARD_SIZE - 1 && j == grid.getGoalRow()) {
                     //this sets the goal tile filled green so it stands out better
                     //the stroke is a black border around the grid
                     tile.setStroke(Color.BLACK);
@@ -85,42 +88,42 @@ public class GridGenerator {
         // THIS STUFF BELOW IS HARD CODED FIX
         //vehicles.setManaged(true);
         Vehicle v = new Vehicle(true, 2);
-        GridVehicle car = new GridVehicle(true, v, 2, 1);
+        GridVehicle car = new GridVehicle(true, v, 2, 1, grid);
         vehicles.getChildren().add(car);
         car.initialShift();
 
         Vehicle v1 = new Vehicle(false, 3);
-        GridVehicle car1 = new GridVehicle(false, v1, 1, 3);
+        GridVehicle car1 = new GridVehicle(false, v1, 1, 3, grid);
 
         vehicles.getChildren().add(car1);
         car1.initialShift();
 
         Vehicle v2 = new Vehicle(true, 2);
-        GridVehicle car2 = new GridVehicle(false, v2, 4, 3);
+        GridVehicle car2 = new GridVehicle(false, v2, 4, 3, grid);
 
         vehicles.getChildren().add(car2);
         car2.initialShift();
 
         Vehicle v3 = new Vehicle(true, 2);
-        GridVehicle car3 = new GridVehicle(false, v3, 0, 0);
+        GridVehicle car3 = new GridVehicle(false, v3, 0, 0, grid);
 
         vehicles.getChildren().add(car3);
         car3.initialShift();
 
         Vehicle v4 = new Vehicle(true, 2);
-        GridVehicle car4 = new GridVehicle(false, v4, 0, 3);
+        GridVehicle car4 = new GridVehicle(false, v4, 0, 3, grid);
 
         vehicles.getChildren().add(car4);
         car4.initialShift();
 
         Vehicle v5 = new Vehicle(true, 2);
-        GridVehicle car5 = new GridVehicle(false, v5, 4, 0);
+        GridVehicle car5 = new GridVehicle(false, v5, 4, 0, grid);
 
         vehicles.getChildren().add(car5);
         car5.initialShift();
 
         Vehicle v6 = new Vehicle(false, 2);
-        GridVehicle car6 = new GridVehicle(false, v6, 1, 4);
+        GridVehicle car6 = new GridVehicle(false, v6, 1, 4, grid);
         vehicles.getChildren().add(car6);
         car6.initialShift();
 
@@ -128,7 +131,6 @@ public class GridGenerator {
         //reset the number of moves when new board is created
         GridVariables.NUMBER_OF_MOVES = 0;
         //return the final board containing the grid and the group of vehicles
-        GridVariables.root.setManaged(false);
         return GridVariables.root;
     }
 
