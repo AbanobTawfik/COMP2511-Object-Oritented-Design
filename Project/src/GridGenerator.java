@@ -88,7 +88,6 @@ public class GridGenerator {
 
             }
         }
-
         // THIS STUFF BELOW IS HARD CODED FIX
         //vehicles.setManaged(true);
         Vehicle v = new Vehicle(true, 2);
@@ -143,5 +142,9 @@ public class GridGenerator {
             pane.getChildren().add(menu);
         else
             return;
+    }
+
+    public void clearGrid(Group group) {
+        group.getChildren().clear();
     }
 }

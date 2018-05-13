@@ -269,7 +269,7 @@ public class GridVehicle extends StackPane {
         //4. and the car is trying to move FORWARD
         //5. and the move is LEGAL (valid)
         //we allow the car to freely and smoothly move backward updating its details AND making the flag true now
-        if (!flag && vehicle.isHorizontal() && lastValidColumn < crashCol && (xNew - initialClickOffsetInX + getLayoutX() < lastValidColumn * GridVariables.TILE_SIZE_WIDTH)
+        if (!flag && vehicle.isHorizontal() && lastValidColumn < crashCol && (xNew - initialClickOffsetInX + getLayoutX() < initialClickOffsetInX)
                 && lastValidPosition(xNew - initialClickOffsetInX + getLayoutX(), (row) * GridVariables.TILE_SIZE_HEIGHT)) {
             //relocate the object based on offset
             //xNew - initalClickOffsetInx is the drag offset from where the block was and cursor position,
@@ -290,7 +290,7 @@ public class GridVehicle extends StackPane {
         //4. and the car is trying to move BACKWARDS
         //5. and the move is LEGAL (valid)
         //we allow the car to freely and smoothly move FORWARD updating its details AND making the flag true now
-        if (!flag && vehicle.isHorizontal() && lastValidColumn > crashCol && (xNew - initialClickOffsetInX + getLayoutX() > lastValidColumn * GridVariables.TILE_SIZE_WIDTH)
+        if (!flag && vehicle.isHorizontal() && lastValidColumn > crashCol && (xNew - initialClickOffsetInX - getLayoutX() < initialClickOffsetInX)
                 && lastValidPosition(xNew - initialClickOffsetInX + getLayoutX(), (row) * GridVariables.TILE_SIZE_HEIGHT)) {
             //relocate the object based on offset
             //xNew - initalClickOffsetInx is the drag offset from where the block was and cursor position,
@@ -313,7 +313,7 @@ public class GridVehicle extends StackPane {
             //4. and the car is trying to move UP
             //5. and the move is LEGAL (valid)
             //we allow the car to freely and smoothly move UP updating its details AND making the flag true now
-            if (!flag && !vehicle.isHorizontal() && lastValidRow > crashRow && (yNew - initialClickOffsetInY + getLayoutY() > lastValidRow * GridVariables.TILE_SIZE_HEIGHT)
+            if (!flag && !vehicle.isHorizontal() && lastValidRow > crashRow && (yNew - initialClickOffsetInY + getLayoutY() < initialClickOffsetInY)
                     && lastValidPosition((col) * GridVariables.TILE_SIZE_WIDTH, yNew - initialClickOffsetInY + getLayoutY())) {
                 //relocate the object based on offset
                 //YNew - initalClickOffsetInY is the drag offset from where the block was and cursor position,
@@ -333,7 +333,7 @@ public class GridVehicle extends StackPane {
             //4. and the car is trying to move DOWN
             //5. and the move is LEGAL (valid)
             //we allow the car to freely and smoothly move DOWN updating its details AND making the flag true now
-            if (!flag && !vehicle.isHorizontal() && lastValidRow < crashRow && (yNew - initialClickOffsetInY + getLayoutY() > lastValidRow * GridVariables.TILE_SIZE_HEIGHT)
+            if (!flag && !vehicle.isHorizontal() && lastValidRow < crashRow && (yNew - initialClickOffsetInY - getLayoutY() < initialClickOffsetInY)
                     && lastValidPosition((col) * GridVariables.TILE_SIZE_WIDTH, yNew - initialClickOffsetInY + getLayoutY())) {
                 //relocate the object based on offset
                 //YNew - initalClickOffsetInY is the drag offset from where the block was and cursor position,
@@ -364,7 +364,6 @@ public class GridVehicle extends StackPane {
         relocate(offsetXtemp, offsetYtemp);
         //update the backend grid
         grid.updateGrid(col, row, coordinatesBlocked, vehicle, this);
-
     }
 
     /**
