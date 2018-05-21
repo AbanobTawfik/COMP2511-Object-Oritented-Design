@@ -11,7 +11,7 @@ public class Grid {
     //a 2d matrix of gridvehicles used to keep track of the back end
     private GridVehicle[][] grid = new GridVehicle[GridVariables.BOARD_SIZE][GridVariables.BOARD_SIZE];
     //this is the index for the row where the goal car has to pass through (always at last column)
-    private final int goalRow = 2;
+    private int goalRow = 2;
     //this is a counter for counting how many drags in the board
     private int numberOfMoves = 0;
     //this will be all the gridvehicles allocated on the grid
