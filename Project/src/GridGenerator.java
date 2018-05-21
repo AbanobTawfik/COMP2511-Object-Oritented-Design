@@ -27,6 +27,7 @@ public class GridGenerator {
     private Label EstimatedMoves = new Label();
     private GridPane gridPane = new GridPane();
     private VBox menubackground = new VBox();
+    private Button menuBoard = new Button("Menu");
 
     /**
      * Generates a grid with a board of tiles, and a group of vehicles. This method
@@ -82,12 +83,32 @@ public class GridGenerator {
             streakCounter = 0;
             updateStreakGUI();
         });
+        Button sound = new Button("Toggle sound");
+        sound.getStylesheets().add("Buttons.css");
+        sound.setOnAction(e->{
+            if(grid.isSound()) {
+                grid.setSound(false);
+                sound.setStyle("-fx-border-color: red; -fx-border-width: 2");
+            }else{
+                grid.setSound(true);
+                sound.setStyle("-fx-borer-color: none;");
+            }
+        });
+        menuBoard.getStylesheets().add("Buttons.css");
         Button exit = new Button("Exit");
         exit.getStylesheets().add("Buttons.css");
         exit.setOnAction(e -> {
             System.exit(0);
         });
-        menu.getChildren().addAll(easy, medium, hard, exit);
+
+
+        HBox dashBoard = new HBox(30);
+        easy.setTranslateX(GridVariables.GRID_WIDTH/40);
+        medium.setTranslateX(GridVariables.GRID_WIDTH/40);
+        hard.setTranslateX(GridVariables.GRID_WIDTH/40);
+        dashBoard.setTranslateX(-GridVariables.GRID_WIDTH/12);
+        dashBoard.getChildren().addAll(sound,menuBoard,exit);
+        menu.getChildren().addAll(easy, medium, hard,dashBoard);
         //menu.
         //initalising the rows for this grid (adds a slot at each row index)
         for (int i = 0; i < GridVariables.BOARD_SIZE; i++) {
@@ -137,6 +158,8 @@ public class GridGenerator {
 
             }
         }
+
+        HBox dash = new HBox(GridVariables.GRID_WIDTH/40);
         counter.setTextFill(Color.CADETBLUE);
         counter.setFont(new Font("Impact", 50));
         counter.relocate(0, GridVariables.GRID_HEIGHT + 5);
@@ -155,7 +178,10 @@ public class GridGenerator {
         EstimatedMoves.setBorder(new Border(new BorderStroke(Color.WHITE,
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
-        pane.getChildren().addAll(gridPane, counter, streak, EstimatedMoves);
+
+        dash.getChildren().addAll(counter, streak, EstimatedMoves);
+        dash.relocate(0,GridVariables.GRID_HEIGHT + 5);
+        pane.getChildren().addAll(gridPane,dash);
         generateEasyGrid();
         //return the final board containing the grid and the group of vehicles
         return pane;
@@ -222,6 +248,8 @@ public class GridGenerator {
             result = search.createState(difficulty, numberOfVehicles, grid, vehicles, goalVehicle);
         }
         pane.getChildren().add(vehicles);
+        if(grid.isChallangeMode())
+            grid.setNumberOfMoves(search.getNumberOfMovesEstimate());
         EstimatedMoves.setText("max moves needed - " + Integer.toString(search.getNumberOfMovesEstimate()));
 
     }
@@ -247,6 +275,8 @@ public class GridGenerator {
             result = search.createState(difficulty, numberOfVehicles, grid, vehicles, goalVehicle);
         }
         pane.getChildren().add(vehicles);
+        if(grid.isChallangeMode())
+            grid.setNumberOfMoves(search.getNumberOfMovesEstimate());
         EstimatedMoves.setText("max moves needed - " + Integer.toString(search.getNumberOfMovesEstimate()));
     }
 
@@ -272,10 +302,15 @@ public class GridGenerator {
             result = search.createState(difficulty, numberOfVehicles, grid, vehicles, goalVehicle);
         }
         EstimatedMoves.setText("max moves needed - " + Integer.toString(search.getNumberOfMovesEstimate()));
+        if(grid.isChallangeMode())
+            grid.setNumberOfMoves(search.getNumberOfMovesEstimate());
         pane.getChildren().add(vehicles);
 
     }
 
+    /**
+     * Re generate.
+     */
     public void reGenerate() {
         if (null == grid.getDifficulty()) {
             generateEasyGrid();
@@ -296,19 +331,61 @@ public class GridGenerator {
 
     }
 
+    /**
+     * Gets grid.
+     *
+     * @return the grid
+     */
     public Grid getGrid() {
         return grid;
     }
 
+    /**
+     * Update counter.
+     */
     public void updateCounter() {
-        counter.setText("Move count - " + grid.getNumberOfMoves());
+        if(grid.isChallangeMode())
+            counter.setText("Moves remaining - " + grid.getNumberOfMoves());
+        else
+            counter.setText("Move count - " + grid.getNumberOfMoves());
     }
 
+    /**
+     * Update streak gui.
+     */
     public void updateStreakGUI() {
         streak.setText("Current Streak - " + streakCounter);
     }
 
+    /**
+     * Update streak.
+     */
     public void updateStreak() {
         streakCounter++;
+    }
+
+    /**
+     * Reset streak.
+     */
+    public void resetStreak(){
+        streakCounter = 0;
+    }
+
+    /**
+     * Gets menu board.
+     *
+     * @return the menu board
+     */
+    public Button getMenuBoard() {
+        return menuBoard;
+    }
+
+    /**
+     * Menu on boolean.
+     *
+     * @return the boolean
+     */
+    public boolean menuOn(){
+        return pane.getChildren().contains(menu);
     }
 }

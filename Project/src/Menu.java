@@ -2,6 +2,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -21,9 +22,6 @@ public class Menu {
         mainMenu.setMinHeight(GridVariables.GRID_HEIGHT);
         mainMenu.setMinWidth(GridVariables.GRID_WIDTH);
         VBox menubackground = new VBox();
-        menubackground.setStyle("-fx-background-color: rgba(50, 50, 50, 0.5); -fx-background-radius: 10;opacity: 0.5;");
-        menubackground.setMinHeight(GridVariables.GRID_HEIGHT + 70);
-        menubackground.setMinWidth(GridVariables.GRID_WIDTH + 70);
         HBox row0 = new HBox(0);
         row0.setAlignment(Pos.BASELINE_CENTER);
         HBox row1 = new HBox(30);
@@ -39,13 +37,13 @@ public class Menu {
         Label tutorial_ext = new Label();
         tutorial_ext.getStylesheets().add("Buttons.css");
         String s0 = "Welcome to gridlock! The aim of the game is simple.";
-        String s1 = "move the blue-green car into the right most end." ;
-        String s2 = "Challange mode has a turn restriction, one turn over limit will reset streak!";
-        String s3 = "good luck and have fun!!";
-        tutorial.setMinHeight(150);
+        String s1 = "Move the blue-green car into the right most end." ;
+        String s2 = "Challange mode has a turn restriction.\nOne turn over limit will reset streak!";
+        String s3 = "Good luck and have fun!!";
+        tutorial.setMinHeight(GridVariables.GRID_HEIGHT/6.8);
         tutorial.setText(s0 + System.lineSeparator() + s1 + System.lineSeparator() + s2 + System.lineSeparator() + s3);
-        tutorial.setFont(new Font("Impact",20));
-        tutorial.setTextFill(Color.BLACK);
+        tutorial.setFont(new Font("Impact",GridVariables.GRID_HEIGHT/40));
+        tutorial.setTextFill(Color.MIDNIGHTBLUE);
 
 
         row0.getChildren().addAll(tutorial);
@@ -53,6 +51,7 @@ public class Menu {
         row2.getChildren().addAll(mediumStandard, mediumChallange);
         row3.getChildren().addAll(hardStandard, hardChallange);
         row4.getChildren().add(exit);
+        row0.setTranslateX(GridVariables.GRID_WIDTH/30);
         easyStandard.getStylesheets().add("Buttons.css");
         mediumStandard.getStylesheets().add("Buttons.css");
         hardStandard.getStylesheets().add("Buttons.css");
@@ -60,8 +59,17 @@ public class Menu {
         mediumChallange.getStylesheets().add("Buttons.css");
         hardChallange.getStylesheets().add("Buttons.css");
         exit.getStylesheets().add("Buttons.css");
-        mainMenu.getChildren().addAll(menubackground,row0,row1,row2,row3,row4);
-        menubackground.toFront();
+        exit.setOnAction(e->{
+            System.exit(0);
+        });
+        mainMenu.getChildren().addAll(row0,row1,row2,row3,row4);
+        mainMenu.setStyle("-fx-background-color: rgba(50, 50, 50, 0.5); -fx-background-radius: 10;opacity: 0.5;");
+        row4.toBack();
+        row3.toBack();
+        row2.toBack();
+        row1.toBack();
+        row0.toBack();
+
         //the css styling for the buttons will be used from a standard css style
         return mainMenu;
     }
@@ -88,9 +96,5 @@ public class Menu {
 
     public Button getHardChallange() {
         return hardChallange;
-    }
-
-    public Button getExit() {
-        return exit;
     }
 }

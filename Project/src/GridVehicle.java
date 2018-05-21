@@ -1,8 +1,11 @@
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -131,7 +134,7 @@ public class GridVehicle extends StackPane {
         //it will snap the object back to the last valid row + col as calculated from when the car is being dragged
         //and the initial click
         setOnMouseReleased(event -> {
-            //resets the obstruction flag in case the vehicle has collided (important in the drag function)
+                //resets the obstruction flag in case the vehicle has collided (important in the drag function)
             //once vehicle is collided this stays false till release, to avoid displacement over into another block
             //avoids jumping over obstacle cars
             flag = true;
@@ -153,6 +156,16 @@ public class GridVehicle extends StackPane {
             //when the vehicle is released it goes back to white stroke
             carBlock.setStrokeWidth(2);
             carBlock.setStroke(Color.WHITE);
+            //if victory we want sound also if the sound option is toggled
+            if(victoryCondition() && grid.isSound()){
+                //file name for the audio file
+                String musicFile = "hit.mp3";
+                //converting the media file into readable code
+                Media sound = new Media(new File(musicFile).toURI().toString());
+                //
+                MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                mediaPlayer.play();
+            }
             grid.setVictory(victoryCondition());
         });
     }
@@ -207,10 +220,24 @@ public class GridVehicle extends StackPane {
         }
         //if the move was invalid, we want to set our flag as false so the object can no longer move
         if (!grid.isValidMove(resultCol, resultRow, vehicle, this)) {
+            //if it is the FIRST TIME the vehicle has crashed (so the sound only plays once each crash)
+            if(flag == true && grid.isSound() && !victoryCondition()){
+                //retrieve the string for the sound file
+                String thump = "bad.mp3";
+                //create a media file from the string with the sound file name
+                Media Thump = new Media(new File(thump).toURI().toString());
+                //create a media playable object with the media file
+                MediaPlayer hornMediaPlayer = new MediaPlayer(Thump);
+                //play the small thump sound
+                hornMediaPlayer.play();
+            }
             //set the flag as false
             flag = false;
+            //keep track of the row the crash occured to allow for opposite movement
             crashCol = resultCol;
+            //keep track of the column the crash occured to allow for opposite movement
             crashRow = resultRow;
+
         }
         //also return false (invalid moves)
         return false;

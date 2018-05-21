@@ -22,7 +22,9 @@ public class Grid {
     private Difficulty difficulty;
     //the challange mode will be done by restricting the user with a turn limit
     //this will be toggleable with a true/false statement
-    public boolean challangeMode = false;
+    private boolean challangeMode = false;
+    //the check for if user has toggled sound
+    private boolean sound = true;
 
     /**
      * this method will create a 2d matrix initalised as null (empty board)
@@ -166,7 +168,10 @@ public class Grid {
      * This method guarantees to always increase the move counter by 1
      */
     public void incrementMoveCounter() {
-        numberOfMoves++;
+        if(challangeMode)
+            numberOfMoves--;
+        else
+            numberOfMoves++;
     }
 
     /**
@@ -299,5 +304,39 @@ public class Grid {
      */
     public void setChallangeMode(boolean challangeMode) {
         this.challangeMode = challangeMode;
+    }
+
+    /**
+     * This method will be used to check if the sound flag is on to play a sound for certain events.
+     * This method will guarantee to return a boolean expressing if sound is turned on
+     * @return true if sound is set on, false otherwise
+     */
+    public boolean isSound() {
+        return sound;
+    }
+
+    /**
+     * This method will be used to toggle between sound on and off for the game. this will be changed
+     * through a button in the menu.
+     * This method guarantees to alter the sound flag, provided it receives a valid boolean expression
+     * @param sound true == on, false == off
+     */
+    public void setSound(boolean sound) {
+        this.sound = sound;
+    }
+
+    /**
+     * This method will be used to see if the user has overflowed turns during challange mode.
+     * if challange mode is on and the number of moves remaining is 0, we want to set this to true.
+     * This method guarantees to return true if the number of moves remaining is 0, false if there are moves remaining.
+     * @return true if there are no remaining turns, false if there are still remaining turns
+     */
+    public boolean turnOverflow(){
+        //if challange mode is on and number of moves left is = 0, we want to set turnOverFlow
+        if(challangeMode && numberOfMoves == 0)
+            return true;
+        //otherwise keep it off.
+        else
+            return false;
     }
 }

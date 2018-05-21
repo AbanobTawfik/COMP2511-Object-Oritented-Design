@@ -1,7 +1,6 @@
 import javafx.scene.*;
 import javafx.application.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
 import javafx.stage.*;
 
 
@@ -41,6 +40,9 @@ public class GridLock extends Application {
         //and the resolution for the scene
         Scene game = new Scene(g.generateGrid(), GridVariables.GRID_WIDTH, GridVariables.GRID_HEIGHT + 70);
         this.game = game;
+        Menu m = new Menu();
+        Scene menu = new Scene(m.menu(), GridVariables.GRID_WIDTH, GridVariables.GRID_HEIGHT + 70);
+        this.menu = menu;
         //this method will display the application
         game.setOnKeyPressed(e -> {
             if (e.getCode().equals(KeyCode.ESCAPE))
@@ -52,6 +54,12 @@ public class GridLock extends Application {
 
         game.setOnMouseReleased(e -> {
             g.updateCounter();
+            if (g.getGrid().turnOverflow()) {
+                g.reGenerate();
+                g.updateCounter();
+                g.resetStreak();
+                g.updateStreakGUI();
+            }
             if (g.getGrid().isVictory()) {
                 g.reGenerate();
                 g.updateCounter();
@@ -59,11 +67,70 @@ public class GridLock extends Application {
                 g.updateStreakGUI();
             }
         });
-        Menu m = new Menu();
-        Scene menu = new Scene(m.menu(), GridVariables.GRID_WIDTH, GridVariables.GRID_HEIGHT + 70);
-        this.menu = menu;
+
+        m.getEasyStandard().setOnAction(e -> {
+            stage.setScene(game);
+            g.getGrid().setChallangeMode(false);
+            if (g.menuOn())
+                g.toggleMenu();
+            g.generateEasyGrid();
+            g.updateCounter();
+        });
+
+        m.getMediumStandard().setOnAction(e -> {
+            stage.setScene(game);
+            g.getGrid().setChallangeMode(false);
+            if (g.menuOn())
+                g.toggleMenu();
+            g.generateMediumGrid();
+            g.updateCounter();
+        });
+
+        m.getHardStandard().setOnAction(e -> {
+            stage.setScene(game);
+            g.getGrid().setChallangeMode(false);
+            if (g.menuOn())
+                g.toggleMenu();
+            g.generateHardGrid();
+            g.updateCounter();
+        });
+
+        m.getEasyChallange().setOnAction(e -> {
+            stage.setScene(game);
+            g.getGrid().setChallangeMode(true);
+            if (g.menuOn())
+                g.toggleMenu();
+            g.generateEasyGrid();
+            g.updateCounter();
+
+        });
+
+        m.getMediumChallange().setOnAction(e -> {
+            stage.setScene(game);
+            g.getGrid().setChallangeMode(true);
+            if (g.menuOn())
+                g.toggleMenu();
+            g.generateMediumGrid();
+            g.updateCounter();
+        });
+
+        m.getHardChallange().setOnAction(e -> {
+            stage.setScene(game);
+            g.getGrid().setChallangeMode(true);
+            if (g.menuOn())
+                g.toggleMenu();
+            g.generateHardGrid();
+            g.updateCounter();
+        });
+
+        g.getMenuBoard().setOnAction(e -> {
+            stage.setScene(menu);
+            stage.show();
+        });
+
         stage.setScene(menu);
         stage.setTitle("Gridlock");
         stage.show();
     }
+
 }
