@@ -2,12 +2,8 @@
  *
  */
 .button {
-    -fx-background-color:
-            linear-gradient(#7ebcea, #2f4b8f),
-            linear-gradient(#426ab7, #263e75),
-            linear-gradient(#395cab, #223768);
-    -fx-background-insets: 0,1,2,3;
-    -fx-padding: 12 20 12 20;
+    -fx-background-color: #7ebcea;
+    -fx-padding: 9 18 9 18;
     -fx-font-family: Impact;
     -fx-text-fill: WHITE;
     -fx-font-size: 15px;

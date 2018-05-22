@@ -3,6 +3,8 @@ import javafx.application.*;
 import javafx.scene.input.KeyCode;
 import javafx.stage.*;
 
+import static java.lang.Thread.sleep;
+
 
 /**
  * This is the main method which loads the game.
@@ -13,10 +15,6 @@ public class GridLock extends Application {
     private Stage stage;
     private Scene game;
     private Scene menu;
-    private volatile boolean flag1 = true;
-    private volatile boolean flag2 = true;
-    private volatile boolean flag3 = true;
-
 
     /**
      * The main class which will launch the project program
@@ -48,15 +46,15 @@ public class GridLock extends Application {
         Scene menu = new Scene(m.menu(), GridVariables.GRID_WIDTH, GridVariables.GRID_HEIGHT + 70);
         this.menu = menu;
         //this method will display the application
-
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
-                    levelExists(m, g);
-                    while (g.getEasyGrids().remainingCapacity() == 0) {
+                    Platform.runLater(() -> {
                         levelExists(m, g);
-                        if (g.getHardGrids().size() < 5)
+                    });
+                    while (g.getEasyGrids().remainingCapacity() == 0) {
+                        if (g.getHardGrids().size() < 10)
                             g.generateHardGrid();
                     }
                     g.generateEasyGrid();
@@ -68,10 +66,11 @@ public class GridLock extends Application {
             @Override
             public void run() {
                 while (true) {
-                    levelExists(m, g);
-                    while (g.getMediumGrids().remainingCapacity() == 0) {
+                    Platform.runLater(() -> {
                         levelExists(m, g);
-                        if (g.getHardGrids().size() < 5)
+                    });
+                    while (g.getMediumGrids().remainingCapacity() == 0) {
+                        if (g.getHardGrids().size() < 10)
                             g.generateHardGrid();
                     }
                     g.generateMediumGrid();
@@ -84,16 +83,12 @@ public class GridLock extends Application {
             @Override
             public void run() {
                 while (true) {
-                    levelExists(m, g);
                     while (g.getHardGrids().remainingCapacity() == 0) {
-                        levelExists(m, g);
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        Platform.runLater(() -> {
+                            levelExists(m, g);
+                        });
                     }
-                    if (g.getHardGrids().size() < 5) {
+                    if (g.getHardGrids().size() < 15) {
                         g.generateHardGrid();
                     }
 
@@ -101,9 +96,13 @@ public class GridLock extends Application {
             }
         }).start();
 
+
         game.setOnKeyPressed(e -> {
             if (e.getCode().equals(KeyCode.ESCAPE))
                 g.toggleMenu();
+            System.out.println("Easy - " + g.getEasyGrids().size());
+            System.out.println("Medium - " + g.getMediumGrids().size());
+            System.out.println("Hard - " + g.getHardGrids().size());
         });
         game.setOnMouseDragged(e -> {
             g.updateCounter();
@@ -145,6 +144,9 @@ public class GridLock extends Application {
                 e1.printStackTrace();
             }
             g.updateCounter();
+            g.updateStreakGUI();
+            g.resetStreak();
+            g.updateStreakGUI();
         });
 
         m.getMediumStandard().setOnAction(e -> {
@@ -159,6 +161,9 @@ public class GridLock extends Application {
                 e1.printStackTrace();
             }
             g.updateCounter();
+            g.updateStreakGUI();
+            g.resetStreak();
+            g.updateStreakGUI();
         });
 
         m.getHardStandard().setOnAction(e -> {
@@ -173,6 +178,9 @@ public class GridLock extends Application {
                 e1.printStackTrace();
             }
             g.updateCounter();
+            g.updateStreakGUI();
+            g.resetStreak();
+            g.updateStreakGUI();
         });
 
         m.getEasyChallange().setOnAction(e -> {
@@ -187,6 +195,9 @@ public class GridLock extends Application {
                 e1.printStackTrace();
             }
             g.updateCounter();
+            g.updateStreakGUI();
+            g.resetStreak();
+            g.updateStreakGUI();
 
         });
 
@@ -202,6 +213,9 @@ public class GridLock extends Application {
                 e1.printStackTrace();
             }
             g.updateCounter();
+            g.updateStreakGUI();
+            g.resetStreak();
+            g.updateStreakGUI();
         });
 
         m.getHardChallange().setOnAction(e -> {
@@ -216,6 +230,9 @@ public class GridLock extends Application {
                 e1.printStackTrace();
             }
             g.updateCounter();
+            g.updateStreakGUI();
+            g.resetStreak();
+            g.updateStreakGUI();
         });
 
         g.getMenuBoard().setOnAction(e -> {
@@ -228,29 +245,32 @@ public class GridLock extends Application {
         stage.show();
     }
 
+    /**
+     * Level exists.
+     *
+     * @param m the m
+     * @param g the g
+     */
     public void levelExists(Menu m, GridGenerator g) {
-        System.out.println("Easy - " + g.getEasyGrids().size());
-        System.out.println("Medium - " + g.getMediumGrids().size());
-        System.out.println("Hard - " +g.getHardGrids().size());
         g.updateMenuStatus();
         if (g.getEasyGrids().size() > 0) {
-            m.getEasyChallange().setStyle("-fx-border-color: red; -fx-border-width: 2");
-            m.getEasyStandard().setStyle("-fx-border-color: red; -fx-border-width: 2");
+            m.getEasyChallange().setStyle("-fx-border-color: green; -fx-border-width: 2");
+            m.getEasyStandard().setStyle("-fx-border-color: green; -fx-border-width: 2");
         } else {
             m.getEasyChallange().setStyle("-fx-borer-color: none;");
             m.getEasyStandard().setStyle("-fx-borer-color: none;");
         }
 
         if (g.getMediumGrids().size() > 0) {
-            m.getMediumChallange().setStyle("-fx-border-color: red; -fx-border-width: 2");
-            m.getMediumStandard().setStyle("-fx-border-color: red; -fx-border-width: 2");
+            m.getMediumChallange().setStyle("-fx-border-color: green; -fx-border-width: 2");
+            m.getMediumStandard().setStyle("-fx-border-color: green; -fx-border-width: 2");
         } else {
             m.getMediumChallange().setStyle("-fx-borer-color: none;");
             m.getMediumStandard().setStyle("-fx-borer-color: none;");
         }
         if (g.getHardGrids().size() > 0) {
-            m.getHardChallange().setStyle("-fx-border-color: red; -fx-border-width: 2");
-            m.getHardStandard().setStyle("-fx-border-color: red; -fx-border-width: 2");
+            m.getHardChallange().setStyle("-fx-border-color: green; -fx-border-width: 2");
+            m.getHardStandard().setStyle("-fx-border-color: green; -fx-border-width: 2");
         } else {
             m.getHardChallange().setStyle("-fx-borer-color: none;");
             m.getHardStandard().setStyle("-fx-borer-color: none;");

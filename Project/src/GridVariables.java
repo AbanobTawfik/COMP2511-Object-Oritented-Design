@@ -44,5 +44,4 @@ public class GridVariables {
     //divide the pixels in Y direction by board size for evenly sized tiles
     public static final double TILE_SIZE_HEIGHT = GRID_HEIGHT / BOARD_SIZE;
 
-
 }

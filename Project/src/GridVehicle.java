@@ -99,8 +99,11 @@ public class GridVehicle extends StackPane {
         else
             carBlock.setFill(Color.BLACK);
 
-        carBlock.setArcHeight(70);
-        carBlock.setArcWidth(70);
+        //rounding the vehicle for a nicer rounded vehicle
+        carBlock.setArcHeight(60);
+        carBlock.setArcWidth(60);
+
+        carBlock.setOpacity(0.94);
         //add the car to stack pane object (node) added
         getChildren().add(carBlock);
         //shift the vehicle to the correct index upon being added
