@@ -182,7 +182,7 @@ public class BFS {
      */
     public boolean BFSearch(BackEndState initialState) {
         //creating the comparator for the priority queue based on heuristic score
-        Comparator searchNodeComparator = new nodeComparator();
+        Comparator<searchNode> searchNodeComparator = new nodeComparator();
         //creating the open list of states
         PriorityQueue<searchNode> open = new PriorityQueue<>(searchNodeComparator);
         //creating the list of visited states

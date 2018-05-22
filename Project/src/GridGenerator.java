@@ -7,7 +7,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import static java.lang.Thread.sleep;
 
 /**
  * The Grid Generator class, which will create a new board which contains
@@ -28,6 +35,12 @@ public class GridGenerator {
     private GridPane gridPane = new GridPane();
     private VBox menubackground = new VBox();
     private Button menuBoard = new Button("Menu");
+
+    private volatile ArrayBlockingQueue<threadState> easyGrids = new ArrayBlockingQueue<>(10);
+    private volatile ArrayBlockingQueue<threadState> mediumGrids = new ArrayBlockingQueue<>(5);
+    private volatile ArrayBlockingQueue<threadState> hardGrids = new ArrayBlockingQueue<>(5);
+
+    private boolean challangeMode = false;
 
     /**
      * Generates a grid with a board of tiles, and a group of vehicles. This method
@@ -57,39 +70,56 @@ public class GridGenerator {
         easy.getStylesheets().add("Buttons.css");
         easy.setOnAction(e -> {
             grid.setDifficulty(Difficulty.EASY);
-            generateEasyGrid();
+            try {
+                reGenerate();
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
             menubackground.toFront();
             menu.toFront();
             streakCounter = 0;
+            updateCounter();
             updateStreakGUI();
         });
         Button medium = new Button("Medium Level");
         medium.getStylesheets().add("Buttons.css");
         medium.setOnAction(e -> {
+            if (mediumGrids.size() == 0)
+                return;
             grid.setDifficulty(Difficulty.MEDIUM);
-            generateMediumGrid();
+            try {
+                reGenerate();
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
             menubackground.toFront();
             menu.toFront();
             streakCounter = 0;
+            updateCounter();
             updateStreakGUI();
         });
         Button hard = new Button("Hard Level");
         hard.getStylesheets().add("Buttons.css");
         hard.setOnAction(e -> {
             grid.setDifficulty(Difficulty.HARD);
-            generateHardGrid();
+            try {
+                reGenerate();
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
             menubackground.toFront();
             menu.toFront();
             streakCounter = 0;
+            updateCounter();
             updateStreakGUI();
         });
         Button sound = new Button("Toggle sound");
         sound.getStylesheets().add("Buttons.css");
-        sound.setOnAction(e->{
-            if(grid.isSound()) {
+        sound.setOnAction(e -> {
+            if (grid.isSound()) {
                 grid.setSound(false);
                 sound.setStyle("-fx-border-color: red; -fx-border-width: 2");
-            }else{
+            } else {
                 grid.setSound(true);
                 sound.setStyle("-fx-borer-color: none;");
             }
@@ -103,12 +133,12 @@ public class GridGenerator {
 
 
         HBox dashBoard = new HBox(30);
-        easy.setTranslateX(GridVariables.GRID_WIDTH/40);
-        medium.setTranslateX(GridVariables.GRID_WIDTH/40);
-        hard.setTranslateX(GridVariables.GRID_WIDTH/40);
-        dashBoard.setTranslateX(-GridVariables.GRID_WIDTH/12);
-        dashBoard.getChildren().addAll(sound,menuBoard,exit);
-        menu.getChildren().addAll(easy, medium, hard,dashBoard);
+        easy.setTranslateX(GridVariables.GRID_WIDTH / 40);
+        medium.setTranslateX(GridVariables.GRID_WIDTH / 40);
+        hard.setTranslateX(GridVariables.GRID_WIDTH / 40);
+        dashBoard.setTranslateX(-GridVariables.GRID_WIDTH / 12);
+        dashBoard.getChildren().addAll(sound, menuBoard, exit);
+        menu.getChildren().addAll(easy, medium, hard, dashBoard);
         //menu.
         //initalising the rows for this grid (adds a slot at each row index)
         for (int i = 0; i < GridVariables.BOARD_SIZE; i++) {
@@ -159,7 +189,7 @@ public class GridGenerator {
             }
         }
 
-        HBox dash = new HBox(GridVariables.GRID_WIDTH/40);
+        HBox dash = new HBox(GridVariables.GRID_WIDTH / 40);
         counter.setTextFill(Color.CADETBLUE);
         counter.setFont(new Font("Impact", 50));
         counter.relocate(0, GridVariables.GRID_HEIGHT + 5);
@@ -180,9 +210,8 @@ public class GridGenerator {
 
 
         dash.getChildren().addAll(counter, streak, EstimatedMoves);
-        dash.relocate(0,GridVariables.GRID_HEIGHT + 5);
-        pane.getChildren().addAll(gridPane,dash);
-        generateEasyGrid();
+        dash.relocate(0, GridVariables.GRID_HEIGHT + 5);
+        pane.getChildren().addAll(gridPane, dash);
         //return the final board containing the grid and the group of vehicles
         return pane;
     }
@@ -208,7 +237,7 @@ public class GridGenerator {
     /**
      * Clear grid.
      */
-    public void clearGrid() {
+    public void clearGrid(Grid grid, Group vehicles) {
         grid.setVictory(false);
         grid.resetNewGrid();
         vehicles.getChildren().clear();
@@ -229,28 +258,26 @@ public class GridGenerator {
      * 8. otherwise we will keep generating board repeating step 3-7
      */
     public void generateEasyGrid() {
-        grid.setNumberOfMoves(0);
+        Grid tmp = new Grid();
+        Group tmpVehicles = new Group();
+        tmp.setNumberOfMoves(0);
         Difficulty difficulty = Difficulty.EASY;
-        grid.setDifficulty(difficulty);
-        pane.getChildren().remove(vehicles);
-        clearGrid();
-        vehicles.getChildren().clear();
+        tmp.setDifficulty(difficulty);
+
         Random generator = new Random();
         Vehicle goalCar = new Vehicle(true, 2);
-        GridVehicle goalVehicle = new GridVehicle(true, goalCar, 2, generator.nextInt(3), grid);
-        vehicles.getChildren().add(goalVehicle);
-        goalVehicle.initialShift();
+        GridVehicle goalVehicle = new GridVehicle(true, goalCar, 2, generator.nextInt(3), tmp);
         boolean result = false;
         int numberOfVehicles = generator.nextInt(17) + 4;
         BFS search = new BFS();
         while (!result) {
-            clearGrid();
-            result = search.createState(difficulty, numberOfVehicles, grid, vehicles, goalVehicle);
+            result = search.createState(difficulty, numberOfVehicles, tmp, tmpVehicles, goalVehicle);
         }
-        pane.getChildren().add(vehicles);
-        if(grid.isChallangeMode())
-            grid.setNumberOfMoves(search.getNumberOfMovesEstimate());
-        EstimatedMoves.setText("max moves needed - " + Integer.toString(search.getNumberOfMovesEstimate()));
+        threadState state = new threadState(tmpVehicles, tmp);
+        state.setEstimatedMoves(search.getNumberOfMovesEstimate());
+        if (challangeMode)
+            tmp.setNumberOfMoves(search.getNumberOfMovesEstimate());
+        easyGrids.add(state);
 
     }
 
@@ -258,75 +285,111 @@ public class GridGenerator {
      * Generate medium grid.
      */
     public void generateMediumGrid() {
-        grid.setNumberOfMoves(0);
+        Grid tmp = new Grid();
+        Group tmpVehicles = new Group();
+        tmp.setNumberOfMoves(0);
         Difficulty difficulty = Difficulty.MEDIUM;
-        grid.setDifficulty(difficulty);
-        pane.getChildren().remove(vehicles);
-        clearGrid();
+        tmp.setDifficulty(difficulty);
 
         Random generator = new Random();
         Vehicle goalCar = new Vehicle(true, 2);
-        GridVehicle goalVehicle = new GridVehicle(true, goalCar, 2, generator.nextInt(3), grid);
+        GridVehicle goalVehicle = new GridVehicle(true, goalCar, 2, generator.nextInt(3), tmp);
         boolean result = false;
         int numberOfVehicles = generator.nextInt(17) + 4;
         BFS search = new BFS();
         while (!result) {
-            clearGrid();
-            result = search.createState(difficulty, numberOfVehicles, grid, vehicles, goalVehicle);
+            result = search.createState(difficulty, numberOfVehicles, tmp, tmpVehicles, goalVehicle);
         }
-        pane.getChildren().add(vehicles);
-        if(grid.isChallangeMode())
-            grid.setNumberOfMoves(search.getNumberOfMovesEstimate());
-        EstimatedMoves.setText("max moves needed - " + Integer.toString(search.getNumberOfMovesEstimate()));
+
+        threadState state = new threadState(tmpVehicles, tmp);
+        state.setEstimatedMoves(search.getNumberOfMovesEstimate());
+        if (challangeMode)
+            tmp.setNumberOfMoves(search.getNumberOfMovesEstimate());
+        mediumGrids.add(state);
+
     }
 
     /**
      * Generate hard grid.
      */
     public void generateHardGrid() {
-        grid.setNumberOfMoves(0);
+        Grid tmp = new Grid();
+        Group tmpVehicles = new Group();
+        tmp.setNumberOfMoves(0);
         Difficulty difficulty = Difficulty.HARD;
-        grid.setDifficulty(difficulty);
-        pane.getChildren().remove(vehicles);
-        clearGrid();
+        tmp.setDifficulty(difficulty);
 
         Random generator = new Random();
         Vehicle goalCar = new Vehicle(true, 2);
-        GridVehicle goalVehicle = new GridVehicle(true, goalCar, 2, generator.nextInt(3), grid);
-        vehicles.getChildren().add(goalVehicle);
+        GridVehicle goalVehicle = new GridVehicle(true, goalCar, 2, generator.nextInt(3), tmp);
         boolean result = false;
         int numberOfVehicles = generator.nextInt(17) + 4;
         BFS search = new BFS();
         while (!result) {
-            clearGrid();
-            result = search.createState(difficulty, numberOfVehicles, grid, vehicles, goalVehicle);
+            result = search.createState(difficulty, numberOfVehicles, tmp, tmpVehicles, goalVehicle);
         }
-        EstimatedMoves.setText("max moves needed - " + Integer.toString(search.getNumberOfMovesEstimate()));
-        if(grid.isChallangeMode())
-            grid.setNumberOfMoves(search.getNumberOfMovesEstimate());
-        pane.getChildren().add(vehicles);
-
+        threadState state = new threadState(tmpVehicles, tmp);
+        state.setEstimatedMoves(search.getNumberOfMovesEstimate());
+        if (challangeMode)
+            tmp.setNumberOfMoves(search.getNumberOfMovesEstimate());
+        if(hardGrids.remainingCapacity()>0)
+            hardGrids.add(state);
     }
 
     /**
      * Re generate.
      */
-    public void reGenerate() {
-        if (null == grid.getDifficulty()) {
-            generateEasyGrid();
-            return;
-        }
-        if (grid.getDifficulty().equals(Difficulty.EASY)) {
-            generateEasyGrid();
+    public void reGenerate() throws InterruptedException {
+        updateMenuStatus();
+        if (null == grid.getDifficulty() || grid.getDifficulty().equals(Difficulty.EASY)) {
+            if (easyGrids.isEmpty()) {
+                generateEasyGrid();
+            }
+            threadState pop = easyGrids.poll();
+            clearGrid(grid, vehicles);
+            grid = pop.retGrid();
+            grid.setDifficulty(Difficulty.EASY);
+            vehicles = pop.getVehicles();
+            pane.getChildren().add(vehicles);
+            grid.setChallangeMode(challangeMode);
+            EstimatedMoves.setText("Estimated moves: " + pop.getEstimatedMoves());
+            if (grid.isChallangeMode()) {
+                grid.setNumberOfMoves(pop.getEstimatedMoves());
+            }
             return;
         }
         if (grid.getDifficulty().equals(Difficulty.MEDIUM)) {
-            generateMediumGrid();
+            threadState pop = mediumGrids.poll();
+            if (mediumGrids.isEmpty()) {
+                generateMediumGrid();
+            }
+            clearGrid(grid, vehicles);
+            grid = pop.retGrid();
+            grid.setChallangeMode(challangeMode);
+            grid.setDifficulty(Difficulty.MEDIUM);
+            vehicles = pop.getVehicles();
+            pane.getChildren().add(vehicles);
+            EstimatedMoves.setText("Estimated moves: " + pop.getEstimatedMoves());
+            if (grid.isChallangeMode()) {
+                grid.setNumberOfMoves(pop.getEstimatedMoves());
+            }
             return;
         }
         if (grid.getDifficulty().equals(Difficulty.HARD)) {
-            generateHardGrid();
-            return;
+            if (hardGrids.isEmpty()) {
+                generateHardGrid();
+            }
+            clearGrid(grid, vehicles);
+            threadState pop = hardGrids.poll();
+            grid = pop.retGrid();
+            grid.setChallangeMode(challangeMode);
+            grid.setDifficulty(Difficulty.HARD);
+            vehicles = pop.getVehicles();
+            pane.getChildren().add(vehicles);
+            if (grid.isChallangeMode()) {
+                grid.setNumberOfMoves(pop.getEstimatedMoves());
+            }
+            EstimatedMoves.setText("Estimated moves: " + pop.getEstimatedMoves());
         }
 
     }
@@ -344,17 +407,17 @@ public class GridGenerator {
      * Update counter.
      */
     public void updateCounter() {
-        if(grid.isChallangeMode())
-            counter.setText("Moves remaining - " + grid.getNumberOfMoves());
+        if (challangeMode)
+            counter.setText("Moves remaining: " + grid.getNumberOfMoves());
         else
-            counter.setText("Move count - " + grid.getNumberOfMoves());
+            counter.setText("Move count: " + grid.getNumberOfMoves());
     }
 
     /**
      * Update streak gui.
      */
     public void updateStreakGUI() {
-        streak.setText("Current Streak - " + streakCounter);
+        streak.setText("Current Streak: " + streakCounter);
     }
 
     /**
@@ -367,7 +430,7 @@ public class GridGenerator {
     /**
      * Reset streak.
      */
-    public void resetStreak(){
+    public void resetStreak() {
         streakCounter = 0;
     }
 
@@ -385,7 +448,41 @@ public class GridGenerator {
      *
      * @return the boolean
      */
-    public boolean menuOn(){
+    public boolean menuOn() {
         return pane.getChildren().contains(menu);
+    }
+
+    public ArrayBlockingQueue<threadState> getEasyGrids() {
+        return easyGrids;
+    }
+
+    public ArrayBlockingQueue<threadState> getMediumGrids() {
+        return mediumGrids;
+    }
+
+    public ArrayBlockingQueue<threadState> getHardGrids() {
+        return hardGrids;
+    }
+
+    public void setChallangerMode(boolean challangeMode) {
+        this.challangeMode = challangeMode;
+    }
+
+    public void updateMenuStatus(){
+        if (easyGrids.size() > 0) {
+            menu.getChildren().get(0).setStyle("-fx-border-color: red; -fx-border-width: 2");
+        } else {
+            menu.getChildren().get(0).setStyle("-fx-borer-color: none;");
+        }
+        if (mediumGrids.size() > 0) {
+            menu.getChildren().get(1).setStyle("-fx-border-color: red; -fx-border-width: 2");
+        } else {
+            menu.getChildren().get(1).setStyle("-fx-borer-color: none;");
+        }
+        if (hardGrids.size() > 0) {
+            menu.getChildren().get(2).setStyle("-fx-border-color: red; -fx-border-width: 2");
+        } else {
+            menu.getChildren().get(2).setStyle("-fx-borer-color: none;");
+        }
     }
 }
