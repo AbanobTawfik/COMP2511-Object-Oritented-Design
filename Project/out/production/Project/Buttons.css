@@ -1,0 +1,10 @@
+/*
+ *
+ */
+.button {
+    -fx-background-color: #7ebcea;
+    -fx-padding: 9 18 9 18;
+    -fx-font-family: Impact;
+    -fx-text-fill: WHITE;
+    -fx-font-size: 15px;
+}
