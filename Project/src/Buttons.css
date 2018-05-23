@@ -1,0 +1,14 @@
+/*
+ * this is my button style
+ * aqua color for the fill for the button
+ * add some padding for the button text
+ * the font for the button will be consistent with the project
+ * white text and 15px for the font
+ */
+.button {
+    -fx-background-color: #7ebcea;
+    -fx-padding: 9 18 9 18;
+    -fx-font-family: Impact;
+    -fx-text-fill: WHITE;
+    -fx-font-size: 15px;
+}
