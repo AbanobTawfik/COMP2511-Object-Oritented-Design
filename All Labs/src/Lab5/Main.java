@@ -23,7 +23,7 @@ public class Main {
         s.removeNode(hi);
         s.print();
 
-        GenericGraph<Integer> i = new GenericGraph<Integer>();
+        GenericGraph2<Integer> i = new GenericGraph2<Integer>();
         Integer one = 1;
         i.addNode(one);
         Integer two = 2;
@@ -35,12 +35,14 @@ public class Main {
         Integer five = 5;
         i.addNode(five);
 
-        i.addEdge(one,two);
-        i.addEdge(three,one);
-        i.addEdge(four,three);
-        i.addEdge(one,one);
+        i.addEdge(3,one,two);
+        i.addEdge(4,three,one);
+        i.addEdge(5,four,three);
+        i.addEdge(6,one,one);
+        i.removeEdge(one,two);
         i.print();
         AlphabetSort<String> n = new AlphabetSort<String>();
         NodeComparator<String> compa = new NodeComparator<>(n);
+        System.out.println(i.getNeighbours(three));
     }
 }
